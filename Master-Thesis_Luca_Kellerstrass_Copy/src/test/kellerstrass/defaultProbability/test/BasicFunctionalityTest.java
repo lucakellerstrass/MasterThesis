@@ -4,11 +4,11 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import kellerstrass.defaultProbability.bootstrapping.ForwardBootstrapNew;
-import kellerstrass.defaultProbability.bootstrapping.SimpleApproximationNew;
+import kellerstrass.defaultProbability.bootstrapping.ForwardBootstrap;
+import kellerstrass.defaultProbability.bootstrapping.SimpleApproximation;
 import kellerstrass.useful.PaymentFrequency;
 
-public class BasicFunctionalityTestNew {
+public class BasicFunctionalityTest {
 
     
 
@@ -40,7 +40,7 @@ public class BasicFunctionalityTestNew {
 
                      double calculatorTimeStart =System.currentTimeMillis();
 
-                     ForwardBootstrapNew bootStrapper = new ForwardBootstrapNew(interestRate, Recovery, cdsSpreads, PaymentFrequency.QUATERLY);
+                     ForwardBootstrap bootStrapper = new ForwardBootstrap(interestRate, Recovery, cdsSpreads, PaymentFrequency.QUATERLY);
 
                      double calculatorTimeEnd =System.currentTimeMillis();
 
@@ -56,7 +56,7 @@ public class BasicFunctionalityTestNew {
 
                      double SimpleApproximationTimeStart =System.currentTimeMillis();
 
-                     SimpleApproximationNew approximator = new SimpleApproximationNew( Recovery, cdsSpreads);
+                     SimpleApproximation approximator = new SimpleApproximation( Recovery, cdsSpreads);
 
                      double SimpleApproximationTimeEnd =System.currentTimeMillis();
 
