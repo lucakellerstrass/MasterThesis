@@ -4,7 +4,7 @@ import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationFromArray;
 import kellerstrass.useful.*;
 
-public class ForwardBootstrap extends AbstractCdsImpliesPDs {
+public class ForwardBootstrap extends AbstractCdsImpliesPDsTODO {
 	// CDS information
 	private double recovery; // Recovery Rate
 	private double[] cdsSpreads; // The (yearly) CDS spreads in bp

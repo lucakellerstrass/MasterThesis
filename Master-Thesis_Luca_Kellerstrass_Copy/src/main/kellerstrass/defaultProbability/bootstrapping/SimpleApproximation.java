@@ -10,7 +10,7 @@ import net.finmath.time.TimeDiscretizationFromArray;
  * @author lucak
  *
  */
-public class SimpleApproximation extends AbstractCdsImpliesPDs {
+public class SimpleApproximation extends AbstractCdsImpliesPDsTODO {
 
 	// CDS information
 		private double recovery; // Recovery Rate
