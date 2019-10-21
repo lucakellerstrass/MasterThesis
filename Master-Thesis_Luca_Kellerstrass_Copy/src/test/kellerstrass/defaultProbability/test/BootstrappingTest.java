@@ -55,7 +55,7 @@ public class BootstrappingTest {
 		  System.out.println(" default Probabilities from SimpleApproximation took  " + defaultProbabilitiesFromSimpleApproximation + " millis");
 		  
 		  
-		 /* 
+		 
 		  
 		  System.out.println(" Index" + "\t" + "Time" + "\t" + "defaultProbsForwardBootstrap" + "\t" + "defaultProbsSimpleApproximation" );
 		  for(int i = 0 ; i < defaultProbsForwardBootstrap.length ; i++) {
@@ -67,7 +67,7 @@ public class BootstrappingTest {
 				 ( ForwardBootstrapInitialization +defaultProbabilitiesFromForwardBootstrap) +  "\t        " +
 				 (SimpleApproximationInitialization + defaultProbabilitiesFromSimpleApproximation) + "\t           " + "millis" );
 		  
-          */
+          
 		  
 		  
 		  /*Now we want to test if the marginal default probs which are calculated here, 
@@ -84,7 +84,7 @@ public class BootstrappingTest {
 			bootStrapper2.printMarginalDefaultprobs();
 			// Check if anything changed, but at 18.10.2019   13:51  it was correct
 			
-			
+			// Todo: Add extrapolation for not-included CDS years!!
 	
 		  
 		  

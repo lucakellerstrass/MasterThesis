@@ -1,11 +1,8 @@
-package kellerstrass.xva.test;
+package kellerstrass.interestrate.models.test;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
-import kellerstrass.xva.CVA;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
 import net.finmath.marketdata.model.curves.ForwardCurveInterpolation;
@@ -18,46 +15,48 @@ import net.finmath.montecarlo.interestrate.models.LIBORMarketModelFromCovariance
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCorrelationModelExponentialDecay;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCovarianceModelFromVolatilityAndCorrelation;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModelFromGivenMatrix;
-import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProduct;
-import net.finmath.montecarlo.interestrate.products.Swap;
-import net.finmath.montecarlo.interestrate.products.SwapLeg;
-import net.finmath.montecarlo.interestrate.products.components.AbstractNotional;
-import net.finmath.montecarlo.interestrate.products.components.Notional;
-import net.finmath.montecarlo.interestrate.products.indices.AbstractIndex;
-import net.finmath.montecarlo.interestrate.products.indices.LIBORIndex;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
-import net.finmath.time.Schedule;
-import net.finmath.time.ScheduleGenerator;
+import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationFromArray;
-import net.finmath.time.businessdaycalendar.BusinessdayCalendar;
-import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
 
-public class CVATest {
+public class LIBORMarketModelTest {
 
-	private final static int numberOfPaths		= 1;
-	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws CalculationException {
+		LIBORModelMonteCarloSimulationModel simulationModel = getModel();
+		TimeDiscretization liborPeriodDiscretization = simulationModel.getLiborPeriodDiscretization();
 		
-		
-		
-		 double Recovery 	= 0.40;	//Recovery Rate
+		System.out.println("We test some parts of the LIBOR Market model");
+		System.out.println("Time \t LiborPeriod \t L(0, T_j) ");
 
-		  double[] cdsSpreads = {300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 } ; //{20.0, 25.0, 30.0, 35.0, 40.0}   // The (yearly) CDS spreads in bp {320.0, 57.0, 132.0 , 139.0 , 146.0, 150.0, 154.0}    ||  {300.0, 350.0, 400.0, 450.0, 500.0 }
-		
-		  AbstractLIBORMonteCarloProduct swap = getSwap();			
-			LIBORModelMonteCarloSimulationModel simulationModel = getModel();
+		for(double time : liborPeriodDiscretization) {
+			if(time == liborPeriodDiscretization.getTime(liborPeriodDiscretization.getNumberOfTimes()-1)) {
+				continue;
+			}
 			
-			//Now we test our CVA calculation
+			System.out.print(time + "\t");
+			int LiborPeriodIndex = simulationModel.getLiborPeriodIndex(time);
+			System.out.print(LiborPeriodIndex + "\t");
 			
-			CVA cvaGetter = new CVA(simulationModel, swap, Recovery, cdsSpreads);
 			
-			double cva = cvaGetter.getCVA();
 			
-			System.out.println(cva);
-		  
-
+             System.out.print(simulationModel.getLIBOR(0, LiborPeriodIndex).getAverage() + "\t");
+			
+			System.out.println("");
+		}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -69,6 +68,7 @@ public class CVATest {
 	 */
 	private static LIBORModelMonteCarloSimulationModel getModel() throws CalculationException {
 		Measure measure = Measure.SPOT;
+		 int numberOfPaths = 20000;
 		 int numberOfFactors = 5;
 		 double correlationDecayParam = 0.1;
 		/*
@@ -97,7 +97,7 @@ public class CVATest {
 		 * Create a simulation time discretization
 		 */
 		double lastTime	= 15.0;
-		double dt		= 0.05;
+		double dt		= 0.125;
 
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 
@@ -168,48 +168,8 @@ public class CVATest {
 		return new LIBORMonteCarloSimulationFromLIBORModel(liborMarketModel, process);
 	}
 
-
-
-
-    /**
-     * Get a swap, with some example input parameters
-     * @return
-     */
-	private static AbstractLIBORMonteCarloProduct getSwap() {
 	
-			/*
-			 * Create a receiver swap (receive fix, pay float)
-			 */
-			Schedule legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
-					LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-					LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-					LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
-					ScheduleGenerator.Frequency.ANNUAL /* frequency */,
-					ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
-					ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
-					BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
-					new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
-					0 /* fixingOffsetDays */,
-					0 /* paymentOffsetDays */);
-
-			Schedule legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
-					LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-					LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-					LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
-					ScheduleGenerator.Frequency.QUARTERLY /* frequency */,
-					ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
-					ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
-					BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
-					new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
-					0 /* fixingOffsetDays */,
-					0 /* paymentOffsetDays */);
-			AbstractNotional notional = new Notional(1.0);
-			AbstractIndex index = new LIBORIndex("forwardCurve", 0.0, 0.25);
-			double fixedCoupon = 0.025;
-			
-			SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional, null, fixedCoupon /* spread */, false /* isNotionalExchanged */);
-			SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional, index, 0.0 /* spread */, false /* isNotionalExchanged */);
-		return new Swap(swapLegRec, swapLegPay);
-	}
+	
+	
 	
 }
