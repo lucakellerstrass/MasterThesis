@@ -3,6 +3,8 @@ package kellerstrass.interestrate.models.test;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
+
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
 import net.finmath.marketdata.model.curves.ForwardCurveInterpolation;
@@ -21,7 +23,8 @@ import net.finmath.time.TimeDiscretizationFromArray;
 
 public class LIBORMarketModelTest {
 
-	public static void main(String[] args) throws CalculationException {
+	@Test
+	public  void test() throws CalculationException {
 		LIBORModelMonteCarloSimulationModel simulationModel = getModel();
 		TimeDiscretization liborPeriodDiscretization = simulationModel.getLiborPeriodDiscretization();
 		

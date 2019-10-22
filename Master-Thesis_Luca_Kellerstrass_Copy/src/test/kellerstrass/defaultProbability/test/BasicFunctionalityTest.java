@@ -29,7 +29,7 @@ public class BasicFunctionalityTest {
 
 
                      double[] cdsSpreads = {300.0, 350.0, 400.0, 450.0, 500.0 } ; //{20.0, 25.0, 30.0, 35.0, 40.0}   // The (yearly) CDS spreads in bp {320.0, 57.0, 132.0 , 139.0 , 146.0, 150.0, 154.0}    ||  {300.0, 350.0, 400.0, 450.0, 500.0 }
-
+                     String[] maturitiCodes =   {"1y", "2y","3y","4y","5y" };
                     
 
                      //double[] yearlyLIBORs = {0.0360758241758242, 0.0336, 0.0343334648351648, 0.03589, 0.0375295128378378, 0.0390253032258064,0.0405272967032967 };
@@ -56,7 +56,7 @@ public class BasicFunctionalityTest {
 
                      double SimpleApproximationTimeStart =System.currentTimeMillis();
 
-                     SimpleApproximation approximator = new SimpleApproximation( Recovery, cdsSpreads);
+                     SimpleApproximation approximator = new SimpleApproximation( Recovery, cdsSpreads,maturitiCodes ) ;
 
                      double SimpleApproximationTimeEnd =System.currentTimeMillis();
 

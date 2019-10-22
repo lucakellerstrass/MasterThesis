@@ -5,6 +5,8 @@ import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
+
 import kellerstrass.xva.CVA;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
@@ -36,7 +38,8 @@ public class CVATest {
 
 	private final static int numberOfPaths		= 1;
 	
-	public static void main(String[] args) throws Exception {
+    @Test
+	public  void testForCVA() throws Exception {
 		
 		
 		
@@ -58,7 +61,6 @@ public class CVATest {
 
 	}
 
-	
 	
 	
 	

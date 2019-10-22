@@ -1,12 +1,14 @@
 package kellerstrass.useful.test;
 
+import org.junit.Test;
+
 import kellerstrass.useful.PaymentOffsetCode;
 
 public class PaymentOffsetCodeTest {
 
 	
-	
-	public static void main(String[] args) throws Exception {
+	@Test
+	public  void test() throws Exception {
 		
 		double a = (1.0/12.0);
 		double b = 0.25;

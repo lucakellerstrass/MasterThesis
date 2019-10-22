@@ -2,6 +2,8 @@ package kellerstrass.interestrate.models.test;
 
 import java.time.LocalDate;
 
+import org.junit.Test;
+
 import kellerstrass.interestrate.models.StoredModels;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
@@ -17,7 +19,9 @@ public class HullWhiteTest {
 	private final static LocalDate referenceDate = LocalDate.of(2017, 6, 15);
 	private static LIBORModelMonteCarloSimulationModel hullWhiteModelSimulation;
 	
-	public static void main(String[] args) throws Exception {
+	
+	@Test
+	public  void test() throws Exception {
 		String paymentOffsetCode  = "6M";          //The Libor paymentOffsetCode
 		double  discretizationPointPerPaymentIntervalll = 2.0;
 		

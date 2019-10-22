@@ -8,7 +8,7 @@ import net.finmath.time.TimeDiscretization;
 
 import net.finmath.time.TimeDiscretizationFromArray;
 
- 
+import kellerstrass.defaultProbability.Cds.*;
 
  
 
@@ -22,358 +22,487 @@ import net.finmath.time.TimeDiscretizationFromArray;
 
 */
 
-public class SimpleApproximation  {
+public class SimpleApproximation {
 
- 
+	 
 
-                // CDS information
+    // CDS information
 
-                               private double recovery; // Recovery Rate
 
-                               private double[] cdsSpreads; // The (yearly) CDS spreads in bp
 
-                              
+    private double recovery; // Recovery Rate
 
-  
 
-                               // The timediscretization
 
-                               private double deltaT;
+    private double[] cdsSpreads; // The (yearly) CDS spreads in bp
 
-                               private int NumberOfTimesteps;
+   
 
-                               private TimeDiscretization timeDiscretization;
+    private CdsCurve cdsCurve;
 
-               
 
-                              
 
-                              
+    // The timediscretization
 
-                               /*
 
-                               * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-                               * ++
+    private double deltaT;
 
-                               */
 
-                               /* Constructors */
 
-                              
+    private int NumberOfTimesteps;
 
-                              
 
-                               /**
 
-                               * The most basic Constructor <br>
+    private TimeDiscretization timeDiscretization;
 
-                               * the default time Discretization with NumberOfTimeStepsPerYear of 20
 
-                               *
 
-                               * @param recovery     The Recovery Rate
+    private double[] marginalDefaultProbabilities;
 
-                               * @param cdsSpreads   The (yearly) CDS spreads in bp
 
-                               */
 
-                               public SimpleApproximation(double recovery, double[] cdsSpreads) {
+    /*
 
-                                               this( recovery, cdsSpreads, 20);
+    *
 
-                               }
+     * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-                              
+    *
 
-                                                              
+     * ++
 
-                               /**
+    *
 
-                               * A more advanced Constructor <br>
+     */
 
-                                * Has the possibility to set the NumberOfTimeStepsPerYear
 
-                               *
 
-                               * @param recovery     The Recovery Rate
+    /* Constructors */
 
-                               * @param cdsSpreads   The (yearly) CDS spreads in bp
 
-                               * @param NumberOfTimeStepsPerYear
 
-                               */
+    /**
 
-                               public SimpleApproximation( double recovery, double[] cdsSpreads,
+    *
 
-                                                               int NumberOfTimeStepsPerYear) {
+     * The most basic Constructor <br>
 
-                                               this( recovery, cdsSpreads,
+    *
 
-                                                                               new TimeDiscretizationFromArray(0.0, (int) (cdsSpreads.length / (1.0 / NumberOfTimeStepsPerYear)),
+     * the default time Discretization with NumberOfTimeStepsPerYear of 20
 
-                                                                                                              (double) (1.0 / (double) NumberOfTimeStepsPerYear)));
+    *
 
-                               }
+    *
 
- 
+     *
 
-                              
+     * @param recovery
 
-                              
+    *            The Recovery Rate
 
-                              
+    *
 
-                               /**
+     * @param cdsSpreads
 
-                               * The most advanced Constructor that uses a Time Discretization
+    *            The (yearly) CDS spreads in bp
 
-                               *
+    *
 
-                               * @param recovery           The Recovery Rate
+     */
 
-                               * @param cdsSpreads         The (yearly) CDS spreads in bp
 
-                               * @param timeDiscretization The timeDiscretization for the algorithm. <br>
 
-                               *                           Has to correspond with the discount curve. <br>
+    public SimpleApproximation(double recovery, double[] cdsSpreads,    String[] maturityCodes) {
 
-                               *                           has to start at t=0.0
+          this(recovery, cdsSpreads, maturityCodes, 20);
+    }
 
-                               */
 
-                               public SimpleApproximation(double recovery, double[] cdsSpreads,
 
-                                                               TimeDiscretization timeDiscretization) {
+    /**
 
- 
+    *
 
- 
+     * A more advanced Constructor <br>
 
-                                               this.recovery = recovery;
+    *
 
-                                               this.cdsSpreads = cdsSpreads;
+     * Has the possibility to set the NumberOfTimeStepsPerYear
 
- 
+    *
 
-                                               this.timeDiscretization = timeDiscretization;
+    *
 
-                                               this.NumberOfTimesteps = timeDiscretization.getNumberOfTimeSteps();
+     *
 
-                                               this.deltaT = (timeDiscretization.getTime(1) - timeDiscretization.getTime(0));
+     * @param recovery
 
- 
+    *            The Recovery Rate
 
-                                              
+    *
 
- 
+     * @param cdsSpreads
 
-                               }
+    *            The (yearly) CDS spreads in bp
 
- 
+    *
 
- 
+     * @param NumberOfTimeStepsPerYear
 
-                               /*
+    *
 
-                               * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     * @param maturity codes, like "6M" 
 
-                               * ++
+     *
 
-                               */
+     */
 
-                               /* Getters */
 
-                              
 
-                               /**
+    public SimpleApproximation(double recovery, double[] cdsSpreads,
 
-                               * Get the default probability until some time
 
-                               *
 
-                                * @param year must be smaller or equal to the last time of the time
+                String[] maturityCodes, int NumberOfTimeStepsPerYear) {
 
-                               *             Discretization
 
-                               *
 
-                                * @return
+          this(recovery, cdsSpreads, maturityCodes,
 
-                               */
 
-                               public double getCumulatedDefaultProbUntil(int year) {
 
-                                               return 0.0;
+                      new TimeDiscretizationFromArray(0.0, (int) (cdsSpreads.length / (1.0 / NumberOfTimeStepsPerYear)),
 
-                               }
 
-                              
 
-                              
+                                 (double) (1.0 / (double) NumberOfTimeStepsPerYear)));
 
-                               /**
 
-                               * Get the Default probability for a specific year. <br>
 
-                               * year 1 ost the time from 0 to 1.
+    }
 
-                               *
 
-                                * @param year
 
-                               * @return
+    /**
 
-                               */
+    *
 
-                               public double getOneYearDefaultProb(int year) {
+     * The most advanced Constructor that uses a Time Discretization
 
-                                               switch (year) {
+    *
 
-                                               case 0:
+    *
 
-                                                               return 0.0;
+     *
 
-                                               case 1:
+     * @param recovery
 
-                                               return (1.0 - Math.exp(- 1* cdsSpreads[year-1]/10000 /(1.0 - recovery) ));          
+    *            The Recovery Rate
 
-                                               default:
+    *
 
-                                                               return (Math.exp(- (year -1)* cdsSpreads[year-2]/10000 /(1.0 - recovery) )
+     * @param cdsSpreads
 
-                                                                                              - Math.exp(- (year )* cdsSpreads[year-1]/10000 /(1.0 - recovery) ));
+    *            The (yearly) CDS spreads in bp
 
-                                               }
+    *
 
-                                              
+     * @param timeDiscretization
 
-                                              
+    *            The timeDiscretization for the algorithm. <br>
 
-                                              
+    *
 
-                               }
+     *            Has to correspond with the discount curve. <br>
 
- 
+    *
 
-                              
+     *            has to start at t=0.0
 
- 
+    * @param maturity codes, like "6M"          
 
-                               /**
+     *
 
-                               * Get the Default probabilities for all available years. <br>
+     */
 
-                               * year 1 is the time from 0 to 1.
 
-                               *
 
-                                * @param year
+    public SimpleApproximation(double recovery, double[] cdsSpreads,
 
-                               * @return
 
-                               */
 
-                               public double[] getOneYearDefaultProbs() {
+                String[] maturityCodes, TimeDiscretization timeDiscretization) {
 
-                                               double[] probabilities = new double[cdsSpreads.length + 1];
 
- 
 
-                                               for (int yearIndex = 0; yearIndex < probabilities.length; yearIndex++) {
+          this.recovery = recovery;
 
-                                                               probabilities[yearIndex] = getOneYearDefaultProb(yearIndex);
 
-                                               }
 
-                                               return probabilities;
+          this.cdsSpreads = cdsSpreads;
 
-                               }
 
- 
 
- 
+          this.timeDiscretization = timeDiscretization;
 
- 
 
- 
 
-                               public double getDefaultProbForTimeInterval(double timeStart, double timeEnd) {
+          this.NumberOfTimesteps = timeDiscretization.getNumberOfTimeSteps();
 
-                                               double cdsSpreadAtStart = getCDSForDouble(timeStart);
 
-                                               double defProbUntilStart = (1.0 - Math.exp(- timeStart* cdsSpreadAtStart/10000 /(1.0 - recovery) ));     
 
-                                              
+          this.deltaT = (timeDiscretization.getTime(1) - timeDiscretization.getTime(0));
 
-                                               double cdsSpreadAtEnd = getCDSForDouble(timeEnd);
 
-                                               double defProbUntilEnd = (1.0 - Math.exp(- timeEnd* cdsSpreadAtEnd/10000 /(1.0 - recovery) ));
 
-                                              
+          this.marginalDefaultProbabilities = createMarginalDefaultProbabilities(timeDiscretization,cdsSpreads );
 
-                                               return (defProbUntilEnd - defProbUntilStart);
 
-                               }
 
- 
+          this.cdsCurve = new CdsCurve(maturityCodes, cdsSpreads,
 
- 
+                      ExtrapolationMethod.CUBIC, InterpolationMethod.CUBIC);
 
-                               private double getCDSForDouble(double time) {
+    }
 
-                                               double cds = 0.0;
 
-                                              
 
-                                               double cdsLeft= 0.0;
+    private double[] createMarginalDefaultProbabilities(TimeDiscretization timeDiscretization2, double[] cdsSpreads2) {
 
-                                               double cdsRight = 0.0;
+          //double[] = new double[]
 
-                                              
+          return null;
 
-                                               for(int i = 1 ; i < cdsSpreads.length; i++) {
+    }
 
-                                                               if(time  < i) {
 
-                                                                               cdsRight = cdsSpreads[i];
 
-                                                                               cdsLeft  = cdsSpreads[i-1];
+    /*
 
-                                     
+    *
 
-                                                               if(i==1 ) {
+     * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-                                                                               cds = (time - (i-1)) * cdsRight + (i - time) * cdsLeft;           break; 
+    *
 
-                                                               }else {
+     * ++
 
-                             cds = (time - (i)) * cdsRight + ((i+1) - time) * cdsLeft; break;                                                                                       
+    *
 
-                                                               }                             
+     */
 
-                                                               }
 
-                                                               else {
 
-                                                                               if(time == (i+2)){
+    /* Getters */
 
-                                                                                             
 
-                                                                               }
 
-                                                                               cds =  cdsSpreads[cdsSpreads.length-1];
+    /**
 
-                                                               }
+    *
 
-                                               }
+     * Get the default probability until some time
 
-                                               //System.out.println("cds for time: \t" + time + "\t is \t " + cds);
+    *
 
-                                               return cds;
+    *
 
-                               }
+     *
 
-                              
+     * @param year
+
+    *            must be smaller or equal to the last time of the time
+
+    *
+
+     *            Discretization
+
+    *
+
+    *
+
+     *
+
+     * @return
+
+    *
+
+     */
+
+
+
+    public double getCumulatedDefaultProbUntil(int year) {
+
+
+
+          return 0.0;
+
+
+
+    }
+
+
+
+    /**
+
+    *
+
+     * Get the Default probability for a specific year. <br>
+
+    *
+
+     * year 1 ost the time from 0 to 1.
+
+    *
+
+    *
+
+     *
+
+     * @param year
+
+    *
+
+     * @return
+
+    *
+
+     */
+
+
+
+    public double getOneYearDefaultProb(int year) {
+
+
+
+          switch (year) {
+
+
+
+          case 0:
+
+
+
+                return 0.0;
+
+
+
+          case 1:
+
+
+
+                return (1.0 - Math.exp(-1 * cdsSpreads[year - 1] / 10000 / (1.0 - recovery)));
+
+
+
+          default:
+
+
+
+                return (Math.exp(-(year - 1) * cdsSpreads[year - 2] / 10000 / (1.0 - recovery))
+
+
+
+                            - Math.exp(-(year) * cdsSpreads[year - 1] / 10000 / (1.0 - recovery)));
+
+
+
+          }
+
+
+
+    }
+
+
+
+    /**
+
+    *
+
+     * Get the Default probabilities for all available years. <br>
+
+    *
+
+     * year 1 is the time from 0 to 1.
+
+    *
+
+    *
+
+     *
+
+     * @param year
+
+    *
+
+     * @return
+
+    *
+
+     */
+
+
+
+    public double[] getOneYearDefaultProbs() {
+
+
+
+          double[] probabilities = new double[cdsSpreads.length + 1];
+
+
+
+          for (int yearIndex = 0; yearIndex < probabilities.length; yearIndex++) {
+
+
+
+                probabilities[yearIndex] = getOneYearDefaultProb(yearIndex);
+
+
+
+          }
+
+
+
+          return probabilities;
+
+
+
+    }
+
+
+
+    public double getDefaultProbForTimeInterval(double timeStart, double timeEnd) {
+
+
+
+          double cdsSpreadAtStart = cdsCurve.getValue(timeStart);
+
+
+
+          double defProbUntilStart = (1.0 - Math.exp(-timeStart * cdsSpreadAtStart / 10000 / (1.0 - recovery)));
+
+
+
+          double cdsSpreadAtEnd =  cdsCurve.getValue(timeEnd);
+
+
+
+          double defProbUntilEnd = (1.0 - Math.exp(-timeEnd * cdsSpreadAtEnd / 10000 / (1.0 - recovery)));
+
+
+
+          return (defProbUntilEnd - defProbUntilStart);
+
+
+
+    }
+
+
+
+
+
+
 
 }
