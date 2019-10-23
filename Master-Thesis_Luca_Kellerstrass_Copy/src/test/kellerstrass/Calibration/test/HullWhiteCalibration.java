@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.junit.Test;
+
 import kellerstrass.Calibration.CalibrationItem;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModel;
@@ -45,8 +47,8 @@ public class HullWhiteCalibration {
 	
 	
 	
-	
-	public static void main(String[] args) throws SolverException, CalculationException {
+	@Test
+	public   void test() throws SolverException, CalculationException {
 		testATMSwaptionCalibration();
 
 	}
@@ -137,7 +139,7 @@ public class HullWhiteCalibration {
 				
 				// If simulation time is below libor time, exceptions will be hard to track.
 				double lastTime	= 40.0;
-				double dt		= 0.25;
+				double dt		= 0.1;
 				TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 				final TimeDiscretization liborPeriodDiscretization = timeDiscretizationFromArray;
 

@@ -16,7 +16,7 @@ import net.finmath.time.TimeDiscretizationFromArray;
 public class HullWhiteTest {
 
 	private final static int numberOfPaths		= 20000;
-	private final static LocalDate referenceDate = LocalDate.of(2017, 6, 15);
+	private final static LocalDate referenceDate = LocalDate.of(2019, 10, 22);
 	private static LIBORModelMonteCarloSimulationModel hullWhiteModelSimulation;
 	
 	
@@ -50,7 +50,7 @@ public class HullWhiteTest {
 		 * Create a simulation time discretization
 		 */
 		double lastTime	= 20.0;
-		double dt		= 0.5;
+		double dt		= 0.25;
 		TimeDiscretizationFromArray simulationDiscretization = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 		
 		// Initialization:
