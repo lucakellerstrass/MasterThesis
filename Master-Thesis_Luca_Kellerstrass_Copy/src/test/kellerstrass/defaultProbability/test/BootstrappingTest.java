@@ -34,7 +34,7 @@ public class BootstrappingTest {
 		double Recovery = 0.40; // Recovery Rate
 
 		double endDate = 15.0;
-
+ 
 		double deltaT = 0.05;
 
 		TimeDiscretization timeDiscretization = new TimeDiscretizationFromArray(0.0, (int) (endDate / deltaT), deltaT);
