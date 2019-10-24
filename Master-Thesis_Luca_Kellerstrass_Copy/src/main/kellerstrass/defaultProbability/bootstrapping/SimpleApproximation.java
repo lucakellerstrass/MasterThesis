@@ -50,7 +50,7 @@ public class SimpleApproximation {
 
 
 
-    private int NumberOfTimesteps;
+    private int numberOfTimesteps;
 
 
 
@@ -249,7 +249,7 @@ public class SimpleApproximation {
 
 
 
-          this.NumberOfTimesteps = timeDiscretization.getNumberOfTimeSteps();
+          this.numberOfTimesteps = timeDiscretization.getNumberOfTimeSteps();
 
 
 
