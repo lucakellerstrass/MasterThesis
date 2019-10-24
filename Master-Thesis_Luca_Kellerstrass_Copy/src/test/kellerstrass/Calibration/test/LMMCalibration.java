@@ -66,7 +66,7 @@ public class LMMCalibration {
 
 	private static void testATMSwaptionCalibration() throws SolverException, CalculationException {
 		final int numberOfPaths		= 1000;
-		final int numberOfFactors	= 5;
+		final int numberOfFactors	= 3;
 		
 		/*
 		 * Calibration test
