@@ -156,6 +156,7 @@ public class CalibrationItem {
 		// Create a discount curve
 		DiscountCurveInterpolation			discountCurveInterpolation					= DiscountCurveInterpolation.createDiscountCurveFromDiscountFactors(
 				curveNameDiscount								/* name */,
+				referenceDate,
 				curveMaturities	/* maturities */,
 				curveValue		/* discount factors */,   
 				curveIsParameter,
