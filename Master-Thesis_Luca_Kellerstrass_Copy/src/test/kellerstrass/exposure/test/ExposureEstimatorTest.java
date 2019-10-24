@@ -97,7 +97,7 @@ public class ExposureEstimatorTest {
 						if(observationDate == 0) {
 							continue;
 						}
-						System.out.print(observationDate + " \t  ");
+					System.out.print(observationDate + " \t  ");
 						
 						for(int path = 0; path < exposurePaths.length ; path++ ) {
 												System.out.print(formatter6.format(exposurePaths[path][timeIndex]) + "\t");

@@ -180,7 +180,7 @@ public class CalibrationItem {
 		 */
 		Solver solver = new Solver(model, calibrationProducts, 0.0, 1E-4 /* target accuracy */);
 		AnalyticModel calibratedModel = solver.getCalibratedModel(curvesToCalibrate);
-		System.out.println("Solver reported acccurary....: " + solver.getAccuracy());
+		//System.out.println("Solver reported acccurary....: " + solver.getAccuracy());
 
 
 		// Get best parameters
@@ -198,12 +198,12 @@ public class CalibrationItem {
 		}
 		double rms = Math.sqrt(squaredErrorSum/calibrationProducts.size());
 
-		System.out.println("Independent checked acccurary: " + rms);
+		//System.out.println("Independent checked acccurary: " + rms);
 
-		System.out.println("Calibrated discount curve: ");
+		//System.out.println("Calibrated discount curve: ");
 		for(int i=0; i<curveMaturities.length; i++) {
 			double maturity = curveMaturities[i];
-			System.out.println(maturity + "\t" + calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getDiscountFactor(maturity));
+			//System.out.println(maturity + "\t" + calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getDiscountFactor(maturity));
 		}
 		return model;
 	}
