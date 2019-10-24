@@ -108,7 +108,7 @@ System.out.println("Expected Exposure ");
 					0 /* fixingOffsetDays */,
 					0 /* paymentOffsetDays */);
 			AbstractNotional notional = new Notional(1.0);
-			AbstractIndex index = new LIBORIndex("forwardCurve", 0.0, 0.25);
+			AbstractIndex index = new LIBORIndex(null /*"forwardCurve"*/, 0.0, 0.25);
 			double fixedCoupon = 0.025;
 			
 			SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional, null, fixedCoupon /* spread */, false /* isNotionalExchanged */);
