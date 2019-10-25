@@ -11,6 +11,7 @@ import org.junit.Assert;
 
 import kellerstrass.exposure.ExposureEstimator;
 import kellerstrass.interestrate.models.StoredHullWhite;
+import kellerstrass.interestrate.models.StoredLMM;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
@@ -36,7 +37,7 @@ public class ExposureFromStoredModel {
 	public static void main(String[] args) throws ClassNotFoundException, CalculationException {
 		
 		//getModel
-		LIBORModelMonteCarloSimulationModel simulationModel = StoredHullWhite.getStoredHullWhite();
+		LIBORModelMonteCarloSimulationModel simulationModel = StoredLMM.getStoredLMM();
 
 		liborPeriodLength = simulationModel.getLiborPeriodDiscretization().getTimeStep(1) - simulationModel.getLiborPeriodDiscretization().getTimeStep(0);
 		System.out.println("liborPeriodLength = "  +liborPeriodLength);

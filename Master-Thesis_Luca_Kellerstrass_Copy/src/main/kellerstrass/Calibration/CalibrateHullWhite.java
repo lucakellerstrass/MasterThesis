@@ -149,6 +149,7 @@ public class CalibrateHullWhite {
 				forwardCurve, discountCurve,
 				volatilityModel, calibrationItemsHW, properties);
 
+		//Store our HullWhite Model		
 		String name = "HullWhite";
 
 		try {
