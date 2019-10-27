@@ -204,7 +204,7 @@ public class CalibrationItem {
 		//System.out.println("Calibrated discount curve: ");
 		for(int i=0; i<curveMaturities.length; i++) {
 			double maturity = curveMaturities[i];
-			//System.out.println(maturity + "\t" + calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getDiscountFactor(maturity));
+			System.out.println(maturity + "\t" + calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getDiscountFactor(maturity));
 		}
 		return model;
 	}
