@@ -18,12 +18,14 @@ import net.finmath.marketdata.model.curves.DiscountCurveFromForwardCurve;
 import net.finmath.marketdata.model.curves.ForwardCurve;
 import net.finmath.montecarlo.BrownianMotion;
 import net.finmath.montecarlo.interestrate.CalibrationProduct;
+import net.finmath.montecarlo.interestrate.LIBORMarketModel;
 import net.finmath.montecarlo.interestrate.LIBORModel;
 import net.finmath.montecarlo.interestrate.models.LIBORMarketModelFromCovarianceModel;
 import net.finmath.montecarlo.interestrate.models.covariance.AbstractLIBORCovarianceModelParametric;
 import net.finmath.montecarlo.interestrate.models.covariance.DisplacedLocalVolatilityModel;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCorrelationModel;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCorrelationModelExponentialDecay;
+import net.finmath.montecarlo.interestrate.models.covariance.LIBORCovarianceModel;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCovarianceModelFromVolatilityAndCorrelation;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModel;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModelPiecewiseConstant;
@@ -180,7 +182,7 @@ public class CalibrateLMM {
 			calibrationItems[i] = new CalibrationProduct(calibrationProducts.get(i).getProduct(),calibrationProducts.get(i).getTargetValue(),calibrationProducts.get(i).getWeight());
 		}
 		
-		LIBORModel liborMarketModelCalibrated = new LIBORMarketModelFromCovarianceModel(
+		LIBORMarketModelFromCovarianceModel liborMarketModelCalibrated = new LIBORMarketModelFromCovarianceModel(
 				liborPeriodDiscretization,
 				curveModel,
 				forwardCurve, new DiscountCurveFromForwardCurve(forwardCurve),
@@ -189,7 +191,29 @@ public class CalibrateLMM {
 				properties);
 		
 		
+		//LIBORModel liborModelClibrated = l
+		LIBORCovarianceModel covModel2 = liborMarketModelCalibrated.getCovarianceModel();
+		
 
+		// Set model properties
+		Map<String, String> properties2 = new HashMap<>();
+
+		// Choose the simulation measure
+		properties2.put("measure", LIBORMarketModelFromCovarianceModel.Measure.SPOT.name());
+
+		// Choose log normal model
+		properties2.put("stateSpace", LIBORMarketModelFromCovarianceModel.StateSpace.NORMAL.name());
+		
+		
+		
+		
+		// Empty array of calibration items - hence, model will use given covariance
+		CalibrationProduct[] calibrationItems2 = new CalibrationProduct[0];
+		
+		LIBORMarketModel liborMarketModel = new LIBORMarketModelFromCovarianceModel(
+				liborPeriodDiscretization, curveModel, forwardCurve, discountCurve, covModel2, calibrationItems2, properties2);
+		
+		
 		
 		
 		//Store the LIBORModel
@@ -203,7 +227,7 @@ public class CalibrateLMM {
 
 			FileOutputStream fileOut = new FileOutputStream ("temp/"+ name+ ".ser");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(liborMarketModelCalibrated);
+			out.writeObject(liborMarketModel);
 			out.close();
 			fileOut.close();
 			System.out.println("Serianlized data is saved in temp/" +name + ".ser");

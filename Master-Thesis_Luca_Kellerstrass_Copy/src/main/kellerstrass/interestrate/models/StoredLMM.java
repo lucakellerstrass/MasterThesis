@@ -19,7 +19,7 @@ public static LIBORModelMonteCarloSimulationModel getStoredLMM() throws ClassNot
 	String name = "LiborMarktModel";
 	int numberOfPaths = 10000;
 	double lastTime	= 40.0;
-	double dt		= 0.1;
+	double dt		= 0.25;
 	TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 
 	BrownianMotionLazyInit brownianMotion = new BrownianMotionLazyInit(timeDiscretizationFromArray, 2 /* numberOfFactors */, numberOfPaths, 3141 /* seed */);
