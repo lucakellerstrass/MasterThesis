@@ -42,7 +42,6 @@ public class CalibrateHullWhite {
 		/*
 		 * Calibration of rate curves
 		 */
-
 		final AnalyticModel curveModel = CalibrationItem.getCalibratedCurve();
 
 		// Create the forward curve (initial value of the LIBOR market model)

@@ -1,5 +1,11 @@
-package kellerstrass.Calibration.test;
+package temporaryLMMStorageTest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -39,7 +45,7 @@ import net.finmath.time.TimeDiscretizationFromArray;
 import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
 import net.finmath.time.daycount.DayCountConvention_ACT_365;
 
-public class LMMCalibration {
+public class LMMCalibrationTest {
 
 	private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.000%;-##0.000%", new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterParam		= new DecimalFormat(" #0.000;-#0.000", new DecimalFormatSymbols(Locale.ENGLISH));
@@ -104,9 +110,9 @@ public class LMMCalibration {
 		
 		//Create co-terminals (atmExpiry + atmTenor = 11Y)
 				String[] atmExpiries = {"1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y"};
-				String[] atmTenors = {"1Y", "4Y", "6Y", "7Y", "8Y", "9Y", "10Y"};
+				String[] atmTenors = {"1Y","4Y", "6Y", "7Y", "8Y", "9Y", "10Y"};
 				
-				double[] atmNormalVolatilities = {0.00504, 0.005, 0.00495, 0.00454, 0.00418, 0.00404, 0.00394};
+				double[] atmNormalVolatilities = {0.00504, 0.005, 0.00495, 0.00454, 0.00418,  0.00404, 0.00394};    
 				
 				LocalDate referenceDate = LocalDate.of(2016, Month.SEPTEMBER, 30);
 				BusinessdayCalendarExcludingTARGETHolidays cal = new BusinessdayCalendarExcludingTARGETHolidays();
@@ -169,7 +175,7 @@ public class LMMCalibration {
 				
 				
 				//Create correlationModel
-				LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray, liborPeriodDiscretization, numberOfFactors, 0.04, false);
+				LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray, liborPeriodDiscretization, numberOfFactors, 0.05, false);
 				
 				// Create a covariance model
 				AbstractLIBORCovarianceModelParametric covarianceModelParametric = new LIBORCovarianceModelFromVolatilityAndCorrelation(timeDiscretizationFromArray, liborPeriodDiscretization, volatilityModel, correlationModel);
@@ -197,7 +203,7 @@ public class LMMCalibration {
 				OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy, numberOfThreads);
 				
 				
-				double[] parameterStandardDeviation = new double[covarianceModelParametric.getParameterAsDouble().length];
+				double[] parameterStandardDeviation = new double[covarianceModelParametric.getParameterAsDouble().length];    
 				double[] parameterLowerBound = new double[covarianceModelParametric.getParameterAsDouble().length];
 				double[] parameterUpperBound = new double[covarianceModelParametric.getParameterAsDouble().length];
 				Arrays.fill(parameterStandardDeviation, 0.20/100.0);
@@ -230,6 +236,15 @@ public class LMMCalibration {
 						properties);
 
 			
+
+				
+				/*
+				 * 
+				 * 
+				 */
+				System.out.println("\n Do some other tests:");
+			
+
 				
 				
 					
@@ -250,8 +265,6 @@ public class LMMCalibration {
 				//The simulationModel
 				LIBORModelMonteCarloSimulationModel LMMSimulation = new LIBORMonteCarloSimulationFromLIBORModel(liborMarketModelCalibrated, process);
 
-				
-				
 				
 				System.out.println("\nValuation on calibrated model:");
 				double deviationSum			= 0.0;

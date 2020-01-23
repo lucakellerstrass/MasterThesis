@@ -29,7 +29,7 @@ import net.finmath.time.ScheduleGenerator;
 import net.finmath.time.businessdaycalendar.BusinessdayCalendar;
 import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
 
-public class ExposureFromStoredModel {
+public class ExposureFromStoredModelNEU {
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000", new DecimalFormatSymbols(new Locale("en")));
 
 	private static double liborPeriodLength;
@@ -39,11 +39,13 @@ public class ExposureFromStoredModel {
 		//getModel
 		LIBORModelMonteCarloSimulationModel simulationModel = StoredHullWhite.getStoredHullWhite(); //StoredHullWhite.getStoredHullWhite(); //StoredLMM.getStoredLMM();
 
-		liborPeriodLength = simulationModel.getLiborPeriodDiscretization().getTimeStep(1) - simulationModel.getLiborPeriodDiscretization().getTimeStep(0);
+/*NEU*/		liborPeriodLength = simulationModel.getLiborPeriodDiscretization().getTimeStep(1);   // - simulationModel.getLiborPeriodDiscretization().getTimeStep(0);
 		System.out.println("liborPeriodLength = "  +liborPeriodLength);
 		
 System.out.println("Expected Exposure ");
 		
+
+
 		AbstractLIBORMonteCarloProduct swap = getSwap();
 		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureEstimator(swap);
 		

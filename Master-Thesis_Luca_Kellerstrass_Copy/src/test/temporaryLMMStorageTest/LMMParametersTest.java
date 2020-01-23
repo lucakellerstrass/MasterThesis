@@ -1,13 +1,11 @@
-package kellerstrass.xva.test;
+package temporaryLMMStorageTest;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Test;
-
-import kellerstrass.xva.CVA;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
 import net.finmath.marketdata.model.curves.ForwardCurveInterpolation;
@@ -17,61 +15,40 @@ import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.LIBORMonteCarloSimulationFromLIBORModel;
 import net.finmath.montecarlo.interestrate.models.LIBORMarketModelFromCovarianceModel;
 import net.finmath.montecarlo.interestrate.models.LIBORMarketModelFromCovarianceModel.Measure;
+import net.finmath.montecarlo.interestrate.models.covariance.AbstractLIBORCovarianceModelParametric;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCorrelationModelExponentialDecay;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCovarianceModelFromVolatilityAndCorrelation;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModelFromGivenMatrix;
-import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProduct;
-import net.finmath.montecarlo.interestrate.products.Swap;
-import net.finmath.montecarlo.interestrate.products.SwapLeg;
-import net.finmath.montecarlo.interestrate.products.components.AbstractNotional;
-import net.finmath.montecarlo.interestrate.products.components.Notional;
-import net.finmath.montecarlo.interestrate.products.indices.AbstractIndex;
-import net.finmath.montecarlo.interestrate.products.indices.LIBORIndex;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
-import net.finmath.time.Schedule;
-import net.finmath.time.ScheduleGenerator;
 import net.finmath.time.TimeDiscretizationFromArray;
-import net.finmath.time.businessdaycalendar.BusinessdayCalendar;
-import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
 
-public class CVATest {
+public class LMMParametersTest {
 
-	private final static int numberOfPaths		= 1;
+	private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.000%;-##0.000%", new DecimalFormatSymbols(Locale.ENGLISH));
+	private static DecimalFormat formatterParam		= new DecimalFormat(" #0.000;-#0.000", new DecimalFormatSymbols(Locale.ENGLISH));
+	private static DecimalFormat formatterDeviation	= new DecimalFormat(" 0.00000E00;-0.00000E00", new DecimalFormatSymbols(Locale.ENGLISH));
+
 	
-    @Test
-	public  void testForCVA() throws Exception {
-		
-		
-		
-		 double Recovery 	= 0.40;	//Recovery Rate
+	public static void main(String[] args) throws CalculationException {
 
-		  double[] cdsSpreads = {300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 } ; //{20.0, 25.0, 30.0, 35.0, 40.0}   // The (yearly) CDS spreads in bp {320.0, 57.0, 132.0 , 139.0 , 146.0, 150.0, 154.0}    ||  {300.0, 350.0, 400.0, 450.0, 500.0 }
+
+		LIBORModelMonteCarloSimulationModel lmm = createLIBORMarketModel(Measure.SPOT, 10000, 5, 0.1);
+		System.out.println("value = " + lmm.getNumberOfLibors());
 		
-		  AbstractLIBORMonteCarloProduct swap = getSwap();			
-			LIBORModelMonteCarloSimulationModel simulationModel = getModel();
-			
-			//Now we test our CVA calculation			
-			CVA cvaGetter = new CVA(simulationModel, swap, Recovery, cdsSpreads);
-			
-			double cva = cvaGetter.getCVA();
-			
-			System.out.println(cva);
-		  
+		System.out.println("\nCalibrated parameters are:");
+		
+        //
 
 	}
+	
+	
+	
+	
+	
+	
+	public static LIBORModelMonteCarloSimulationModel createLIBORMarketModel(
+			Measure measure, int numberOfPaths, int numberOfFactors, double correlationDecayParam) throws CalculationException {
 
-	
-	
-	
-	/**
-	 * get a pre-defined model
-	 * @return
-	 * @throws CalculationException 
-	 */
-	private static LIBORModelMonteCarloSimulationModel getModel() throws CalculationException {
-		Measure measure = Measure.SPOT;
-		 int numberOfFactors = 5;
-		 double correlationDecayParam = 0.1;
 		/*
 		 * Create the libor tenor structure and the initial values
 		 */
@@ -98,7 +75,7 @@ public class CVATest {
 		 * Create a simulation time discretization
 		 */
 		double lastTime	= 15.0;
-		double dt		= 0.05;
+		double dt		= 0.125;
 
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 
@@ -140,6 +117,10 @@ public class CVATest {
 		LIBORCovarianceModelFromVolatilityAndCorrelation covarianceModel =
 				new LIBORCovarianceModelFromVolatilityAndCorrelation(timeDiscretizationFromArray,
 						liborPeriodDiscretization, volatilityModel, correlationModel);
+		
+		
+		
+		
 
 		// BlendedLocalVolatlityModel (future extension)
 		//		AbstractLIBORCovarianceModel covarianceModel2 = new BlendedLocalVolatlityModel(covarianceModel, 0.00, false);
@@ -168,49 +149,4 @@ public class CVATest {
 
 		return new LIBORMonteCarloSimulationFromLIBORModel(liborMarketModel, process);
 	}
-
-
-
-
-    /**
-     * Get a swap, with some example input parameters
-     * @return
-     */
-	private static AbstractLIBORMonteCarloProduct getSwap() {
-	
-			/*
-			 * Create a receiver swap (receive fix, pay float)
-			 */
-			Schedule legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
-					LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-					LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-					LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
-					ScheduleGenerator.Frequency.ANNUAL /* frequency */,
-					ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
-					ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
-					BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
-					new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
-					0 /* fixingOffsetDays */,
-					0 /* paymentOffsetDays */);
-
-			Schedule legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
-					LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-					LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-					LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
-					ScheduleGenerator.Frequency.QUARTERLY /* frequency */,
-					ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
-					ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
-					BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
-					new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
-					0 /* fixingOffsetDays */,
-					0 /* paymentOffsetDays */);
-			AbstractNotional notional = new Notional(1.0);
-			AbstractIndex index = new LIBORIndex("forwardCurve", 0.0, 0.25);
-			double fixedCoupon = 0.025;
-			
-			SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional, null, fixedCoupon /* spread */, false /* isNotionalExchanged */);
-			SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional, index, 0.0 /* spread */, false /* isNotionalExchanged */);
-		return new Swap(swapLegRec, swapLegPay);
-	}
-	
 }

@@ -42,9 +42,29 @@ public class CalibrateLMM {
 	
 	public static void main(String[] args) throws SolverException, CalculationException {
 		calibrateAndStoreLMM();
+		
+
 
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	private static void calibrateAndStoreLMM() throws SolverException, CalculationException {
 		final int numberOfPaths		= 1000;
 		final int numberOfFactors	= 3;
@@ -111,8 +131,8 @@ public class CalibrateLMM {
 		 * Create a simulation time discretization
 		 */
 		// If simulation time is below libor time, exceptions will be hard to track.
-		double lastTime	= 40.0;
-		double dt		= 0.25;
+		double lastTime	= 25.00; //40.0;
+		double dt		= 0.5;       //0.25;
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 		final TimeDiscretization liborPeriodDiscretization = timeDiscretizationFromArray;
 
@@ -216,6 +236,8 @@ public class CalibrateLMM {
 		
 		
 		
+		
+		
 		//Store the LIBORModel
 		String name = "LiborMarktModel";
 		
@@ -236,6 +258,8 @@ public class CalibrateLMM {
 			i.printStackTrace();
 		}
 		
+		
+
 		
 	}
 

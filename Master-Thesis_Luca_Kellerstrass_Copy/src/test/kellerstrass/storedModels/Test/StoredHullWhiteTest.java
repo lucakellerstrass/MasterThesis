@@ -1,4 +1,4 @@
-package kellerstrass.exposure.test;
+package kellerstrass.storedModels.Test;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -11,7 +11,6 @@ import org.junit.Assert;
 
 import kellerstrass.exposure.ExposureEstimator;
 import kellerstrass.interestrate.models.StoredHullWhite;
-import kellerstrass.interestrate.models.StoredLMM;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
@@ -29,21 +28,22 @@ import net.finmath.time.ScheduleGenerator;
 import net.finmath.time.businessdaycalendar.BusinessdayCalendar;
 import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
 
-public class ExposureFromStoredModel {
+public class StoredHullWhiteTest {
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000", new DecimalFormatSymbols(new Locale("en")));
-
 	private static double liborPeriodLength;
 	
+	//getModel
 	public static void main(String[] args) throws ClassNotFoundException, CalculationException {
+		LIBORModelMonteCarloSimulationModel simulationModel =   StoredHullWhite.getStoredHullWhite();
 		
-		//getModel
-		LIBORModelMonteCarloSimulationModel simulationModel = StoredHullWhite.getStoredHullWhite(); //StoredHullWhite.getStoredHullWhite(); //StoredLMM.getStoredLMM();
-
-		liborPeriodLength = simulationModel.getLiborPeriodDiscretization().getTimeStep(1) - simulationModel.getLiborPeriodDiscretization().getTimeStep(0);
-		System.out.println("liborPeriodLength = "  +liborPeriodLength);
+		liborPeriodLength = simulationModel.getLiborPeriodDiscretization().getTimeStep(1);// - simulationModel.getLiborPeriodDiscretization().getTimeStep(0);
+		System.out.println("liborPeriodLength = "  +liborPeriodLength);	
+		
 		
 System.out.println("Expected Exposure ");
 		
+
+
 		AbstractLIBORMonteCarloProduct swap = getSwap();
 		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureEstimator(swap);
 		
@@ -72,8 +72,19 @@ System.out.println("Expected Exposure ");
 			Assert.assertTrue("Expected positive exposure", expectedPositiveExposure >= 0-1*basisPoint);
 		}
 		
+		
+		
+		
 
 	}
+
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	 /**
@@ -117,5 +128,4 @@ System.out.println("Expected Exposure ");
 		return new Swap(swapLegRec, swapLegPay);
 	}
 
-	
 }

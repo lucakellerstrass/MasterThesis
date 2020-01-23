@@ -4,6 +4,7 @@ import kellerstrass.defaultProbability.bootstrapping.ForwardBootstrap;
 import kellerstrass.exposure.ExposureEstimator;
 import kellerstrass.useful.PaymentFrequency;
 import net.finmath.exception.CalculationException;
+import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProduct;
@@ -48,7 +49,26 @@ public class CVA {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * @param simulationModel
+	 * @param swap
+	 * @param recoveryRate
+	 * @param cdsSpreads
+	 * @param discount curve
+	 */
+	public CVA(LIBORModelMonteCarloSimulationModel simulationModel, AbstractLIBORMonteCarloProduct swap,
+			double recoveryRate, double[] cdsSpreads, DiscountCurve discountCurve) {
+		super();
+		this.simulationModel = simulationModel;
+		this.swap = swap;
+		this.swapExposureEstimator =new ExposureEstimator(swap);
+		this.recoveryRate = recoveryRate;
+		this.cdsSpreads = cdsSpreads;
+		this.SimulationTimeDiscretization = simulationModel.getTimeDiscretization();
+		this.discountCurve = getDiscountCurve(discountCurve, simulationModel);
+		
+	}
 	
 
 
@@ -108,9 +128,25 @@ public class CVA {
         
         for(int timeIndex = 0 ; timeIndex < discountCurve.length; timeIndex++) {
       	  double time = SimulationTimeDiscretization.getTime(timeIndex);
-      	  discountCurve[timeIndex]= model.getModel().getDiscountCurve().getDiscountFactor(time);
+      	   discountCurve[timeIndex]= model.getModel().getDiscountCurve().getDiscountFactor(time);
+			
+      	//discountCurve[timeIndex]= model.getModel().getAnalyticModel().getDiscountCurve(null).getDiscountFactor(time);
         }
 		return discountCurve;
 	}
+	
+	private double[] getDiscountCurve(DiscountCurve discountCurve, LIBORModelMonteCarloSimulationModel model) {
+
+        double[] discountCurvePoints = new double[model.getTimeDiscretization().getNumberOfTimes()];
+        
+        for(int timeIndex = 0 ; timeIndex < discountCurvePoints.length; timeIndex++) {
+      	  double time = SimulationTimeDiscretization.getTime(timeIndex);
+      	   discountCurvePoints[timeIndex]= discountCurve.getDiscountFactor(time);
+			
+        }
+		return discountCurvePoints;
+	}
+	
+	
 
 }

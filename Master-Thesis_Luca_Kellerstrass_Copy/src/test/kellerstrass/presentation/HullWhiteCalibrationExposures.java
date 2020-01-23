@@ -1,7 +1,8 @@
-package kellerstrass.Calibration.test;
+package kellerstrass.presentation;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import kellerstrass.Calibration.CalibrationItem;
+import kellerstrass.exposure.ExposureEstimator;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModel;
 import net.finmath.marketdata.model.AnalyticModelFromCurvesAndVols;
@@ -20,6 +22,7 @@ import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.ForwardCurve;
 import net.finmath.montecarlo.BrownianMotionLazyInit;
 import net.finmath.montecarlo.RandomVariableFactory;
+import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.CalibrationProduct;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.LIBORMonteCarloSimulationFromLIBORModel;
@@ -28,29 +31,70 @@ import net.finmath.montecarlo.interestrate.models.covariance.AbstractShortRateVo
 import net.finmath.montecarlo.interestrate.models.covariance.ShortRateVolatilityModelParametric;
 import net.finmath.montecarlo.interestrate.models.covariance.ShortRateVolatilityModelPiecewiseConstant;
 import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProduct;
+import net.finmath.montecarlo.interestrate.products.Swap;
+import net.finmath.montecarlo.interestrate.products.SwapLeg;
+import net.finmath.montecarlo.interestrate.products.TermStructureMonteCarloProduct;
+import net.finmath.montecarlo.interestrate.products.components.AbstractNotional;
+import net.finmath.montecarlo.interestrate.products.components.Notional;
+import net.finmath.montecarlo.interestrate.products.indices.AbstractIndex;
+import net.finmath.montecarlo.interestrate.products.indices.LIBORIndex;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.optimizer.SolverException;
+import net.finmath.stochastic.RandomVariable;
+import net.finmath.time.Schedule;
+import net.finmath.time.ScheduleGenerator;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationFromArray;
+import net.finmath.time.businessdaycalendar.BusinessdayCalendar;
 import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
 import net.finmath.time.daycount.DayCountConvention_ACT_365;
 
-public class HullWhiteCalibration {
+public class HullWhiteCalibrationExposures {
 
 	private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.000%;-##0.000%", new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterParam		= new DecimalFormat(" #0.000;-#0.000", new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterDeviation	= new DecimalFormat(" 0.00000E00;-0.00000E00", new DecimalFormatSymbols(Locale.ENGLISH));
+	private final static NumberFormat formatter6 = new DecimalFormat("0.000000", new DecimalFormatSymbols(new Locale("en")));
+	
+	
+	
+	
+	
+	
+	
+	public static void main(String[] args) throws SolverException, CalculationException {
+		
+		LIBORModelMonteCarloSimulationModel simulationModel = doATMSwaptionCalibration();
 
-	
-	
-	
-	
-	
-	
-	@Test
-	public   void test() throws SolverException, CalculationException {
-		testATMSwaptionCalibration();
+		
+AbstractLIBORMonteCarloProduct swap = getSwap();
+		
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureEstimator(swap);
+		
+		
+		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");
+		for(double observationDate : simulationModel.getTimeDiscretization()) {
 
+			if(observationDate == 0) {
+				continue;
+			}
+
+			/*
+			 * Calculate expected positive exposure of a swap
+			 */
+			RandomVariable valuesSwap = swap.getValue(observationDate, simulationModel);
+			RandomVariable valuesEstimatedExposure = swapExposureEstimator.getValue(observationDate, simulationModel);
+			RandomVariable valuesPositiveExposure = valuesSwap.mult(valuesEstimatedExposure.choose(new RandomVariableFromDoubleArray(1.0), new RandomVariableFromDoubleArray(0.0)));
+			RandomVariable valuesNegativeExposure = valuesSwap.mult(valuesEstimatedExposure.choose(new RandomVariableFromDoubleArray(0.0), new RandomVariableFromDoubleArray(1.0)));
+			
+			double expectedPositiveExposure		= valuesPositiveExposure.getAverage();
+			double expectedNegativeExposure		= valuesNegativeExposure.getAverage();
+
+			System.out.println(observationDate + "    \t         " +  formatter6.format(expectedPositiveExposure) + "    \t         " +  formatter6.format(expectedNegativeExposure) );
+
+
+		}
+		
 	}
 
 
@@ -60,8 +104,8 @@ public class HullWhiteCalibration {
 
 
 
-	private static void testATMSwaptionCalibration() throws SolverException, CalculationException {
-		final int numberOfPaths		= 1000;
+	private static LIBORModelMonteCarloSimulationModel doATMSwaptionCalibration() throws SolverException, CalculationException {
+		final int numberOfPaths		= 10000;
 		
 		/*
 		 * Calibration test
@@ -88,6 +132,8 @@ public class HullWhiteCalibration {
 		 */
 		System.out.println("Brute force Monte-Carlo calibration of model volatilities:");
 
+		
+		double calibrationStart = System.currentTimeMillis();
 		
 		/*
 		 * Create a set of calibration products.
@@ -139,7 +185,7 @@ public class HullWhiteCalibration {
 				
 				// If simulation time is below libor time, exceptions will be hard to track.
 				double lastTime	= 40.0;
-				double dt		= 0.1;
+				double dt		= 0.25;   //0.1
 				TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 				final TimeDiscretization liborPeriodDiscretization = timeDiscretizationFromArray;
 
@@ -180,6 +226,20 @@ public class HullWhiteCalibration {
 						forwardCurve, discountCurve,
 						volatilityModel, calibrationItemsHW, properties);
 				
+				
+				
+				// The running time output
+				double calibrationEnd = System.currentTimeMillis();
+				System.out.println("The calculation took: " + (calibrationEnd - calibrationStart)/100 +  " min");
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				System.out.println("\nCalibrated parameters are:");
 				double[] param = ((ShortRateVolatilityModelParametric) hullWhiteModel.getVolatilityModel()).getParameterAsDouble();
 				for (double p : param) {
@@ -211,9 +271,56 @@ public class HullWhiteCalibration {
 				System.out.println("Mean Deviation:" + formatterDeviation.format(averageDeviation));
 				System.out.println("RMS Error.....:" + formatterDeviation.format(Math.sqrt(deviationSquaredSum/calibrationProducts.size())));
 				System.out.println("__________________________________________________________________________________________\n");
+				
+				
+				return hullWhiteModelSimulation;
 
 				
 				
+	}
+	
+	
+	
+
+	 /**
+    * Get a swap, with some example input parameters
+    * @return
+    */
+	private static AbstractLIBORMonteCarloProduct getSwap() {
+	
+			/*
+			 * Create a receiver swap (receive fix, pay float)
+			 */
+			Schedule legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
+					LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
+					LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
+					LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
+					ScheduleGenerator.Frequency.ANNUAL /* frequency */,
+					ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
+					ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
+					BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
+					new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
+					0 /* fixingOffsetDays */,
+					0 /* paymentOffsetDays */);
+
+			Schedule legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
+					LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
+					LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
+					LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
+					ScheduleGenerator.Frequency.QUARTERLY /* frequency */,
+					ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
+					ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
+					BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
+					new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
+					0 /* fixingOffsetDays */,
+					0 /* paymentOffsetDays */);
+			AbstractNotional notional = new Notional(1.0);
+			AbstractIndex index = new LIBORIndex(null /*"forwardCurve"*/, 0.0, 0.25);
+			double fixedCoupon = 0.0025; //0.0025;
+			
+			SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional, null, fixedCoupon /* spread */, false /* isNotionalExchanged */);
+			SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional, index, 0.0 /* spread */, false /* isNotionalExchanged */);
+		return new Swap(swapLegRec, swapLegPay);
 	}
 
 }

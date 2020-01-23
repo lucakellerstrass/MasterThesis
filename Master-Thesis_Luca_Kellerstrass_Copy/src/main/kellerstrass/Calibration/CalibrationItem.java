@@ -103,6 +103,8 @@ public class CalibrationItem {
 	}
 	
 	
+	
+	
 	private static AnalyticModel getCalibratedCurve(AnalyticModel model2, Map<String, Object> parameters) throws SolverException {
 
 		final LocalDate	referenceDate		= (LocalDate) parameters.get("referenceDate");

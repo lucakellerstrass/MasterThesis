@@ -1,5 +1,11 @@
-package kellerstrass.Calibration.test;
+package temporaryLMMStorageTest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -169,7 +175,7 @@ public class LMMCalibration {
 				
 				
 				//Create correlationModel
-				LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray, liborPeriodDiscretization, numberOfFactors, 0.04, false);
+				LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray, liborPeriodDiscretization, numberOfFactors, 0.05, false);
 				
 				// Create a covariance model
 				AbstractLIBORCovarianceModelParametric covarianceModelParametric = new LIBORCovarianceModelFromVolatilityAndCorrelation(timeDiscretizationFromArray, liborPeriodDiscretization, volatilityModel, correlationModel);
@@ -231,6 +237,53 @@ public class LMMCalibration {
 
 			
 				
+				/**************************************************************************/
+			/*	
+				//Store the LIBORModel
+				String name = "LiborMarktModel2";
+				
+				try {
+					File directory = new File("temp");
+					if (!directory.exists()){
+						directory.mkdir();
+					}
+
+					FileOutputStream fileOut = new FileOutputStream ("temp/"+ name+ ".ser");
+					ObjectOutputStream out = new ObjectOutputStream(fileOut);
+					out.writeObject(liborMarketModelCalibrated);
+					out.close();
+					fileOut.close();
+					System.out.println("Serianlized data is saved in temp/" +name + ".ser");
+
+				} catch (IOException i) {
+					i.printStackTrace();
+				}
+				
+				
+				
+				// Read stored LMM
+				
+			     LIBORModel liborMarketModelCalibrated2  = null;
+				try {FileInputStream fileIn = new FileInputStream("temp/"+ name+ ".ser");
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				liborMarketModelCalibrated = (LIBORModel)  in.readObject();
+				in.close();
+				fileIn.close();
+					
+				} catch (IOException i) {
+					i.printStackTrace();
+					//return null;
+				} catch (ClassNotFoundException c) {
+					System.out.println("Employee class not found");
+					c.printStackTrace();
+				}
+				
+				*/
+				/*********************************************************************/
+				
+			
+				
+				
 				
 					
 				
@@ -250,8 +303,6 @@ public class LMMCalibration {
 				//The simulationModel
 				LIBORModelMonteCarloSimulationModel LMMSimulation = new LIBORMonteCarloSimulationFromLIBORModel(liborMarketModelCalibrated, process);
 
-				
-				
 				
 				System.out.println("\nValuation on calibrated model:");
 				double deviationSum			= 0.0;
