@@ -86,7 +86,7 @@ public class CVA {
 		ForwardBootstrap bootStrapper = new ForwardBootstrap(discountCurve, recoveryRate, cdsSpreads, PaymentFrequency.MOUNTHLY, SimulationTimeDiscretization);
 		
 		
-		double CVA = 0.0;
+		double CVA = 0.0; 
 		
 		for(double observationDate : SimulationTimeDiscretization) {
 			if(observationDate == 0) {
