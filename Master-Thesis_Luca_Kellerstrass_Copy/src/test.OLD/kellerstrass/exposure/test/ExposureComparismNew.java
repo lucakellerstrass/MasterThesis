@@ -41,7 +41,7 @@ import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHo
  * @author lucak
  *
  */
-public class ExposureComparism {
+public class ExposureComparismNew {
 	
 	private final static int numberOfPaths		= 20000;
 	

@@ -8,8 +8,8 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import kellerstrass.defaultProbability.bootstrapping.*;
-
+import kellerstrass.defaultProbability.ForwardBootstrap;
+import kellerstrass.defaultProbability.SimpleApproximation;
 import kellerstrass.useful.PaymentFrequency;
 
 import net.finmath.time.TimeDiscretization;
@@ -53,8 +53,6 @@ public class BootstrappingTest {
 
 		// => {254, 262.75, 271.5, 280.25, 289, 290.2, 291.4, 292.6, 293.8, 295}
 
-		// double[] yearlyLIBORs = {0.0360758241758242, 0.0336, 0.0343334648351648,
-		// 0.03589, 0.0375295128378378, 0.0390253032258064,0.0405272967032967 };
 
 		// ForwardBootstrap initiation
 

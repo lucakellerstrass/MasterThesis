@@ -1,4 +1,4 @@
-package kellerstrass.CVA;
+package kellerstrass.exposure.test;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -21,76 +21,56 @@ import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProdu
 import net.finmath.montecarlo.interestrate.products.Swap;
 import net.finmath.montecarlo.interestrate.products.TermStructureMonteCarloProduct;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
+import net.finmath.optimizer.SolverException;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class CVAComparism {
+public class ExposureComparism {
 
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000", new DecimalFormatSymbols(new Locale("en")));
-	private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.00000;-##0.00000", new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterDeviation	= new DecimalFormat(" 0.00000E00;-0.00000E00", new DecimalFormatSymbols(Locale.ENGLISH));
-	private static DecimalFormat formatterPercentage		= new DecimalFormat(" ##0.000%;-##0.000%", new DecimalFormatSymbols(Locale.ENGLISH));
 	
 	// Set the Calibration set. Here: e.g. Example Co-Terminals
 		private static	CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface, DataSource.EXAMPLE );
 	
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws CalculationException, SolverException {
 boolean forcedCalculation = false;
 		
 		int numberOfPaths = 1000;
-		int numberOfFactorsM1 = 3;  // For Libor Market Model
-		int numberOfFactorsM2 = 2;  // For Hull white Model
+		int numberOfFactors = 3;
 		
 		//Simulation time discretization
 		double lastTime = 40.0;
 		double dt = 0.25;
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,(int) (lastTime / dt), dt);
 		//brownian motion
-		BrownianMotion brownianMotionM1 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactorsM1 , numberOfPaths, 31415 /* seed */);
-		BrownianMotion brownianMotionM2 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactorsM2 , numberOfPaths, 31415 /* seed */);
+		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactors , numberOfPaths, 31415 /* seed */);
 		//process
-		EulerSchemeFromProcessModel process1 = new EulerSchemeFromProcessModel(brownianMotionM1, EulerSchemeFromProcessModel.Scheme.EULER);
-		EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotionM2, EulerSchemeFromProcessModel.Scheme.EULER);
+		EulerSchemeFromProcessModel process1 = new EulerSchemeFromProcessModel(brownianMotion, EulerSchemeFromProcessModel.Scheme.EULER);
+		EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotion, EulerSchemeFromProcessModel.Scheme.EULER);
 		//calibration machine
-		CalibrationMaschineInterface Model1CalibrationMaschine = new LmmCalibrationMaschine(numberOfPaths, numberOfFactorsM1, calibrationInformation);
-		CalibrationMaschineInterface Model2CalibrationMaschine = new HWCalibrationMaschine(numberOfPaths, numberOfFactorsM2, calibrationInformation);
+		CalibrationMaschineInterface Model1CalibrationMaschine = new LmmCalibrationMaschine(numberOfPaths, numberOfFactors, calibrationInformation);
+		CalibrationMaschineInterface Model2CalibrationMaschine = new HWCalibrationMaschine(numberOfPaths, 2, calibrationInformation);
 	    //simulation machine
 		LIBORModelMonteCarloSimulationModel Model1 = Model1CalibrationMaschine.getLIBORModelMonteCarloSimulationModel(process1,forcedCalculation);
 		LIBORModelMonteCarloSimulationModel Model2 = Model2CalibrationMaschine.getLIBORModelMonteCarloSimulationModel(process2,forcedCalculation);
 
 		//Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example 2");
+		StoredSwap testStoredSwap = new StoredSwap("Example");
 		Swap testSwap = testStoredSwap.getSwap();
-		
- double recoveryRate = 0.4;
-		 
-		 double[] cdsSpreads = {300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
-		 
-		 CVA cvaM1 = new CVA(Model1, testSwap, recoveryRate, cdsSpreads, Model1CalibrationMaschine.getDiscountCurve());
-		 CVA cvaM2 = new CVA(Model2, testSwap, recoveryRate, cdsSpreads, Model2CalibrationMaschine.getDiscountCurve());
-		 double cvaValueM1 = cvaM1.getValue();
-		 double cvaValueM2 = cvaM2.getValue();
-		 
-
-		
 		
 		
 		//Exposure Maschine
 		//ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
 		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(testSwap);
 		
-		 System.out.println("\n We want to compare the given models");
-		 System.out.println("Model 1 is: "+ Model1CalibrationMaschine.getModelName());
-		 System.out.println("Model 2 is: "+ Model2CalibrationMaschine.getModelName() + "\n");
 		
-		 System.out.println("The CVA with Model 1 is \t" + formatterValue.format(cvaValueM1));
-		 System.out.println("The CVA with Model 2 is \t" + formatterValue.format(cvaValueM2));
-		 System.out.println("The deviation (CVA1 - CVA2) is: \t" + formatterValue.format(cvaValueM1 - cvaValueM2) + 
-				 ", which is " +formatterPercentage.format((cvaValueM1 - cvaValueM2)/ cvaValueM1) + "\n");
+		 System.out.println("\n We want to compare the exposure paths of the given model an the swap: ");
 		
 		 
-		
+		 System.out.println("Model 1 is: "+ Model1CalibrationMaschine.getModelName());
+		 System.out.println("Model 2 is: "+ Model2CalibrationMaschine.getModelName());
 		 printExpectedExposurePathsCpmarism(swapExposureEstimator, Model1, Model2, testSwap);
 
 
@@ -101,7 +81,7 @@ boolean forcedCalculation = false;
 			LIBORModelMonteCarloSimulationModel Model1, LIBORModelMonteCarloSimulationModel Model2, AbstractLIBORMonteCarloProduct testSwap) throws CalculationException {
 		System.out.println("observationDate  \t Model 1: \t   expected positive Exposure   \t   expected negative Exposure "
 				+ "\t Model 2: \t   expected positive Exposure   \t   expected negative Exposure"
-				+ "\t deviation Model 1 - Model 2: \t   expected positive Exposure   \t   expected negative Exposure");
+				+ "\t Deviation Model 1 - Model 2: \t   expected positive Exposure   \t   expected negative Exposure");
 		for(double observationDate : Model1.getTimeDiscretization()) {
 
 			/*if(observationDate == 0) {

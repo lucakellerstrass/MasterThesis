@@ -29,8 +29,8 @@ public class CalibrationComparism {
 	private static boolean forcedCalculation = false;
 	private static int numberOfPaths = 1000;
 	//
-	private static int numberOfFactorsModel1 = 3;
-	private static int numberOfFactorsModel2 = 2;
+	private static int numberOfFactorsModel1 = 3; // For Libor Market Model
+	private static int numberOfFactorsModel2 = 2; // For Hull white Model
 	
 
 
@@ -86,9 +86,10 @@ public class CalibrationComparism {
 			double lastTime = 40.0;
 			double dt = 0.25;
 			TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,(int) (lastTime / dt), dt);
-			BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactorsModel1 , numberOfPaths, 31415 /* seed */);
-			EulerSchemeFromProcessModel process1 = new EulerSchemeFromProcessModel(brownianMotion, EulerSchemeFromProcessModel.Scheme.EULER);
-			EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotion, EulerSchemeFromProcessModel.Scheme.EULER);
+			BrownianMotion brownianMotionModel1 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactorsModel1 , numberOfPaths, 31415 /* seed */);
+			BrownianMotion brownianMotionModel2 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactorsModel2 , numberOfPaths, 31415 /* seed */);
+			EulerSchemeFromProcessModel process1 = new EulerSchemeFromProcessModel(brownianMotionModel1, EulerSchemeFromProcessModel.Scheme.EULER);
+			EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotionModel2, EulerSchemeFromProcessModel.Scheme.EULER);
 		 
 		 
 		 System.out.println("\n" + "Now we test how good the calibration worked for Model 1 and Model 2 and compared.");

@@ -20,7 +20,6 @@ import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProdu
 import net.finmath.montecarlo.interestrate.products.Swap;
 import net.finmath.montecarlo.interestrate.products.TermStructureMonteCarloProduct;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
-import net.finmath.optimizer.SolverException;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
 
@@ -29,7 +28,7 @@ public class CVATest {
 	  // Set the Calibration set. Here: e.g. Example Co-Terminals
 		private static	CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface, DataSource.EXAMPLE );
 		private final static NumberFormat formatter6 = new DecimalFormat("0.000000", new DecimalFormatSymbols(new Locale("en")));
-		private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.000€;-##0.000€", new DecimalFormatSymbols(Locale.ENGLISH));
+		private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.00000;-##0.00000", new DecimalFormatSymbols(Locale.ENGLISH));
 	
 		
 	public static void main(String[] args) throws Exception {
@@ -73,7 +72,7 @@ public class CVATest {
 		 
 		 CVA cva = new CVA(simulationModel, testSwap, recoveryRate, cdsSpreads, lmmCalibrationMaschine.getDiscountCurve());
 		 
-		 System.out.println("The CVA is \t" + formatterValue.format(cva.getValue()*1000000));
+		 System.out.println("The CVA is \t" + formatterValue.format(cva.getValue()));
 		 
 		 
 		 
