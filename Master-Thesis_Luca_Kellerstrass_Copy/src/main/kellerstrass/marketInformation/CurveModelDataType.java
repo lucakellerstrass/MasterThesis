@@ -2,6 +2,6 @@ package kellerstrass.marketInformation;
 
 public enum CurveModelDataType {
 	
-	Example, REALDATA, SETTEDVALUES
+	Example, SETTEDVALUES, OIS6M
 
 }

@@ -1,8 +1,8 @@
 package kellerstrass.ModelCalibration.test;
 
 
+import kellerstrass.ModelCalibration.CurveModelCalibrationMaschine;
 import kellerstrass.marketInformation.CurveModelDataType;
-import kellertrass.ModelCalibration.CurveModelCalibrationMaschine;
 
 public class CalibratedCurveModelTester {
 

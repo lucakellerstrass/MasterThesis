@@ -57,6 +57,9 @@ public class StoredSwap {
 			break;
 		case "Example 2":
 			activateExampleSwap2();
+			break;
+		case "TrueSwap1":
+			activateTrueSwap1();
 		}
 		
 	}
@@ -64,6 +67,42 @@ public class StoredSwap {
 	
 	
 	
+
+
+	private void activateTrueSwap1() {
+		/*
+		 * Create a PAYER swap (receive float, pay fixed)
+		 */
+		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
+				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
+				LocalDate.of(2019, Month.OCTOBER, 29) /* startDate */,
+				LocalDate.of(2029, Month.OCTOBER, 29) /* maturityDate */,
+				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
+				ScheduleGenerator.DaycountConvention.E30_360 /* daycountConvention */,
+				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
+				BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
+				new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
+				0 /* fixingOffsetDays */,
+				0 /* paymentOffsetDays */);
+
+		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
+				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
+				LocalDate.of(2019, Month.OCTOBER, 29) /* startDate */,
+				LocalDate.of(2029, Month.OCTOBER, 29) /* maturityDate */,
+				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
+				ScheduleGenerator.DaycountConvention.ACT_360 /* daycountConvention */,
+				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
+				BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
+				new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */,
+				0 /* fixingOffsetDays */,
+				0 /* paymentOffsetDays */);
+		notional = new Notional(1000000.0);
+		index = new LIBORIndex(null /*"forwardCurve"*/, 0.0, 0.5);
+		fixedCoupon = 0.00547;
+			
+		swapName = "TrueSwap1";
+		
+	}
 
 
 	private void activateExampleSwap() {

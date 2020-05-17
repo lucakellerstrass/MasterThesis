@@ -1,4 +1,4 @@
-package kellertrass.ModelCalibration;
+package kellerstrass.ModelCalibration;
 
 import kellerstrass.marketInformation.CalibrationInformation;
 import net.finmath.exception.CalculationException;

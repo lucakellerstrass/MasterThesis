@@ -1,4 +1,4 @@
-package kellertrass.ModelCalibration;
+package kellerstrass.ModelCalibration;
 
 import java.io.File;
 import java.io.FileInputStream;

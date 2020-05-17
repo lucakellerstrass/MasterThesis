@@ -1,4 +1,4 @@
-package kellertrass.ModelCalibration;
+package kellerstrass.ModelCalibration;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -22,6 +22,7 @@ import net.finmath.marketdata.model.curves.ForwardCurveInterpolation;
 import net.finmath.marketdata.model.curves.CurveInterpolation.ExtrapolationMethod;
 import net.finmath.marketdata.model.curves.CurveInterpolation.InterpolationEntity;
 import net.finmath.marketdata.model.curves.CurveInterpolation.InterpolationMethod;
+import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.products.AnalyticProduct;
 import net.finmath.marketdata.products.Swap;
 import net.finmath.optimizer.SolverException;
@@ -95,7 +96,24 @@ public class CurveModelCalibrationMaschine {
 	
 	
 	
+	
+	
 	public  AnalyticModel getCalibratedCurve() throws SolverException {
+	
+	if(curveModelData.isInitiationOverExistingDiscountValues()==true) {
+			
+		DiscountCurve discountCurve = curveModelData.getDiscountCurve();
+		
+			String curveNameDiscount = discountCurve.getName();
+			LocalDate referenceDate = discountCurve.getReferenceDate();
+			
+			ForwardCurve forwardCurve		= new ForwardCurveFromDiscountCurve(
+					curveNameDiscount, referenceDate, "6M");
+			AnalyticModel model = new AnalyticModelFromCurvesAndVols(new Curve[] { discountCurve, forwardCurve });
+		
+			return model;
+		}
+		
 		final String[] maturity					= curveModelData.getMaturity();
 		final String[] frequency				= curveModelData.getFrequency();
 		final String[] frequencyFloat			= curveModelData.getFrequencyFloat();
@@ -124,6 +142,9 @@ public class CurveModelCalibrationMaschine {
 	
 	private static AnalyticModel getCalibratedCurve(AnalyticModel model2, Map<String, Object> parameters) throws SolverException {
 
+	
+		
+		
 		final LocalDate	referenceDate		= (LocalDate) parameters.get("referenceDate");
 		final String	currency			= (String) parameters.get("currency");
 		final String	forwardCurveTenor	= (String) parameters.get("forwardCurveTenor");
@@ -267,9 +288,9 @@ public class CurveModelCalibrationMaschine {
 	//	}
 		return model;
 	}
-
 	
+	
+	}
 
-}
 
 

@@ -1,4 +1,4 @@
-package kellertrass.ModelCalibration;
+package kellerstrass.ModelCalibration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -161,8 +161,6 @@ public abstract class AbstractCalibrationMaschine implements CalibrationMaschine
 	
 	/**
 	 * Transform the Calibration information into an Array of Calibration products 
-	 * @param discountCurve 
-	 * @param forwardCurve 
 	 * @return
 	 */
 	public CalibrationProduct[] getCalibrationProducts() {
