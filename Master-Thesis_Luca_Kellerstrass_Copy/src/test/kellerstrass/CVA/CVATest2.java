@@ -5,38 +5,43 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import kellerstrass.ModelCalibration.CalibrationMaschineInterface;
-import kellerstrass.ModelCalibration.CurveModelCalibrationMaschine;
-import kellerstrass.ModelCalibration.LmmCalibrationMaschine;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import kellerstrass.exposure.ExposureMaschine;
 import kellerstrass.marketInformation.CalibrationInformation;
-import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import kellerstrass.swap.StoredSwap;
+import kellerstrass.ModelCalibration.CalibrationMaschineInterface;
+import kellerstrass.ModelCalibration.LmmCalibrationMaschine;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.BrownianMotion;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProduct;
 import net.finmath.montecarlo.interestrate.products.Swap;
+import net.finmath.montecarlo.interestrate.products.TermStructureMonteCarloProduct;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class CVATestWithMarketData {
+public class CVATest2 {
 
 	// Set the Calibration set. Here: e.g. Example Co-Terminals
 	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
 			DataSource.EXAMPLE);
-	private static CurveModelCalibrationMaschine curveModelCalibrationMaschine = new CurveModelCalibrationMaschine(
-			CurveModelDataType.OIS6M);
+	private final static NumberFormat formatter2 = new DecimalFormat("0.00",
+			new DecimalFormatSymbols(new Locale("en")));
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
 			new DecimalFormatSymbols(new Locale("en")));
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.00000;-##0.00000",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	public static void main(String[] args) throws Exception {
+	public static List<Map<String, String>> main(String[] args) throws Exception {
+
 		boolean forcedCalculation = false;
 
 		int numberOfPaths = 1000;
@@ -55,21 +60,18 @@ public class CVATestWithMarketData {
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
 		CalibrationMaschineInterface lmmCalibrationMaschine = new LmmCalibrationMaschine(numberOfPaths, numberOfFactors,
-				calibrationInformation, curveModelCalibrationMaschine);
+				calibrationInformation);
 		// simulation machine
 		LIBORModelMonteCarloSimulationModel simulationModel = lmmCalibrationMaschine
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
 		// Swap
-		StoredSwap StoredTrueSwap = new StoredSwap("TrueSwap1");
-		Swap TrueSwap = StoredTrueSwap.getSwap();
-
-		// AbstractLIBORMonteCarloProduct testSwap =
-		// LMMCalibrationCVA5RebuildAsCalibrationmaschine.getSwap();
+		StoredSwap testStoredSwap = new StoredSwap("Example");
+		Swap testSwap = testStoredSwap.getSwap();
 
 		// Exposure Maschine
 		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
-		ExposureMaschine swapExposureEstimator = new ExposureMaschine(TrueSwap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(testSwap);
 
 		System.out.println("The name of the Model is: " + lmmCalibrationMaschine.getModelName());
 
@@ -78,25 +80,29 @@ public class CVATestWithMarketData {
 																									 * getSwapName()
 																									 */);
 
-		printExpectedExposurePaths(swapExposureEstimator, simulationModel);
+		List<Map<String, String>> OutTable = new ArrayList<Map<String, String>>();
+		OutTable = printExpectedExposurePaths(swapExposureEstimator, simulationModel, testSwap);
 
 		double recoveryRate = 0.4;
 
-		double[] cdsSpreads = { 6, 9, 15, 22, 35, 40, 45, 45.67, 46.33, 47 };
+		double[] cdsSpreads = { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
 
-		CVA cva = new CVA(simulationModel, TrueSwap, recoveryRate, cdsSpreads,
+		CVA cva = new CVA(simulationModel, testSwap, recoveryRate, cdsSpreads,
 				lmmCalibrationMaschine.getDiscountCurve());
 
 		System.out.println("The CVA is \t" + formatterValue.format(cva.getValue()));
 
+		return OutTable;
 	}
 
-	private static void printExpectedExposurePaths(ExposureMaschine swapExposureEstimator,
-			LIBORModelMonteCarloSimulationModel simulationModel) throws CalculationException {
+	private static List<Map<String, String>> printExpectedExposurePaths(
+			TermStructureMonteCarloProduct swapExposureEstimator, LIBORModelMonteCarloSimulationModel simulationModel,
+			AbstractLIBORMonteCarloProduct testSwap) throws CalculationException {
 
-		AbstractLIBORMonteCarloProduct Swap = swapExposureEstimator.getUnterlying();
+		List<Map<String, String>> OutTable = new ArrayList<Map<String, String>>();
 
 		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");
+		int i = 0;
 		for (double observationDate : simulationModel.getTimeDiscretization()) {
 
 			/*
@@ -106,8 +112,7 @@ public class CVATestWithMarketData {
 			/*
 			 * Calculate expected positive exposure of a swap
 			 */
-
-			RandomVariable valuesSwap = Swap.getValue(observationDate, simulationModel);
+			RandomVariable valuesSwap = testSwap.getValue(observationDate, simulationModel);
 			RandomVariable valuesEstimatedExposure = swapExposureEstimator.getValue(observationDate, simulationModel);
 			RandomVariable valuesPositiveExposure = valuesSwap.mult(valuesEstimatedExposure
 					.choose(new RandomVariableFromDoubleArray(1.0), new RandomVariableFromDoubleArray(0.0)));
@@ -120,7 +125,15 @@ public class CVATestWithMarketData {
 			System.out.println(observationDate + "    \t         " + formatter6.format(expectedPositiveExposure)
 					+ "    \t         " + formatter6.format(expectedNegativeExposure));
 
+			Map<String, String> OutTableRow = new HashMap<>();
+			OutTableRow.put("observationDate", formatter2.format(observationDate));
+			OutTableRow.put("expectedPositiveExposure", formatter6.format(expectedPositiveExposure));
+			OutTableRow.put("expectedNegativeExposure", formatter6.format(expectedNegativeExposure));
+			OutTable.add(i, OutTableRow);
+			i++;
+
 		}
+		return OutTable;
 	}
 
 }
