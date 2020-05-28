@@ -68,7 +68,7 @@ public abstract class AbstractCalibrationMaschine implements CalibrationMaschine
 	 * @param numberOfPaths
 	 * @param calibrationInformation
 	 * @param curveModelDataType
-	 * @param calculationDuration
+	 * @param calculationDuration 
 	 */
 
 	public AbstractCalibrationMaschine(int numberOfPaths,int numberOfFactors, CalibrationInformation calibrationInformation,
