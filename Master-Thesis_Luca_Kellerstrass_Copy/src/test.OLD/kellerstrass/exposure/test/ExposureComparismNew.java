@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import kellerstrass.exposure.ExposureMaschine;
 import kellerstrass.interestrate.models.StoredModels;
-import kellerstrass.useful.PaymentOffsetCode;
+import kellerstrass.usefulOLD.PaymentOffsetCodeOLD;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
 import net.finmath.marketdata.model.curves.ForwardCurve;
@@ -257,7 +257,7 @@ double rate = 0.035;
 				/*
 				 * Create the libor tenor structure and the initial values
 				 */
-				double liborPeriodLength	=   PaymentOffsetCode.getPaymentOffSetFromString(paymentOffsetCode) ; 
+				double liborPeriodLength	=   PaymentOffsetCodeOLD.getPaymentOffSetFromString(paymentOffsetCode) ; 
 				double liborRateTimeHorzion	= SwapDurationInYears + (StartInMonthsFromReferenceDate/12.0) + 1.0;
 				TimeDiscretizationFromArray liborPeriodDiscretization = new TimeDiscretizationFromArray(0.0, (int) (liborRateTimeHorzion / liborPeriodLength), liborPeriodLength);
 

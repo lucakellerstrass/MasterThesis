@@ -10,8 +10,7 @@ import org.junit.Test;
 
 import kellerstrass.defaultProbability.ForwardBootstrap;
 import kellerstrass.defaultProbability.SimpleApproximation;
-import kellerstrass.useful.PaymentFrequency;
-
+import kellerstrass.usefulOLD.PaymentFrequencyOLD;
 import net.finmath.time.TimeDiscretization;
 
 import net.finmath.time.TimeDiscretizationFromArray;
@@ -57,7 +56,7 @@ public class BootstrappingTest {
 		// ForwardBootstrap initiation
 
 		ForwardBootstrap bootStrapper = new ForwardBootstrap(interestRate, Recovery, cdsSpreads,
-				PaymentFrequency.QUATERLY, timeDiscretization);
+				PaymentFrequencyOLD.QUATERLY, timeDiscretization);
 
 		//++++++++++++++++++++++++ SimpleApproximation initiation
 

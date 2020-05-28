@@ -2,7 +2,7 @@ package kellerstrass.useful.test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import kellerstrass.useful.PaymentFrequency;
+import kellerstrass.usefulOLD.PaymentFrequencyOLD;
 
 
 /**
@@ -19,10 +19,10 @@ public class EnumTests {
 	 */
 	public  void hasOnlyPositiveValuesTest() {
         
-		int PaymentsPerYear12 = PaymentFrequency.MOUNTHLY.PaymentsPerYear();
-		int PaymentsPerYear4 = PaymentFrequency.QUATERLY.PaymentsPerYear();
-		int PaymentsPerYear2 = PaymentFrequency.BIANNUAL.PaymentsPerYear();
-		int PaymentsPerYear1 = PaymentFrequency.ANNUAL.PaymentsPerYear();
+		int PaymentsPerYear12 = PaymentFrequencyOLD.MOUNTHLY.PaymentsPerYear();
+		int PaymentsPerYear4 = PaymentFrequencyOLD.QUATERLY.PaymentsPerYear();
+		int PaymentsPerYear2 = PaymentFrequencyOLD.BIANNUAL.PaymentsPerYear();
+		int PaymentsPerYear1 = PaymentFrequencyOLD.ANNUAL.PaymentsPerYear();
 		
 		 assertEquals(PaymentsPerYear12, 12); 
 		 assertEquals(PaymentsPerYear4, 4); 

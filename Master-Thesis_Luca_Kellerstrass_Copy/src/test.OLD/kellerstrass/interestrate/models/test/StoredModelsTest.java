@@ -9,7 +9,7 @@ import java.util.Locale;
 import org.junit.Test;
 
 import kellerstrass.interestrate.models.StoredModels;
-import kellerstrass.useful.PaymentOffsetCode;
+import kellerstrass.usefulOLD.PaymentOffsetCodeOLD;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;

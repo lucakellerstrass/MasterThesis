@@ -9,9 +9,7 @@ import java.util.Locale;
 import org.junit.Test;
 
 import kellerstrass.defaultProbability.bootstrapping.*;
-
-import kellerstrass.useful.PaymentFrequency;
-
+import kellerstrass.usefulOLD.PaymentFrequencyOLD;
 import net.finmath.time.TimeDiscretization;
 
 import net.finmath.time.TimeDiscretizationFromArray;
@@ -57,7 +55,7 @@ public class BootstrappingTestOLD {
 		// ForwardBootstrap initiation
 
 		ForwardBootstrap bootStrapper = new ForwardBootstrap(interestRate, Recovery, cdsSpreads,
-				PaymentFrequency.QUATERLY, timeDiscretization);
+				PaymentFrequencyOLD.QUATERLY, timeDiscretization);
 
 		//++++++++++++++++++++++++ SimpleApproximation initiation
 

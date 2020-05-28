@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import kellerstrass.useful.PaymentOffsetCode;
+import kellerstrass.usefulOLD.PaymentOffsetCodeOLD;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModel;
 import net.finmath.marketdata.model.AnalyticModelFromCurvesAndVols;
@@ -99,7 +99,7 @@ public class StoredModels {
 		this.simulationDiscretization = simulationDiscretization;
 		this.liborPeriodDiscretization = liborPeriodDiscretization;
 		this.liborPeriodLength = liborPeriodDiscretization.getTime(1) - liborPeriodDiscretization.getTime(0);
-		this.paymentOffsetCode = PaymentOffsetCode.getPaymentOffsetCodeForDouble(liborPeriodLength);
+		this.paymentOffsetCode = PaymentOffsetCodeOLD.getPaymentOffsetCodeForDouble(liborPeriodLength);
 	}
 	
 	

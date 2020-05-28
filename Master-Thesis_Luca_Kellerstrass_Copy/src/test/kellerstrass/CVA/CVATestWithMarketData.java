@@ -28,7 +28,7 @@ public class CVATestWithMarketData {
 
 	// Set the Calibration set. Here: e.g. Example Co-Terminals
 	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-			DataSource.EXAMPLE);
+			DataSource.MARKETDATA);
 	private static CurveModelCalibrationMaschine curveModelCalibrationMaschine = new CurveModelCalibrationMaschine(
 			CurveModelDataType.OIS6M);
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",

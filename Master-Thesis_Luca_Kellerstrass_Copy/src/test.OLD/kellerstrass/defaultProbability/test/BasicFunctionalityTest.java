@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import kellerstrass.defaultProbability.bootstrapping.ForwardBootstrap;
 import kellerstrass.defaultProbability.bootstrapping.SimpleApproximation;
-import kellerstrass.useful.PaymentFrequency;
+import kellerstrass.usefulOLD.PaymentFrequencyOLD;
 
 public class BasicFunctionalityTest {
 
@@ -40,7 +40,7 @@ public class BasicFunctionalityTest {
 
                      double calculatorTimeStart =System.currentTimeMillis();
 
-                     ForwardBootstrap bootStrapper = new ForwardBootstrap(interestRate, Recovery, cdsSpreads, PaymentFrequency.QUATERLY);
+                     ForwardBootstrap bootStrapper = new ForwardBootstrap(interestRate, Recovery, cdsSpreads, PaymentFrequencyOLD.QUATERLY);
 
                      double calculatorTimeEnd =System.currentTimeMillis();
 

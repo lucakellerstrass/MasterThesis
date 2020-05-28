@@ -15,6 +15,7 @@ import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import kellerstrass.swap.StoredSwap;
+import kellerstrass.useful.StringToUseful;
 import kellerstrass.ModelCalibration.CalibrationMaschineInterface;
 import kellerstrass.ModelCalibration.LmmCalibrationMaschine;
 import net.finmath.exception.CalculationException;
@@ -30,9 +31,6 @@ import net.finmath.time.TimeDiscretizationFromArray;
 
 public class CVATest2 {
 
-	// Set the Calibration set. Here: e.g. Example Co-Terminals
-	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-			DataSource.EXAMPLE);
 	private final static NumberFormat formatter2 = new DecimalFormat("0.00",
 			new DecimalFormatSymbols(new Locale("en")));
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
@@ -40,18 +38,73 @@ public class CVATest2 {
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.00000;-##0.00000",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	public static List<Map<String, String>> main(String[] args) throws Exception {
+	public static List<Map<String, String>> main(String SwapName, String BuySell, int notional, double fixedRate,
+			String swapStart, String swapEnd, String fixedFrequency, String floatFrequency, String RateFrequency,
+			String discountCurve, String forecastCurve, String fixedCouponConvention, String xiborCouponConvention,
+			// Counterparty information
+			String counterpartyName, double recoveryRateInput, double cdsSpread1y, double cdsSpread2y,
+			double cdsSpread3y, double cdsSpread4y, double cdsSpread5y, double cdsSpread6y, double cdsSpread7y,
+			double cdsSpread8y, double cdsSpread9y, double cdsSpread10y,
 
-		boolean forcedCalculation = false;
+			// Modelling parameters
+			String referencedate, int numberOfPaths, int NumberOfFactorsLMM, int NumberOfFactorsHW,
+			String dataSourceInput, String dataScopeInput, String curveModelInput, double Range
 
-		int numberOfPaths = 1000;
-		int numberOfFactors = 3;
+	) throws Exception {
+
+		double[] cdsSpreads10y = { cdsSpread1y, cdsSpread2y, cdsSpread3y, cdsSpread4y, cdsSpread5y, cdsSpread6y,
+				cdsSpread7y, cdsSpread8y, cdsSpread9y, cdsSpread10y };
+
+		// test of everything is read in correct
+		/*
+		 * System.out.println("SwapName is: " + SwapName);
+		 * System.out.println("Buy/Sell is: " + BuySell);
+		 * System.out.println("notional is: " + notional);
+		 * System.out.println("fixedRate is: " + fixedRate);
+		 * System.out.println("swapStart is: " + swapStart);
+		 * System.out.println("swapEnd is: " + swapEnd);
+		 * System.out.println("fixedFrequency is: " + fixedFrequency);
+		 * System.out.println("floatFrequancy is: " + floatFrequency);
+		 * System.out.println("RateFrequency is: " + RateFrequency);
+		 * System.out.println("discountCurve is: " + discountCurve);
+		 * System.out.println("forecastCurve is: " + forecastCurve);
+		 * System.out.println("fixedCouponConvention is: " + fixedCouponConvention);
+		 * System.out.println("xiborCouponConvention is: " + xiborCouponConvention);
+		 * System.out.println(""); System.out.println("counterpartyName is: " +
+		 * counterpartyName); System.out.println("recoveryRate is: " +
+		 * recoveryRateInput); System.out.println("cdsSpreads10y is: (" + cdsSpread1y +
+		 * ", " + cdsSpread2y + ", " + cdsSpread3y + ", " + cdsSpread4y + ", " +
+		 * cdsSpread5y + ", " + cdsSpread6y + ", " + cdsSpread7y + ", " + cdsSpread8y +
+		 * ", " + cdsSpread9y + ", " + cdsSpread10y + ")");
+		 * System.out.println("referencedate is: " + referencedate);
+		 * System.out.println("numberOfPaths is: " + numberOfPaths);
+		 * System.out.println("NumberOfFactorsLMM is: " + NumberOfFactorsLMM);
+		 * System.out.println("NumberOfFactorsHW is: " + NumberOfFactorsHW);
+		 * System.out.println("dataSource is: " + dataSourceInput);
+		 * System.out.println("dataScope is: " + dataScopeInput);
+		 * System.out.println("curveModel is: " + curveModelInput);
+		 * System.out.println("Range is: " + Range);
+		 */
+
+		// Set the Calibration set. Here: e.g. Example Co-Terminals
+
+		DataScope dataScope = StringToUseful.dataScopeFromString(dataSourceInput);
+		DataSource dataSource = StringToUseful.dataSourceFromString(dataSourceInput);
+
+		// Set the Calibration set. Here: e.g. Example Co-Terminals
+
+		CalibrationInformation calibrationInformation = new CalibrationInformation(dataScope, dataSource);
 
 		// Simulation time discretization
-		double lastTime = 40.0;
+		double lastTime = Range;
 		double dt = 0.25;
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
 				(int) (lastTime / dt), dt);
+
+		boolean forcedCalculation = false;
+
+		int numberOfFactors = NumberOfFactorsLMM;
+
 		// brownian motion
 		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
 				numberOfFactors, numberOfPaths, 31415 /* seed */);
@@ -66,12 +119,16 @@ public class CVATest2 {
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
 		// Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example");
-		Swap testSwap = testStoredSwap.getSwap();
+
+		StoredSwap inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
+				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
+				xiborCouponConvention);
+
+		Swap Swap = inputSwap.getSwap();
 
 		// Exposure Maschine
 		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(testSwap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(Swap);
 
 		System.out.println("The name of the Model is: " + lmmCalibrationMaschine.getModelName());
 
@@ -81,14 +138,13 @@ public class CVATest2 {
 																									 */);
 
 		List<Map<String, String>> OutTable = new ArrayList<Map<String, String>>();
-		OutTable = printExpectedExposurePaths(swapExposureEstimator, simulationModel, testSwap);
+		OutTable = printExpectedExposurePaths(swapExposureEstimator, simulationModel, Swap);
 
-		double recoveryRate = 0.4;
+		double recoveryRate = recoveryRateInput; // 0.4;
 
-		double[] cdsSpreads = { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
+		double[] cdsSpreads = cdsSpreads10y;// { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
 
-		CVA cva = new CVA(simulationModel, testSwap, recoveryRate, cdsSpreads,
-				lmmCalibrationMaschine.getDiscountCurve());
+		CVA cva = new CVA(simulationModel, Swap, recoveryRate, cdsSpreads, lmmCalibrationMaschine.getDiscountCurve());
 
 		System.out.println("The CVA is \t" + formatterValue.format(cva.getValue()));
 

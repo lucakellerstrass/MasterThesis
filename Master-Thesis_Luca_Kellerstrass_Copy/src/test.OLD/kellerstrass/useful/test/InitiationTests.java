@@ -3,7 +3,7 @@ package kellerstrass.useful.test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import kellerstrass.useful.*;
+import kellerstrass.usefulOLD.*;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationFromArray;
 
@@ -23,8 +23,8 @@ public class InitiationTests {
 	public  void hasOnlyPositiveValuesTest() {
         double[] array1 = {1.0, -1.0, 2.0, 3.0, 0.0};
         double[] array2 = {1.0, 0.0001, 2.0, 3.0, 0.0};    
-        boolean hasNotNegative= Checking.hasOnlyPositiveValues(array1);
-        boolean hasNegativ2 = Checking.hasOnlyPositiveValues(array2);
+        boolean hasNotNegative= CheckingOLD.hasOnlyPositiveValues(array1);
+        boolean hasNegativ2 = CheckingOLD.hasOnlyPositiveValues(array2);
         assertEquals(hasNotNegative, false); 
         assertEquals(hasNegativ2, true);
 	}
@@ -49,10 +49,10 @@ public class InitiationTests {
 		
         //Check them all
 	
-			double[] finalArray1 = Checking.checkDiscountCurve(array1, td);
+			double[] finalArray1 = CheckingOLD.checkDiscountCurve(array1, td);
 			assertEquals(finalArray1.length, 11); 
 			
-			double[] finalArray2 = Checking.checkDiscountCurve(array2, td);
+			double[] finalArray2 = CheckingOLD.checkDiscountCurve(array2, td);
 			assertEquals(finalArray2.length, 11); 
 			
 		

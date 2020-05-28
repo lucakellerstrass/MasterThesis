@@ -1,10 +1,9 @@
 package kellerstrass.defaultProbability;
 
+import kellerstrass.usefulOLD.*;
 import net.finmath.time.TimeDiscretization;
 
 import net.finmath.time.TimeDiscretizationFromArray;
-
-import kellerstrass.useful.*;
 
 public class ForwardBootstrap {
 
@@ -88,7 +87,7 @@ public class ForwardBootstrap {
 	 * 
 	 */
 
-	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequency frequency)
+	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequencyOLD frequency)
 			throws Exception {
 
 		this(interestRate, recovery, cdsSpreads, frequency, 20);
@@ -118,7 +117,7 @@ public class ForwardBootstrap {
 	 * @throws Exception
 	 */
 
-	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequency frequency,
+	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequencyOLD frequency,
 
 			int NumberOfTimeStepsPerYear) throws Exception {
 
@@ -158,7 +157,7 @@ public class ForwardBootstrap {
 	 * 
 	 */
 
-	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequency frequency,
+	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequencyOLD frequency,
 
 			TimeDiscretization timeDiscretization) throws Exception {
 
@@ -206,7 +205,7 @@ public class ForwardBootstrap {
 	 * 
 	 */
 
-	public ForwardBootstrap(double[] discountCurve, double recovery, double[] cdsSpreads, PaymentFrequency frequency,
+	public ForwardBootstrap(double[] discountCurve, double recovery, double[] cdsSpreads, PaymentFrequencyOLD frequency,
 
 			TimeDiscretization timeDiscretization) throws Exception {
 
@@ -214,13 +213,13 @@ public class ForwardBootstrap {
 
 		if (discountCurve != null) {
 
-			this.discountFactors = Checking.checkDiscountCurve(discountCurve, timeDiscretization);
+			this.discountFactors = CheckingOLD.checkDiscountCurve(discountCurve, timeDiscretization);
 
 		}
 
 		this.recovery = recovery;
 
-		if (Checking.hasOnlyPositiveValues(cdsSpreads)) {
+		if (CheckingOLD.hasOnlyPositiveValues(cdsSpreads)) {
 
 			this.cdsSpreads = cdsSpreads;
 		}

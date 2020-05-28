@@ -2,7 +2,7 @@ package kellerstrass.useful.test;
 
 import org.junit.Test;
 
-import kellerstrass.useful.PaymentOffsetCode;
+import kellerstrass.usefulOLD.PaymentOffsetCodeOLD;
 
 public class PaymentOffsetCodeTest {
 
@@ -19,13 +19,13 @@ public class PaymentOffsetCodeTest {
 		System.out.println("We whant to look if the methode >>getPaymentOffsetCodeForDouble<<   works as it should");
 		
 		
-		System.out.println("PaymentOffsetCode for " + a + " =   " + PaymentOffsetCode.getPaymentOffsetCodeForDouble(a));
-		System.out.println("PaymentOffsetCode for " + b + " =   " + PaymentOffsetCode.getPaymentOffsetCodeForDouble(b));
-		System.out.println("PaymentOffsetCode for " + c + " =   " + PaymentOffsetCode.getPaymentOffsetCodeForDouble(c));
-		System.out.println("PaymentOffsetCode for " + d + " =   " + PaymentOffsetCode.getPaymentOffsetCodeForDouble(d));
+		System.out.println("PaymentOffsetCode for " + a + " =   " + PaymentOffsetCodeOLD.getPaymentOffsetCodeForDouble(a));
+		System.out.println("PaymentOffsetCode for " + b + " =   " + PaymentOffsetCodeOLD.getPaymentOffsetCodeForDouble(b));
+		System.out.println("PaymentOffsetCode for " + c + " =   " + PaymentOffsetCodeOLD.getPaymentOffsetCodeForDouble(c));
+		System.out.println("PaymentOffsetCode for " + d + " =   " + PaymentOffsetCodeOLD.getPaymentOffsetCodeForDouble(d));
 		
 		try {
-			System.out.println("PaymentOffsetCode for " + d + " =   " + PaymentOffsetCode.getPaymentOffsetCodeForDouble(e));
+			System.out.println("PaymentOffsetCode for " + d + " =   " + PaymentOffsetCodeOLD.getPaymentOffsetCodeForDouble(e));
 		} catch (Exception e2) {
 			System.out.println("Error handling works");
 		}

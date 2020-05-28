@@ -3,7 +3,7 @@ package kellerstrass.CVA;
 
 import kellerstrass.defaultProbability.ForwardBootstrap;
 import kellerstrass.exposure.ExposureMaschine;
-import kellerstrass.useful.PaymentFrequency;
+import kellerstrass.usefulOLD.PaymentFrequencyOLD;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
@@ -84,7 +84,7 @@ public class CVA {
 	 */
 	public double getValue() throws Exception {
 	
-		ForwardBootstrap bootStrapper = new ForwardBootstrap(discountCurve, recoveryRate, cdsSpreads, PaymentFrequency.MOUNTHLY, SimulationTimeDiscretization);
+		ForwardBootstrap bootStrapper = new ForwardBootstrap(discountCurve, recoveryRate, cdsSpreads, PaymentFrequencyOLD.MOUNTHLY, SimulationTimeDiscretization);
 		
 		
 		double CVA = 0.0; 

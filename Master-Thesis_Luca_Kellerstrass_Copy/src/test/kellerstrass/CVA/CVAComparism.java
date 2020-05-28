@@ -37,33 +37,26 @@ public class CVAComparism {
 	private static DecimalFormat formatterPercentage = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-
-
 	public static void main(String[] args) throws Exception {
 		boolean forcedCalculation = false;
 
-	
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.EXAMPLE);
-		
-		
+
 		CurveModelCalibrationMaschine curveModelCalibrationMaschine = new CurveModelCalibrationMaschine(
 				CurveModelDataType.Example);
-		
-		
+
 		int numberOfPaths = 1000;
 		int numberOfFactorsM1 = 3; // For Libor Market Model
 		int numberOfFactorsM2 = 2; // For Hull white Model
 
-		
-		
 		// Simulation time discretization
 		double lastTime = 40.0;
 		double dt = 0.25;
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
 				(int) (lastTime / dt), dt);
-		
+
 		// brownian motion
 		BrownianMotion brownianMotionM1 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
 				numberOfFactorsM1, numberOfPaths, 31415 /* seed */);
@@ -91,7 +84,7 @@ public class CVAComparism {
 
 		double recoveryRate = 0.4;
 
-		double[] cdsSpreads = {300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0};
+		double[] cdsSpreads = { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
 
 		CVA cvaM1 = new CVA(Model1, testSwap, recoveryRate, cdsSpreads, Model1CalibrationMaschine.getDiscountCurve());
 		CVA cvaM2 = new CVA(Model2, testSwap, recoveryRate, cdsSpreads, Model2CalibrationMaschine.getDiscountCurve());
@@ -111,12 +104,10 @@ public class CVAComparism {
 		System.out.println("The deviation (CVA1 - CVA2) is: \t" + formatterValue.format(cvaValueM1 - cvaValueM2)
 				+ ", which is " + formatterPercentage.format((cvaValueM1 - cvaValueM2) / cvaValueM1) + "\n");
 
-		
-		//Print the Calibration Tests for two two models
+		// Print the Calibration Tests for two two models
 		Model1CalibrationMaschine.printCalibrationTest();
 		Model2CalibrationMaschine.printCalibrationTest();
-		
-		
+
 		printExpectedExposurePathsCpmarism(swapExposureEstimator, Model1, Model2, testSwap);
 
 	}
