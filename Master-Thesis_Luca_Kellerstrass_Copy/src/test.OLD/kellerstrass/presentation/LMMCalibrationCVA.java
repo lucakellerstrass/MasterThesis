@@ -20,7 +20,7 @@ import java.util.Map;
 import org.junit.Assert;
 
 import kellerstrass.Calibration.CurveModelCalibrationItem;
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.xva.CVA;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModel;
@@ -80,7 +80,7 @@ public class LMMCalibrationCVA {
 		
 		AbstractLIBORMonteCarloProduct swap = getSwap();
 		
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(swap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(swap);
 		
 		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");
 		for(double observationDate : simulationModel.getTimeDiscretization()) {

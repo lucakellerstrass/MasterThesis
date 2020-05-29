@@ -14,7 +14,7 @@ import java.util.Map;
 import org.junit.Assert;
 
 import kellerstrass.Calibration.CurveModelCalibrationItem;
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.interestrate.models.StoredHullWhite;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModel;
@@ -86,7 +86,7 @@ public class ExposureFromDifferentModels {
 				
 				//Create the swap
 				AbstractLIBORMonteCarloProduct swap = getSwap();
-				TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(swap);
+				TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(swap);
 				
 				//Print the exposures
 				System.out.println("Expected Exposure ");

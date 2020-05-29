@@ -12,7 +12,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.exposure.ExposureMachine;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
@@ -52,7 +52,7 @@ public class ExposureEstimatorTest {
 	public  void testExposurePaths() throws CalculationException {
 		System.out.println("Single exposure paths ");
 		AbstractLIBORMonteCarloProduct swap = getSwap();
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(swap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(swap);
 		
 		LIBORModelMonteCarloSimulationModel simulationModel = getModel();
 				
@@ -115,7 +115,7 @@ public class ExposureEstimatorTest {
 		System.out.println("Expected Exposure ");
 		
 		AbstractLIBORMonteCarloProduct swap = getSwap();
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(swap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(swap);
 		
 		LIBORModelMonteCarloSimulationModel simulationModel = getModel();
 		

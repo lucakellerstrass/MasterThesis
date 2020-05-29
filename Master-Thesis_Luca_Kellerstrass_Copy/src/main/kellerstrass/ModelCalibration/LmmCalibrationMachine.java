@@ -33,25 +33,23 @@ import net.finmath.optimizer.SolverException;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implements  CalibrationMaschineInterface {
-
-	// Input Parameters
-	//private int numberOfPaths;   in Abstract Base class
-	//private int numberOfFactors;
-	//private CalibrationInformation calibrationInformation; in Abstract Base class
-	// private String modelName; in Abstract Base class
-	//private CurveModelCalibrationMaschine curveModelCalibrationMaschine; in Abstract Base class
-	
-
+/**
+ * LmmCalibrationMachine extends AbstractCalibrationMachine implements
+ * CalibrationMachineInterface <br>
+ * Calibrates a LIBOR Market Model
+ * 
+ * @author lucak
+ *
+ */
+public class LmmCalibrationMachine extends AbstractCalibrationMachine implements CalibrationMachineInterface {
 
 	// Class intern parameters
-	//private double calculationDuration; in Abstract Base class
+	// private double calculationDuration; in Abstract Base class
 
-	
 	/*--------------Constructors--------------*/
 	/**
-	 * Calibrate a LIBOR Market Model using some calibration input and and Curve Model input.
-	 * <br>
+	 * Calibrate a LIBOR Market Model using some calibration input and and Curve
+	 * Model input. <br>
 	 * If the model is already calibrated it is not done again
 	 * 
 	 * @param numberOfPaths
@@ -59,37 +57,33 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 	 * @param calibrationInformation
 	 * @param curveModelCalibrationMaschine
 	 */
-	public LmmCalibrationMaschine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
-			CurveModelCalibrationMaschine curveModelCalibrationMaschine) {
-		super(numberOfPaths,numberOfFactors, calibrationInformation, curveModelCalibrationMaschine);
-		
-		this.modelName = "LMM P" + numberOfPaths + "F" + numberOfFactors + calibrationInformation.getName() + "CurveModel"
-				+ curveModelCalibrationMaschine.getCurveModelName();
+	public LmmCalibrationMachine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
+			CurveModelCalibrationMachine curveModelCalibrationMaschine) {
+		super(numberOfPaths, numberOfFactors, calibrationInformation, curveModelCalibrationMaschine);
+
+		this.modelName = "LMM P" + numberOfPaths + "F" + numberOfFactors + calibrationInformation.getName()
+				+ "CurveModel" + curveModelCalibrationMaschine.getCurveModelName();
 
 	}
-	
-	
-	
-	
+
 	/**
-	 * Calibrate a LIBOR Market Model using some calibration input and general Curve model assumptions.
-	 * <br>
+	 * Calibrate a LIBOR Market Model using some calibration input and general Curve
+	 * model assumptions. <br>
 	 * If the model is already calibrated it is not done again
 	 * 
 	 * @param numberOfPaths
 	 * @param numberOfFactors
 	 * @param calibrationInformation
 	 */
-	public LmmCalibrationMaschine(int numberOfPaths, int numberOfFactors,
+	public LmmCalibrationMachine(int numberOfPaths, int numberOfFactors,
 			CalibrationInformation calibrationInformation) {
-		this(numberOfPaths, numberOfFactors, calibrationInformation, new CurveModelCalibrationMaschine(CurveModelDataType.Example));
+		this(numberOfPaths, numberOfFactors, calibrationInformation,
+				new CurveModelCalibrationMachine(CurveModelDataType.Example));
 	}
 
-	
-	
 	/**
-	 * Calibrate a LIBOR Market Model using some calibration input and and a Curve Model data type.
-	 * <br>
+	 * Calibrate a LIBOR Market Model using some calibration input and and a Curve
+	 * Model data type. <br>
 	 * If the model is already calibrated it is not done again
 	 * 
 	 * @param numberOfPaths
@@ -97,82 +91,64 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 	 * @param calibrationInformation
 	 * @param forceCalculation
 	 */
-	public LmmCalibrationMaschine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
+	public LmmCalibrationMachine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
 			CurveModelDataType curveModelDataType) {
-		this(numberOfPaths, numberOfFactors, calibrationInformation, new CurveModelCalibrationMaschine(curveModelDataType));
+		this(numberOfPaths, numberOfFactors, calibrationInformation,
+				new CurveModelCalibrationMachine(curveModelDataType));
 	}
-	
-	
 
 	/*--------------END of Constructors--------------*/
-	
 
 	/**
-	 * Get a LIBORModelMonteCarloSimulationModel with a specific process
-	 * <br>
-	 * If the model is already calibrated it is not done again 
+	 * Get a LIBORModelMonteCarloSimulationModel with a specific process <br>
+	 * If the model is already calibrated it is not done again
+	 * 
 	 * @param process
 	 * @return
 	 * @throws SolverException
 	 */
 	@Override
-	public LIBORModelMonteCarloSimulationModel getLIBORModelMonteCarloSimulationModel(MonteCarloProcess process) throws SolverException {
+	public LIBORModelMonteCarloSimulationModel getLIBORModelMonteCarloSimulationModel(MonteCarloProcess process)
+			throws SolverException {
 		return getLIBORModelMonteCarloSimulationModel(process, false);
 	}
-
-
-
-	
-	
-	
 
 	/**
 	 * Get a LIBORModelMonteCarloSimulationModel with a specific process. If the
 	 * exact same Model is already stored, it will be loaded and not be calibrated
 	 * again, as long as >>force Calculation<< is false.
+	 * 
 	 * @param process
 	 * @param forcedCalculatio
 	 * @return
 	 * @throws SolverException
 	 */
-	public LIBORModelMonteCarloSimulationModel getLIBORModelMonteCarloSimulationModel(MonteCarloProcess process, boolean forcedCalculation) throws SolverException {
-		return new LIBORMonteCarloSimulationFromLIBORModel(getCalibratedModel(forcedCalculation), process );
+	public LIBORModelMonteCarloSimulationModel getLIBORModelMonteCarloSimulationModel(MonteCarloProcess process,
+			boolean forcedCalculation) throws SolverException {
+		return new LIBORMonteCarloSimulationFromLIBORModel(getCalibratedModel(forcedCalculation), process);
 	}
-	
-	
+
 	/**
 	 * Get the Calibrated LIBOR Market Model using the given Information. If the
 	 * exact same Model is already stored, it will be loaded and not be calibrated
 	 * again.
-	 * @throws SolverException 
+	 * 
+	 * @throws SolverException
 	 */
 	public LIBORModel getCalibratedModel() throws SolverException {
-		return  getCalibratedModel(false);
-		
+		return getCalibratedModel(false);
+
 	}
 
-
-
-
-
-
-	
-	
-	
-
-
-
-	
-
-
-
-    //..................The Check if the model is already calibrated....................//	
+	// ..................The Check if the model is already
+	// calibrated....................//
 
 	/**
 	 * Get the Calibrated LIBOR Market Model using the given Information. If the
 	 * exact same Model is already stored, it will be loaded and not be calibrated
 	 * again, as long as >>force Calculation<< is false.
-	 * @throws SolverException 
+	 * 
+	 * @throws SolverException
 	 */
 	public LIBORModel getCalibratedModel(boolean forcedCalculation) throws SolverException {
 
@@ -226,25 +202,25 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 
 	}
 
-	
+	// ..................The Calibration....................//
 
-    //..................The Calibration....................//	
-	
-	
 	/**
 	 * Here the LIBOR Market Model is calibrated and stored under its name.
-	 * @throws SolverException 
+	 * 
+	 * @throws SolverException
 	 */
 	private void CalibrateAndStore() throws SolverException {
 
 		double calibationStart = System.currentTimeMillis();
 
 		// Get the calibrated Analytic model
-		//AnalyticModel curveModel = this.curveModelCalibrationMaschine.getCalibratedCurve();
+		// AnalyticModel curveModel =
+		// this.curveModelCalibrationMaschine.getCalibratedCurve();
 		// Create the forward curve (initial value of the LIBOR market model)
-		//final ForwardCurve forwardCurve = super.curveModel
-			//	.getForwardCurve("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
-		//final DiscountCurve discountCurve = super.curveModel.getDiscountCurve("discountCurve-EUR");
+		// final ForwardCurve forwardCurve = super.curveModel
+		// .getForwardCurve("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
+		// final DiscountCurve discountCurve =
+		// super.curveModel.getDiscountCurve("discountCurve-EUR");
 
 		/* Calibration */
 
@@ -252,9 +228,7 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 		 * Create a set of calibration products.
 		 */
 		// We get the calibration information from the "CalibrationInformation" instance
-		CalibrationProduct[] calibrationProducts =  getCalibrationProducts();
-
-
+		CalibrationProduct[] calibrationProducts = getCalibrationProducts();
 
 		/*
 		 * Create a simulation time discretization
@@ -276,9 +250,17 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 		 * Create a volatility Model Here one can adjust the volatility matrix
 		 * dimensions
 		 */
+		/*
+		 * LIBORVolatilityModel volatilityModel = new
+		 * LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
+		 * liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
+		 * 10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
+		 * 100);
+		 */
 		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
-				liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15),
-				new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 / 100);
+				liborPeriodDiscretization,
+				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30),
+				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30), 0.30 / 100);
 
 		// Create correlationModel
 		LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray,
@@ -329,23 +311,18 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 		calibrationParameters.put("parameterStep", new Double(1E-4));
 		properties.put("calibrationParameters", calibrationParameters);
 
-
-
 		LIBORModel liborMarketModelCalibrated = null;
 
 		try {
 			liborMarketModelCalibrated = new LIBORMarketModelFromCovarianceModel(liborPeriodDiscretization, curveModel,
-					forwardCurve, new DiscountCurveFromForwardCurve(forwardCurve), 
-					covarianceModelDisplaced,
-					calibrationProducts, 
-					properties);
+					forwardCurve, new DiscountCurveFromForwardCurve(forwardCurve), covarianceModelDisplaced,
+					calibrationProducts, properties);
 		} catch (CalculationException e) {
 			System.out.println(
 					" Creation of liborMarketModelCalibrated in the class LmmCalibrationMaschine did not work.");
 			e.printStackTrace();
 		}
 
-	
 		double calibationEnd = System.currentTimeMillis();
 
 		calculationDuration = calibationEnd - calibationStart;
@@ -364,7 +341,8 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 			out.writeObject(liborMarketModelCalibrated);
 			out.close();
 			fileOut.close();
-			// System.out.println("Serianlized data is saved in temp/" +super.modelName + ".ser");
+			// System.out.println("Serianlized data is saved in temp/" +super.modelName +
+			// ".ser");
 
 		} catch (IOException v) {
 			v.printStackTrace();
@@ -389,20 +367,17 @@ public class LmmCalibrationMaschine extends AbstractCalibrationMaschine implemen
 
 	}
 
-
-
-
-
 	@Override
 	public double[] getCalibratedParameters() {
 		try {
-			return  ((AbstractLIBORCovarianceModelParametric)((LIBORMarketModelFromCovarianceModel)  getCalibratedModel()).getCovarianceModel()).getParameterAsDouble();
+			return ((AbstractLIBORCovarianceModelParametric) ((LIBORMarketModelFromCovarianceModel) getCalibratedModel())
+					.getCovarianceModel()).getParameterAsDouble();
 		} catch (SolverException e) {
 			System.out.println("returning the Model Parameters of the Libor Market Model failed");
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
 
 }

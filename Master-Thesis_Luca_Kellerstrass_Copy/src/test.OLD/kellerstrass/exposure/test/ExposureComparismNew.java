@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.interestrate.models.StoredModels;
 import kellerstrass.usefulOLD.PaymentOffsetCodeOLD;
 import net.finmath.marketdata.model.curves.DiscountCurve;
@@ -79,8 +79,8 @@ public class ExposureComparismNew {
 		swap1 = initSwap(SimulationModel1);
 		swap2 = initSwap(SimulationModel2);
 		
-		TermStructureMonteCarloProduct swapExposureEstimator1 = new ExposureMaschine(swap1);
-		TermStructureMonteCarloProduct swapExposureEstimator2 = new ExposureMaschine(swap2);
+		TermStructureMonteCarloProduct swapExposureEstimator1 = new ExposureMachine(swap1);
+		TermStructureMonteCarloProduct swapExposureEstimator2 = new ExposureMachine(swap2);
 		
 		int numberOfExamplePaths = 10;
 		printExposurepaths(swapExposureEstimator1, SimulationModel1, numberOfExamplePaths);

@@ -1,7 +1,7 @@
 package kellerstrass.xva;
 
 import kellerstrass.defaultProbability.bootstrapping.ForwardBootstrap;
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.usefulOLD.PaymentFrequencyOLD;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.curves.DiscountCurve;
@@ -40,7 +40,7 @@ public class CVA {
 		super();
 		this.simulationModel = simulationModel;
 		this.swap = swap;
-		this.swapExposureEstimator =new ExposureMaschine(swap);
+		this.swapExposureEstimator =new ExposureMachine(swap);
 		this.recoveryRate = recoveryRate;
 		this.cdsSpreads = cdsSpreads;
 		this.SimulationTimeDiscretization = simulationModel.getTimeDiscretization();
@@ -62,7 +62,7 @@ public class CVA {
 		super();
 		this.simulationModel = simulationModel;
 		this.swap = swap;
-		this.swapExposureEstimator =new ExposureMaschine(swap);
+		this.swapExposureEstimator =new ExposureMachine(swap);
 		this.recoveryRate = recoveryRate;
 		this.cdsSpreads = cdsSpreads;
 		this.SimulationTimeDiscretization = simulationModel.getTimeDiscretization();

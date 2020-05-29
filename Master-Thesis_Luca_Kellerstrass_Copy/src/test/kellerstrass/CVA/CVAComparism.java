@@ -5,11 +5,11 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import kellerstrass.ModelCalibration.CalibrationMaschineInterface;
-import kellerstrass.ModelCalibration.CurveModelCalibrationMaschine;
-import kellerstrass.ModelCalibration.HWCalibrationMaschine;
-import kellerstrass.ModelCalibration.LmmCalibrationMaschine;
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.ModelCalibration.CalibrationMachineInterface;
+import kellerstrass.ModelCalibration.CurveModelCalibrationMachine;
+import kellerstrass.ModelCalibration.HWCalibrationMachine;
+import kellerstrass.ModelCalibration.LmmCalibrationMachine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
@@ -44,7 +44,7 @@ public class CVAComparism {
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.EXAMPLE);
 
-		CurveModelCalibrationMaschine curveModelCalibrationMaschine = new CurveModelCalibrationMaschine(
+		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
 				CurveModelDataType.Example);
 
 		int numberOfPaths = 1000;
@@ -68,9 +68,9 @@ public class CVAComparism {
 		EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotionM2,
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
-		CalibrationMaschineInterface Model1CalibrationMaschine = new LmmCalibrationMaschine(numberOfPaths,
+		CalibrationMachineInterface Model1CalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
 				numberOfFactorsM1, calibrationInformation, curveModelCalibrationMaschine);
-		CalibrationMaschineInterface Model2CalibrationMaschine = new HWCalibrationMaschine(numberOfPaths,
+		CalibrationMachineInterface Model2CalibrationMaschine = new HWCalibrationMachine(numberOfPaths,
 				numberOfFactorsM2, calibrationInformation, curveModelCalibrationMaschine);
 		// simulation machine
 		LIBORModelMonteCarloSimulationModel Model1 = Model1CalibrationMaschine
@@ -93,7 +93,7 @@ public class CVAComparism {
 
 		// Exposure Maschine
 		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(testSwap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(testSwap);
 
 		System.out.println("\n We want to compare the given models");
 		System.out.println("Model 1 is: " + Model1CalibrationMaschine.getModelName());

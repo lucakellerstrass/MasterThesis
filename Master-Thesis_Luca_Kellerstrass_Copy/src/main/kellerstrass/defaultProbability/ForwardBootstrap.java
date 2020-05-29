@@ -5,54 +5,44 @@ import net.finmath.time.TimeDiscretization;
 
 import net.finmath.time.TimeDiscretizationFromArray;
 
+
+/**
+ * This class implements a forward bootstrap algorithm to get the default probability of an entity from CDS spreads.
+ * 
+ * @author lucak
+ *
+ */
 public class ForwardBootstrap {
 
 	// CDS information
-
 	private double recovery; // Recovery Rate
-
 	private double[] cdsSpreads; // The (yearly) CDS spreads in bp
-
 	private int paymentsPerYear;
 
 	// The timediscretization
-
 	private double deltaT;
-
 	private int NumberOfTimesteps;
-
 	private TimeDiscretization timeDiscretization;
 
 	// arrays for bootstrapping
 
 	// Over whole time discretization
-
 	private double[] discountFactors;
-
 	private double[] CumulativeSurvivalProbabilities;
-
 	private double[] MarginalDefaultProbability;
-
 	private double[] defaults;
 
 	// yearly values
-
 	private double[] hazardRates;
-
 	private double[] MTM;
-
 	private double[] UpFront;
-
 	private double[] riskAnnuity;
-
 	private double[] defaultLegs;
 
 	// Length terminated via Payment frequency
-
 	private double Premiums[];
 
 	// Boolean to know If the bootstrapping was already don
-
 	private boolean hasBootstrapped;
 
 	/*
@@ -68,21 +58,15 @@ public class ForwardBootstrap {
 	/**
 	 * 
 	 * The most basic Constructor <br>
-	 * 
-	 * uses a simple interest rate (e.g. 5%) for the Discount curve and <br>
-	 * 
+	 * uses a simple interest rate (e.g. 5%) for the Discount curve and <br> 
 	 * the default time Discretization with NumberOfTimeStepsPerYear of 20
 	 *
 	 * 
 	 * 
 	 * @param interestRate used for the discount factor
-	 * 
 	 * @param recovery     The Recovery Rate
-	 * 
 	 * @param cdsSpreads   The (yearly) CDS spreads in bp
-	 * 
 	 * @param frequency
-	 * 
 	 * @throws Exception
 	 * 
 	 */
@@ -97,23 +81,15 @@ public class ForwardBootstrap {
 	/**
 	 * 
 	 * A more advanced Constructor <br>
-	 * 
 	 * uses a simple interest rate (e.g. 5%) for the Discount curve and <br>
-	 * 
 	 * the possibility to set the NumberOfTimeStepsPerYear
 	 *
 	 * 
-	 * 
 	 * @param interestRate             used for the discount factor
-	 * 
 	 * @param recovery                 The Recovery Rate
-	 * 
 	 * @param cdsSpreads               The (yearly) CDS spreads in bp
-	 * 
 	 * @param frequency
-	 * 
 	 * @param NumberOfTimeStepsPerYear
-	 * 
 	 * @throws Exception
 	 */
 
@@ -121,12 +97,9 @@ public class ForwardBootstrap {
 
 			int NumberOfTimeStepsPerYear) throws Exception {
 
-		// System.out.println("initialisierung");
 
 		this(null, recovery, cdsSpreads, frequency,
-
 				new TimeDiscretizationFromArray(0.0, (int) (cdsSpreads.length / (1.0 / NumberOfTimeStepsPerYear)),
-
 						(double) (1.0 / (double) NumberOfTimeStepsPerYear)));
 
 		this.discountFactors = getDiscountfactors(interestRate, timeDiscretization);
@@ -136,21 +109,13 @@ public class ForwardBootstrap {
 	/**
 	 * 
 	 * A more advanced Constructor <br>
-	 * 
 	 * uses a simple interest rate (e.g. 5%) for the Discount curve and <br>
-	 * 
 	 * a given timeDiscretization.
-	 *
-	 * 
-	 * 
+     *
 	 * @param interestRate       used for the discount factor
-	 * 
 	 * @param recovery           The Recovery Rate
-	 * 
 	 * @param cdsSpreads         The (yearly) CDS spreads in bp
-	 * 
 	 * @param frequency
-	 * 
 	 * @param timeDiscretization timeDiscretization useful, if available.
 	 * 
 	 * @throws Exception
@@ -158,13 +123,9 @@ public class ForwardBootstrap {
 	 */
 
 	public ForwardBootstrap(double interestRate, double recovery, double[] cdsSpreads, PaymentFrequencyOLD frequency,
-
 			TimeDiscretization timeDiscretization) throws Exception {
 
-		// System.out.println("initialisierung");
-
 		this(getDiscountfactors(interestRate, timeDiscretization), recovery, cdsSpreads, frequency,
-
 				timeDiscretization);
 
 	}
@@ -172,35 +133,19 @@ public class ForwardBootstrap {
 	/**
 	 * 
 	 * The most advanced Constructor <br>
-	 * 
 	 * uses a given Discount curve and corresponding <br>
-	 * 
 	 * Time Discretization
-	 *
-	 * 
-	 * 
 	 * @param discountCurve      The discount curve to be used in the Algorithm.
-	 * 
 	 *                           <br>
-	 * 
 	 *                           It has to correspond with the given
-	 * 
 	 *                           timeDiscretization
-	 * 
 	 * @param recovery           The Recovery Rate
-	 * 
 	 * @param cdsSpreads         The (yearly) CDS spreads in bp
-	 * 
 	 * @param frequency          The frequency, the premium of the CDS is payed @see
-	 * 
 	 *                           PaymentFrequency
-	 * 
 	 * @param timeDiscretization The timeDiscretization for the algorithm. <br>
-	 * 
 	 *                           Has to correspond with the discount curve. <br>
-	 * 
 	 *                           has to start at t=0.0
-	 * 
 	 * @throws Exception
 	 * 
 	 */
@@ -214,60 +159,35 @@ public class ForwardBootstrap {
 		if (discountCurve != null) {
 
 			this.discountFactors = CheckingOLD.checkDiscountCurve(discountCurve, timeDiscretization);
-
 		}
-
 		this.recovery = recovery;
-
 		if (CheckingOLD.hasOnlyPositiveValues(cdsSpreads)) {
-
 			this.cdsSpreads = cdsSpreads;
 		}
-
 		else
-
 		{
-
 			throw new Exception("cdsSpreads not valid");
-
 		}
 
 		this.timeDiscretization = timeDiscretization;
-
 		this.NumberOfTimesteps = timeDiscretization.getNumberOfTimeSteps();
-
 		this.deltaT = (timeDiscretization.getTime(1) - timeDiscretization.getTime(0));
 
 		// System.out.println("NumberOfTimesteps= "+ NumberOfTimesteps);
-
 		this.CumulativeSurvivalProbabilities = new double[NumberOfTimesteps + 1];
-
 		CumulativeSurvivalProbabilities[0] = 1.0;
-
 		this.MarginalDefaultProbability = new double[NumberOfTimesteps + 1];
-
 		MarginalDefaultProbability[0] = Double.NaN;
-
 		this.defaults = new double[NumberOfTimesteps + 1];
-
 		defaults[0] = Double.NaN;
-
 		this.paymentsPerYear = frequency.PaymentsPerYear();
-
 		this.Premiums = new double[cdsSpreads.length * paymentsPerYear];
-
 		this.hazardRates = new double[cdsSpreads.length];
-
 		this.MTM = new double[cdsSpreads.length];
-
 		this.UpFront = new double[cdsSpreads.length];
-
 		UpFrontInit();
-
 		this.riskAnnuity = new double[cdsSpreads.length];
-
 		this.defaultLegs = new double[cdsSpreads.length];
-
 		this.hasBootstrapped = false;
 
 	}
@@ -299,6 +219,11 @@ public class ForwardBootstrap {
 	/**
 	 * 
 	 * The forward bootstrapping algorithm
+	 * <br>
+	 * This algorithm finds the hazard rates where
+	 * <br>
+	 * Premium_Leg = Default_Leg
+	 * 
 	 * 
 	 */
 
@@ -396,8 +321,8 @@ public class ForwardBootstrap {
 
 	/**
 	 * 
-	 * This is only provisoric!!!!!!! need to iner- and extrapolate the CDS
-	 * spreads!!!
+	 * This could be better
+	 * 
 	 * 
 	 * @TODO Do it better!
 	 * 

@@ -5,10 +5,11 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import kellerstrass.ModelCalibration.CalibrationMaschineInterface;
-import kellerstrass.ModelCalibration.CurveModelCalibrationMaschine;
-import kellerstrass.ModelCalibration.LmmCalibrationMaschine;
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.ModelCalibration.CalibrationMachineInterface;
+import kellerstrass.ModelCalibration.CurveModelCalibrationMachine;
+import kellerstrass.ModelCalibration.HWCalibrationMachine;
+import kellerstrass.ModelCalibration.LmmCalibrationMachine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
@@ -24,13 +25,19 @@ import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
 
+/**
+ * Test the CVA an exposure with some "real" data input.
+ * 
+ * @author lucak
+ *
+ */
 public class CVATestWithMarketData {
 
 	// Set the Calibration set. Here: e.g. Example Co-Terminals
 	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-			DataSource.MARKETDATA);
-	private static CurveModelCalibrationMaschine curveModelCalibrationMaschine = new CurveModelCalibrationMaschine(
-			CurveModelDataType.OIS6M);
+			DataSource.EXAMPLE);//EXAMPLE
+	private static CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
+			CurveModelDataType.Example); //OIS6M
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
 			new DecimalFormatSymbols(new Locale("en")));
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.00000;-##0.00000",
@@ -54,7 +61,7 @@ public class CVATestWithMarketData {
 		EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion,
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
-		CalibrationMaschineInterface lmmCalibrationMaschine = new LmmCalibrationMaschine(numberOfPaths, numberOfFactors,
+		CalibrationMachineInterface lmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, numberOfFactors,
 				calibrationInformation, curveModelCalibrationMaschine);
 		// simulation machine
 		LIBORModelMonteCarloSimulationModel simulationModel = lmmCalibrationMaschine
@@ -62,6 +69,8 @@ public class CVATestWithMarketData {
 
 		// Swap
 		StoredSwap StoredTrueSwap = new StoredSwap("TrueSwap1");
+		// StoredTrueSwap.setFixedCoupon(-0.003492800749460123);
+		System.out.println("fixed = " + StoredTrueSwap.getFixedCoupon());
 		Swap TrueSwap = StoredTrueSwap.getSwap();
 
 		// AbstractLIBORMonteCarloProduct testSwap =
@@ -69,7 +78,7 @@ public class CVATestWithMarketData {
 
 		// Exposure Maschine
 		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
-		ExposureMaschine swapExposureEstimator = new ExposureMaschine(TrueSwap);
+		ExposureMachine swapExposureEstimator = new ExposureMachine(TrueSwap);
 
 		System.out.println("The name of the Model is: " + lmmCalibrationMaschine.getModelName());
 
@@ -89,16 +98,26 @@ public class CVATestWithMarketData {
 
 		System.out.println("The CVA is \t" + formatterValue.format(cva.getValue()));
 
+		System.out.println("Calibration test:");
+		lmmCalibrationMaschine.printCalibrationTest();
+
 	}
 
-	private static void printExpectedExposurePaths(ExposureMaschine swapExposureEstimator,
+	private static void printExpectedExposurePaths(ExposureMachine swapExposureEstimator,
 			LIBORModelMonteCarloSimulationModel simulationModel) throws CalculationException {
 
 		AbstractLIBORMonteCarloProduct Swap = swapExposureEstimator.getUnterlying();
 
-		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");
-		for (double observationDate : simulationModel.getTimeDiscretization()) {
+		System.out.println(
+				"observationDate"
+				//+ "  \t forward rate"
+				+ "   \t   expected positive Exposure  \t   expected negative Exposure");
+		int timeIndex;
+		int liborPeriodIndex;
 
+		for (double observationDate : simulationModel.getTimeDiscretization()) {
+			timeIndex = simulationModel.getTimeDiscretization().getTimeIndex(Math.min(observationDate, 39.0));
+			liborPeriodIndex = simulationModel.getLiborPeriodIndex(Math.min(observationDate, 39.0));
 			/*
 			 * if(observationDate == 0) { continue; }
 			 */
@@ -117,8 +136,10 @@ public class CVATestWithMarketData {
 			double expectedPositiveExposure = valuesPositiveExposure.getAverage();
 			double expectedNegativeExposure = valuesNegativeExposure.getAverage();
 
-			System.out.println(observationDate + "    \t         " + formatter6.format(expectedPositiveExposure)
-					+ "    \t         " + formatter6.format(expectedNegativeExposure));
+			System.out.println(observationDate + "    \t         "
+					//+ simulationModel.getLIBOR(timeIndex, liborPeriodIndex).getAverage() + "    \t         "
+					+ formatter6.format(expectedPositiveExposure) + "    \t         "
+					+ formatter6.format(expectedNegativeExposure));
 
 		}
 	}

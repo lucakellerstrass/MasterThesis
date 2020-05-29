@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import org.junit.Assert;
 
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.interestrate.models.StoredHullWhite;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
@@ -45,7 +45,7 @@ System.out.println("Expected Exposure ");
 
 
 		AbstractLIBORMonteCarloProduct swap = getSwap();
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(swap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(swap);
 		
 		
 		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");

@@ -5,14 +5,13 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import kellerstrass.ModelCalibration.CalibrationMaschineInterface;
-import kellerstrass.ModelCalibration.LmmCalibrationMaschine;
-import kellerstrass.exposure.ExposureMaschine;
+import kellerstrass.ModelCalibration.CalibrationMachineInterface;
+import kellerstrass.ModelCalibration.LmmCalibrationMachine;
+import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import kellerstrass.swap.StoredSwap;
-import kellerstrass.temp.LMMCalibrationCVA5RebuildAsCalibrationmaschine;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.BrownianMotion;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
@@ -25,98 +24,96 @@ import net.finmath.optimizer.SolverException;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-
-
 public class ExposureMaschineLMMTest {
 
-	private static DecimalFormat formatterValue		= new DecimalFormat(" ##0.000%;-##0.000%", new DecimalFormatSymbols(Locale.ENGLISH));
-	private static DecimalFormat formatterParam		= new DecimalFormat(" #0.000;-#0.000", new DecimalFormatSymbols(Locale.ENGLISH));
-	private static DecimalFormat formatterDeviation	= new DecimalFormat(" 0.00000E00;-0.00000E00", new DecimalFormatSymbols(Locale.ENGLISH));
-	private final static NumberFormat formatter6 = new DecimalFormat("0.000000", new DecimalFormatSymbols(new Locale("en")));
-	
-	
+	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
+			new DecimalFormatSymbols(Locale.ENGLISH));
+	private static DecimalFormat formatterParam = new DecimalFormat(" #0.000;-#0.000",
+			new DecimalFormatSymbols(Locale.ENGLISH));
+	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
+			new DecimalFormatSymbols(Locale.ENGLISH));
+	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
+			new DecimalFormatSymbols(new Locale("en")));
 
-	  // Set the Calibration set. Here: e.g. Example Co-Terminals
-	private static	CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface, DataSource.EXAMPLE );
+	// Set the Calibration set. Here: e.g. Example Co-Terminals
+	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+			DataSource.EXAMPLE);
 
-	
 	public static void main(String[] args) throws SolverException, CalculationException {
-	
+
 		boolean forcedCalculation = false;
-		
+
 		int numberOfPaths = 1000;
 		int numberOfFactors = 3;
-		
-		//Simulation time discretization
+
+		// Simulation time discretization
 		double lastTime = 40.0;
 		double dt = 0.25;
-		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,(int) (lastTime / dt), dt);
-		//brownian motion
-		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray, numberOfFactors , numberOfPaths, 31415 /* seed */);
-		//process
-		EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion, EulerSchemeFromProcessModel.Scheme.EULER);
-		//calibration machine
-		CalibrationMaschineInterface lmmCalibrationMaschine = new LmmCalibrationMaschine(numberOfPaths, numberOfFactors, calibrationInformation);
-	    //simulation machine
-		LIBORModelMonteCarloSimulationModel simulationModel = lmmCalibrationMaschine.getLIBORModelMonteCarloSimulationModel(process,forcedCalculation);
+		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
+				(int) (lastTime / dt), dt);
+		// brownian motion
+		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+				numberOfFactors, numberOfPaths, 31415 /* seed */);
+		// process
+		EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion,
+				EulerSchemeFromProcessModel.Scheme.EULER);
+		// calibration machine
+		CalibrationMachineInterface lmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, numberOfFactors,
+				calibrationInformation);
+		// simulation machine
+		LIBORModelMonteCarloSimulationModel simulationModel = lmmCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
-		//Swap
+		// Swap
 		StoredSwap testStoredSwap = new StoredSwap("Example");
 		Swap testSwap = testStoredSwap.getSwap();
-		
-		//AbstractLIBORMonteCarloProduct testSwap = LMMCalibrationCVA5RebuildAsCalibrationmaschine.getSwap();
-		
-		//Exposure Maschine
-		//ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
-		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMaschine(testSwap);
-		
-		 System.out.println("The name of the Model is: " + lmmCalibrationMaschine.getModelName());
-		
-		 System.out.println("\n We whant to to the exposure paths of the given model an the swap: " /*+ testStoredSwap.getSwapName()*/);
-		
-		 printExpectedExposurePaths(swapExposureEstimator, simulationModel, testSwap);
 
+		// AbstractLIBORMonteCarloProduct testSwap =
+		// LMMCalibrationCVA5RebuildAsCalibrationmaschine.getSwap();
 
+		// Exposure Maschine
+		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
+		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(testSwap);
 
+		System.out.println("The name of the Model is: " + lmmCalibrationMaschine.getModelName());
 
-					
+		System.out.println("\n We whant to to the exposure paths of the given model an the swap: " /*
+																									 * + testStoredSwap.
+																									 * getSwapName()
+																									 */);
+
+		printExpectedExposurePaths(swapExposureEstimator, simulationModel, testSwap);
 
 	}
 
-
-	
-	
-	
 	private static void printExpectedExposurePaths(TermStructureMonteCarloProduct swapExposureEstimator,
-			LIBORModelMonteCarloSimulationModel simulationModel, AbstractLIBORMonteCarloProduct testSwap) throws CalculationException {
+			LIBORModelMonteCarloSimulationModel simulationModel, AbstractLIBORMonteCarloProduct testSwap)
+			throws CalculationException {
 		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");
-		for(double observationDate : simulationModel.getTimeDiscretization()) {
+		for (double observationDate : simulationModel.getTimeDiscretization()) {
 
-			/*if(observationDate == 0) {
-				continue;
-			}*/
+			/*
+			 * if(observationDate == 0) { continue; }
+			 */
 
 			/*
 			 * Calculate expected positive exposure of a swap
 			 */
 			RandomVariable valuesSwap = testSwap.getValue(observationDate, simulationModel);
 			RandomVariable valuesEstimatedExposure = swapExposureEstimator.getValue(observationDate, simulationModel);
-			RandomVariable valuesPositiveExposure = valuesSwap.mult(valuesEstimatedExposure.choose(new RandomVariableFromDoubleArray(1.0), new RandomVariableFromDoubleArray(0.0)));
-			RandomVariable valuesNegativeExposure = valuesSwap.mult(valuesEstimatedExposure.choose(new RandomVariableFromDoubleArray(0.0), new RandomVariableFromDoubleArray(1.0)));
-			
-			double expectedPositiveExposure		= valuesPositiveExposure.getAverage();
-			double expectedNegativeExposure		= valuesNegativeExposure.getAverage();
+			RandomVariable valuesPositiveExposure = valuesSwap.mult(valuesEstimatedExposure
+					.choose(new RandomVariableFromDoubleArray(1.0), new RandomVariableFromDoubleArray(0.0)));
+			RandomVariable valuesNegativeExposure = valuesSwap.mult(valuesEstimatedExposure
+					.choose(new RandomVariableFromDoubleArray(0.0), new RandomVariableFromDoubleArray(1.0)));
 
-			System.out.println(observationDate + "    \t         " +  formatter6.format(expectedPositiveExposure) + "    \t         " +  formatter6.format(expectedNegativeExposure) );
+			double expectedPositiveExposure = valuesPositiveExposure.getAverage();
+			double expectedNegativeExposure = valuesNegativeExposure.getAverage();
 
+			System.out.println(observationDate + "    \t         " + formatter6.format(expectedPositiveExposure)
+					+ "    \t         " + formatter6.format(expectedNegativeExposure));
 
 		}
-		
+
 	}
-
-
-
-
-
 
 }
