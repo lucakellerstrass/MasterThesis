@@ -38,7 +38,7 @@ public class CVAComparism {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	public static void main(String[] args) throws Exception {
-		boolean forcedCalculation = true;
+		boolean forcedCalculation = false;
 
 		
 		
