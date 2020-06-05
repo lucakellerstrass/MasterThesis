@@ -1,4 +1,4 @@
-package kellerstrass.exposure.test;
+package kellerstrass.temp;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -37,7 +37,7 @@ public class ExposureComparism {
 			DataSource.EXAMPLE);
 
 	public static void main(String[] args) throws CalculationException, SolverException {
-		boolean forcedCalculation = false;
+		boolean forcedCalculation = true;
 
 		int numberOfPaths = 1000;
 		int numberOfFactors = 3;
@@ -86,8 +86,8 @@ public class ExposureComparism {
 			LIBORModelMonteCarloSimulationModel Model1, LIBORModelMonteCarloSimulationModel Model2,
 			AbstractLIBORMonteCarloProduct testSwap) throws CalculationException {
 		System.out.println(
-				"observationDate  \t Model 1: \t   expected positive Exposure    \t   expected negative Exposure "
-						+ "\t Model 2: \t   expected positive Exposure   \t   expected negative Exposure"
+				"observationDate  \t Lmm LIBOR: \t   expected positive Exposure Lmm    \t   expected negative Exposure Lmm "
+						+ "\t HW LIBOR: \t   expected positive Exposure   \t   expected negative Exposure"
 						+ "\t Deviation Model 1 - Model 2: \t   expected positive Exposure   \t   expected negative Exposure");
 		for (double observationDate : Model1.getTimeDiscretization()) {
 
@@ -121,7 +121,7 @@ public class ExposureComparism {
 			double expectedPositiveExposureDeviation = expectedPositiveExposureM1 - expectedPositiveExposureM2;
 			double expectedNegativeExposureDeviation = expectedNegativeExposureM1 - expectedNegativeExposureM2;
 
-			System.out.println(observationDate + "    \t                                   \t"
+			System.out.println(observationDate + "    \t                "                 + "                   \t"
 					+ formatter6.format(expectedPositiveExposureM1) + "    \t                        "
 					+ formatter6.format(expectedNegativeExposureM1) + "\t                                   \t"
 					+ formatter6.format(expectedPositiveExposureM2) + "    \t                        "

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
+import net.finmath.time.daycount.DayCountConvention;
 import net.finmath.time.daycount.DayCountConvention_ACT_365;
 
 /**
@@ -25,7 +26,7 @@ public class CalibrationInformation {
 	private String targetVolatilityType; // "VOLATILITYNORMAL";
 	private LocalDate referenceDate = null;
 	private BusinessdayCalendarExcludingTARGETHolidays cal = null;
-	private DayCountConvention_ACT_365 modelDC = null;
+	private DayCountConvention modelDC = null;
 
 	private DataScope dataScope; // Co-terminals, extended Co-terminals, full surface
 	private DataSource dataSource; // Example, true market Data, (Date)
@@ -62,6 +63,10 @@ public class CalibrationInformation {
 
 	}
 
+	
+	
+	
+	
 	/**
 	 * Fill the Data Vectors with information based on the data scope and data
 	 * source. Not all combinations will work
@@ -341,15 +346,13 @@ public class CalibrationInformation {
 	 * @param atmNormalVolatilities
 	 * @param targetVolatilityType
 	 * @param referenceDate
-	 * @param cal
+	 * @param cal (BusinessdayCalendarExcludingTARGETHolidays)
 	 * @param modelDC
-	 * @param dataScope
-	 * @param dataSource
+	 * @param dataName
 	 */
-	public void setSwapPeriodLength(double swapPeriodLength, String[] atmExpiries, String[] atmTenors,
+	public CalibrationInformation(double swapPeriodLength, String[] atmExpiries, String[] atmTenors,
 			double[] atmNormalVolatilities, String targetVolatilityType, LocalDate referenceDate,
-			BusinessdayCalendarExcludingTARGETHolidays cal, DayCountConvention_ACT_365 modelDC, DataScope dataScope,
-			DataSource dataSource, String dataName) {
+			BusinessdayCalendarExcludingTARGETHolidays cal, DayCountConvention modelDC,String dataName) {
 		this.swapPeriodLength = swapPeriodLength;
 		this.atmExpiries = atmExpiries;
 		this.atmTenors = atmTenors;
@@ -358,8 +361,6 @@ public class CalibrationInformation {
 		this.referenceDate = referenceDate;
 		this.cal = cal;
 		this.modelDC = modelDC;
-		this.dataScope = dataScope;
-		this.dataSource = dataSource;
 		this.DataName = dataName;
 
 	}
@@ -392,7 +393,7 @@ public class CalibrationInformation {
 		return cal;
 	}
 
-	public DayCountConvention_ACT_365 getModelDC() {
+	public DayCountConvention getModelDC() {
 		return modelDC;
 	}
 

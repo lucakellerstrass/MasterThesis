@@ -1,4 +1,4 @@
-package kellerstrass.marketInfromation.test;
+package kellerstrass.marketInformation.test;
 
 import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.DataScope;

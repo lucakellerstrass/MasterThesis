@@ -18,7 +18,7 @@ import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.optimizer.SolverException;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class LmmCalibrationMaschineTest {
+public class LmmCalibrationMachineTest {
 
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));
@@ -27,7 +27,7 @@ public class LmmCalibrationMaschineTest {
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private static boolean forcedCalculation = false;
+	private static boolean forcedCalculation = true;
 	private static int numberOfPaths = 1000;
 	private static int numberOfFactors = 3;
 
@@ -38,7 +38,7 @@ public class LmmCalibrationMaschineTest {
 				DataSource.EXAMPLE);
 
 		System.out.println("First via the a extra test methode of this test class");
-		Tester(calibrationInformation1, forcedCalculation);
+		//Tester(calibrationInformation1, forcedCalculation);
 
 		System.out.println("Second via the Calibration maschine intern calibration test methode");
 		CalibrationMachineInterface lmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, numberOfFactors,

@@ -18,7 +18,7 @@ import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.optimizer.SolverException;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class HwCalibrationMaschineTest {
+public class HwCalibrationMachineTest {
 
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));
@@ -27,8 +27,8 @@ public class HwCalibrationMaschineTest {
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private static boolean forcedCalculation = false;
-	private static int numberOfPaths = 100000;
+	private static boolean forcedCalculation = true;
+	private static int numberOfPaths = 100;
 	private static int numberOfFactors = 2;
 
 	public static void main(String[] args) throws SolverException, CalculationException {
@@ -38,15 +38,20 @@ public class HwCalibrationMaschineTest {
 				DataSource.EXAMPLE);
 
 		System.out.println("First via the extra test methode of this test class");
-		Tester(calibrationInformation1, forcedCalculation);
+		//Tester(calibrationInformation1, forcedCalculation);
 
 		System.out.println("Second via the Calibration maschine intern calibration test methode");
 		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
 				calibrationInformation1);
 		HwCalibrationMaschine.printCalibrationTest(forcedCalculation);
+		
+		System.out.println("The calibration took " + HwCalibrationMaschine.getCalculationDuration()/60000 + " mins");
 
 	}
 
+	
+	
+	
 	private static void Tester(CalibrationInformation calibrationInformation, boolean forcedCalculation)
 			throws SolverException, CalculationException {
 
@@ -92,6 +97,7 @@ public class HwCalibrationMaschineTest {
 		CalibrationProduct[] calibrationItems = HwCalibrationMaschine.getCalibrationProducts();
 
 		System.out.println("\nValuation on calibrated model:");
+		System.out.println("The number of calibration items is: "+ calibrationItems.length);
 		double deviationSum = 0.0;
 		double deviationSquaredSum = 0.0;
 		for (int i = 0; i < calibrationItems.length; i++) {
@@ -102,7 +108,8 @@ public class HwCalibrationMaschineTest {
 				double error = valueModel - valueTarget;
 				deviationSum += error;
 				deviationSquaredSum += error * error;
-				System.out.println(HwCalibrationMaschine.getCalibrationItemNames(calibrationInformation)[i] + "\t"
+				String[] ItemNames = HwCalibrationMaschine.getCalibrationItemNames(calibrationInformation);
+				System.out.println(ItemNames[i] + "\t"
 						+ "Model: " + "\t" + formatterValue.format(valueModel) + "\t Target: " + "\t"
 						+ formatterValue.format(valueTarget) + "\t Deviation: " + "\t"
 						+ formatterDeviation.format(valueModel - valueTarget));

@@ -18,7 +18,7 @@ import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.optimizer.SolverException;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class HwCalibrationMaschineAlternativeTest {
+public class HwCalibrationMachineAlternativeTest {
 
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));

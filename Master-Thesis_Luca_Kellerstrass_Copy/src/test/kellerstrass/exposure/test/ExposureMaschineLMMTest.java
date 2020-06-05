@@ -41,7 +41,7 @@ public class ExposureMaschineLMMTest {
 
 	public static void main(String[] args) throws SolverException, CalculationException {
 
-		boolean forcedCalculation = false;
+		boolean forcedCalculation = true;
 
 		int numberOfPaths = 1000;
 		int numberOfFactors = 3;

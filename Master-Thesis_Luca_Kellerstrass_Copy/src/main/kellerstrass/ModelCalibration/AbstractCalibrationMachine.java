@@ -13,15 +13,12 @@ import java.util.Map;
 
 import kellerstrass.Calibration.CurveModelCalibrationItem;
 import kellerstrass.marketInformation.CalibrationInformation;
-import kellerstrass.marketInformation.DataScope;
-import kellerstrass.marketInformation.DataSource;
 import net.finmath.exception.CalculationException;
 import net.finmath.marketdata.model.AnalyticModel;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.ForwardCurve;
 import net.finmath.montecarlo.BrownianMotion;
 import net.finmath.montecarlo.interestrate.CalibrationProduct;
-import net.finmath.montecarlo.interestrate.LIBORModel;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.products.AbstractLIBORMonteCarloProduct;
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
@@ -42,7 +39,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));
-	private static DecimalFormat formatterParam = new DecimalFormat(" #0.0000;-#0.0000",
+	private static DecimalFormat formatterVolatility = new DecimalFormat(" #0.0000;-#0.0000",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
@@ -161,6 +158,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
 			double tenor = calibrationInformation.getModelDC().getDaycountFraction(exerciseDate, tenorEndDate);
 
+			// System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
+			// tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
+
 			// We consider an idealized tenor grid (alternative: adapt the model grid)
 			// To ensure the dates fit into the timediscretization
 			exercise = Math.round(exercise / 0.25) * 0.25;
@@ -190,6 +190,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				e.printStackTrace();
 			}
 
+			// System.out.println(" 2) calibrationItemNames.size= " +
+			// calibrationItemNames.size());
+
 		}
 
 		CalibrationProduct[] calibrationItems = new CalibrationProduct[calibrationItemNames.size()];
@@ -206,6 +209,16 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		ArrayList<String> calibrationItemNames = new ArrayList<>();
 
 		for (int i = 0; i < calibrationInformation.getAtmNormalVolatilities().length; i++) {
+
+			LocalDate exerciseDate = calibrationInformation.getCal().getDateFromDateAndOffsetCode(
+					calibrationInformation.getReferenceDate(), calibrationInformation.getAtmExpiries()[i]);
+			double exercise = calibrationInformation.getModelDC()
+					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
+
+			if (exercise < 1.0) {
+				continue;
+			}
+
 			try {
 				calibrationItemNames.add(
 						calibrationInformation.getAtmExpiries()[i] + "\t" + calibrationInformation.getAtmTenors()[i]);
@@ -222,6 +235,78 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 	}
 
+	
+	/**
+	 * Get the Expiries of the products used for calibration.
+	 * @param calibrationInformation
+	 * @return
+	 * @ToDo Do this without code duplication
+	 */
+	public String[] getCalibrationItemExpiries(CalibrationInformation calibrationInformation) {
+
+		ArrayList<String> calibrationItemExpiries = new ArrayList<>();
+
+		for (int i = 0; i < calibrationInformation.getAtmNormalVolatilities().length; i++) {
+
+			LocalDate exerciseDate = calibrationInformation.getCal().getDateFromDateAndOffsetCode(
+					calibrationInformation.getReferenceDate(), calibrationInformation.getAtmExpiries()[i]);
+			double exercise = calibrationInformation.getModelDC()
+					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
+
+			if (exercise < 1.0) {
+				continue;
+			}
+
+			try {
+				calibrationItemExpiries.add(calibrationInformation.getAtmExpiries()[i]);
+			} catch (Exception e) {
+				System.out.println("Adding the calibration Information to the calibration items in the LMM failed.");
+			}
+		}
+		String[] calibrationItemExpiriesString = new String[calibrationItemExpiries.size()];
+		for (int j = 0; j < calibrationItemExpiries.size(); j++) {
+			calibrationItemExpiriesString[j] = calibrationItemExpiries.get(j);
+		}
+		return calibrationItemExpiriesString;
+	}
+
+	
+	/**
+	 * Get the Tenors of the products used for calibration.
+	 * @param calibrationInformation
+	 * @return
+	 * @ToDo Do this without code duplication
+	 */
+	public String[] getCalibrationItemTenors(CalibrationInformation calibrationInformation) {
+
+		ArrayList<String> calibrationItemTenors = new ArrayList<>();
+
+		for (int i = 0; i < calibrationInformation.getAtmNormalVolatilities().length; i++) {
+
+			LocalDate exerciseDate = calibrationInformation.getCal().getDateFromDateAndOffsetCode(
+					calibrationInformation.getReferenceDate(), calibrationInformation.getAtmExpiries()[i]);
+			double exercise = calibrationInformation.getModelDC()
+					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
+
+			if (exercise < 1.0) {
+				continue;
+			}
+
+			try {
+				calibrationItemTenors.add(calibrationInformation.getAtmTenors()[i]);
+			} catch (Exception e) {
+				System.out.println("Adding the calibration Information to the calibration items in the LMM failed.");
+			}
+		}
+		String[] calibrationItemExpiriesTenors = new String[calibrationItemTenors.size()];
+		for (int j = 0; j < calibrationItemTenors.size(); j++) {
+			calibrationItemExpiriesTenors[j] = calibrationItemTenors.get(j);
+		}
+		return calibrationItemExpiriesTenors;
+	}	
+	
+	
+	
 	/**
 	 * Get the number of paths
 	 * 
@@ -297,6 +382,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		System.out.println("\nValuation on calibrated model:");
 		double deviationSum = 0.0;
 		double deviationSquaredSum = 0.0;
+		String[] ItemNames = getCalibrationItemNames(calibrationInformation);
 		for (int i = 0; i < calibrationItems.length; i++) {
 			AbstractLIBORMonteCarloProduct calibrationProduct = calibrationItems[i].getProduct();
 			try {
@@ -305,9 +391,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				double error = valueModel - valueTarget;
 				deviationSum += error;
 				deviationSquaredSum += error * error;
-				System.out.println(getCalibrationItemNames(calibrationInformation)[i] + "\t" + "Model: " + "\t"
-						+ formatterValue.format(valueModel) + "\t Target: " + "\t" + formatterValue.format(valueTarget)
-						+ "\t Deviation: " + "\t" + formatterDeviation.format(valueModel - valueTarget));
+				System.out.println(ItemNames[i] + "\t" + "Model: " + "\t" + formatterValue.format(valueModel)
+						+ "\t Target: " + "\t" + formatterValue.format(valueTarget) + "\t Deviation: " + "\t"
+						+ formatterDeviation.format(valueModel - valueTarget));
 			} catch (Exception e) {
 			}
 		}
@@ -316,6 +402,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		System.out.println("Mean Deviation: \t" + formatterDeviation.format(averageDeviation));
 		System.out.println("RMS Error.....: \t"
 				+ formatterDeviation.format(Math.sqrt(deviationSquaredSum / calibrationItems.length)));
+		System.out.println("The calibration took "+ getCalculationDuration()/60000 + " min");
 		System.out.println(
 				"__________________________________________________________________________________________\n");
 
@@ -328,9 +415,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 	 * @return
 	 * 
 	 */
-	public ArrayList<Map<String, String>> getCalibrationTable(boolean forcedCalculation) {
+	public ArrayList<Map<String, Object>> getCalibrationTable(boolean forcedCalculation) {
 
-		ArrayList<Map<String, String>> OutTable = new ArrayList<Map<String, String>>();
+		ArrayList<Map<String, Object>> OutTable = new ArrayList<Map<String, Object>>();
 
 		// Simulation properties
 		double lastTime = 40.0;
@@ -353,6 +440,8 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		}
 
 		CalibrationProduct[] calibrationItems = getCalibrationProducts();
+		String[] calibrationItemExpiries = getCalibrationItemExpiries(calibrationInformation);
+		String[] calibrationItemTenors = getCalibrationItemTenors(calibrationInformation);
 
 		double deviationSum = 0.0;
 		double deviationSquaredSum = 0.0;
@@ -365,19 +454,20 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				deviationSum += error;
 				deviationSquaredSum += error * error;
 
-				Map<String, String> OutTableRow = new HashMap<>();
+				Map<String, Object> OutTableRow = new HashMap<>();
 
-				OutTableRow.put("Calibration Item", getCalibrationItemNames(calibrationInformation)[i]);
-				OutTableRow.put("Model:", formatterValue.format(valueModel));
-				OutTableRow.put("Target:", formatterValue.format(valueTarget));
-				OutTableRow.put("Deviation:", formatterDeviation.format(valueModel - valueTarget));
+				OutTableRow.put("Expiry", calibrationItemExpiries[i]);
+				OutTableRow.put("Tenor", calibrationItemTenors[i]);
+				OutTableRow.put("Model_Value", valueModel);
+				OutTableRow.put("Target", valueTarget);
+				OutTableRow.put("Deviation", (valueModel - valueTarget));
 
 				OutTable.add(i, OutTableRow);
 			} catch (Exception e) {
 			}
 		}
 
-		HashMap<String, String> OutTableRow = new HashMap<String, String>();
+		Map<String, Object> OutTableRow = new HashMap<String, Object>();
 
 		double averageDeviation = deviationSum / calibrationItems.length;
 		OutTableRow.put("Mean Deviation ", formatterDeviation.format(averageDeviation));
@@ -401,6 +491,8 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 	 */
 	public LIBORModelMonteCarloSimulationModel getLIBORModelMonteCarloSimulationModel(MonteCarloProcess process)
 			throws SolverException {
+		System.out.println(
+				"The method getLIBORModelMonteCarloSimulationModel(MonteCarloProcess process) needs to be overwritten inside the calibration machine.");
 		return null;
 	}
 

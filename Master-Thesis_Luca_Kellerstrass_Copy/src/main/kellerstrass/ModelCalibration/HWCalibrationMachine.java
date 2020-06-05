@@ -52,7 +52,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 	public HWCalibrationMachine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
 			CurveModelCalibrationMachine curveModelCalibrationMachine) {
 		super(numberOfPaths, numberOfFactors, calibrationInformation, curveModelCalibrationMachine);
-		super.modelName = "HW P" + numberOfPaths + calibrationInformation.getName() + "CurveModel"
+		super.modelName = "HW F" + numberOfFactors + "P" + numberOfPaths + calibrationInformation.getName() + "CurveModel"
 				+ curveModelCalibrationMachine.getCurveModelName();
 
 	}
@@ -176,20 +176,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 	private void CalibrateAndStore() throws SolverException {
 		double calibationStart = System.currentTimeMillis();
 
-		// Get the calibrated Analytic model
-		/*
-		 * AnalyticModel curveModel; try { curveModel =
-		 * curveModelCalibrationMachine.getCalibratedCurve(); } catch (SolverException
-		 * e1) { System.out.
-		 * println("It failed to get the Calibrated curve from the curveModelCalibrationMachine"
-		 * ); curveModel = null; e1.printStackTrace(); } // Create the forward curve
-		 * (initial value of the LIBOR market model) final ForwardCurve forwardCurve =
-		 * curveModel.getForwardCurve("forwardCurve");
-		 * //("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
-		 * 
-		 * final DiscountCurve discountCurve =
-		 * curveModel.getDiscountCurve("discountCurve-EUR");
-		 */
+
 		/* Calibration */
 
 		/*
@@ -215,20 +202,22 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 				numberOfFactors, numberOfPaths, 31415 /* seed */);
 
 		// OLD
-		TimeDiscretization volatilityDiscretization = new TimeDiscretizationFromArray(
-				new double[] { 0, 1, 2, 3, 5, 7, 10, 15 });
+		 TimeDiscretization volatilityDiscretization = new
+		 TimeDiscretizationFromArray(
+		 new double[] { 0, 1, 2, 3, 5, 7, 10, 15 });
 
 		// New
-		// TimeDiscretization volatilityDiscretization = new
-		// TimeDiscretizationFromArray(new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-		// 15, 20, 25, 30});
+		
+//		  TimeDiscretization volatilityDiscretization = new
+//		  TimeDiscretizationFromArray(new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+//		  15, 20, 25, 30});
+		 
 
-		// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30
 		RandomVariableFactory randomVariableFactory = new RandomVariableFactory();
 
 		AbstractShortRateVolatilityModel volatilityModel = new ShortRateVolatilityModelPiecewiseConstant(
 				randomVariableFactory, timeDiscretizationFromArray, volatilityDiscretization, new double[] { 0.02 },
-				new double[] { 0.1 }, true);
+				new double[] { 0.1 }, true, false);
 
 		// //Create map (mainly use calibration defaults)
 		Map<String, Object> properties = new HashMap<>();
@@ -236,6 +225,20 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 		calibrationParameters.put("brownianMotion", brownianMotion);
 		properties.put("calibrationParameters", calibrationParameters);
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		HullWhiteModel hullWhiteModelCalibrated = null;
 		try {
 			hullWhiteModelCalibrated = HullWhiteModel.of(randomVariableFactory, liborPeriodDiscretization,

@@ -38,12 +38,12 @@ public class ExposureMaschineHWTest {
 			new DecimalFormatSymbols(new Locale("en")));
 
 	// Set the Calibration set. Here: e.g. Example Co-Terminals
-	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.CoTerminals,
+	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
 			DataSource.EXAMPLE);
 
 	public static void main(String[] args) throws SolverException, CalculationException {
 
-		boolean forcedCalculation = false;
+		boolean forcedCalculation = true;
 
 		int numberOfPaths = 1000;
 		int numberOfFactors = 2;
@@ -67,7 +67,7 @@ public class ExposureMaschineHWTest {
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
 		// Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example");
+		StoredSwap testStoredSwap = new StoredSwap("Example 2");
 		Swap testSwap = testStoredSwap.getSwap();
 
 		// AbstractLIBORMonteCarloProduct testSwap =

@@ -66,8 +66,8 @@ public class CVAandCalibrationTestForPython {
 	private static int NumberOfFactorsLmm;
 	private static int numberOfPaths;
 
-	private static CalibrationMachineInterface lmmCalibrationMaschine;
-	private static CalibrationMachineInterface hwCalibrationMaschine;
+	private static CalibrationMachineInterface lmmCalibrationmashine;
+	private static CalibrationMachineInterface hwCalibrationmashine;
 
 	double[] cdsSpreads10y = new double[10];
 	// Counterparty information
@@ -125,25 +125,83 @@ public class CVAandCalibrationTestForPython {
 		this.simulationTimeDiscretization = new TimeDiscretizationFromArray(0.0, (int) (Range / dt), dt);
 
 		// Initialization
-		this.lmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, NumberOfFactorsLMM,
+		this.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths, NumberOfFactorsLMM,
 				calibrationInformation);
 		// Initialization
-		this.hwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, NumberOfFactorsHW, calibrationInformation);
+		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths, NumberOfFactorsHW, calibrationInformation);
 
 	}
 
+	
+	
+	/** Print the exposure paths for the Libor market model
+	 * 
+	 * @return A HashMap of Exposure paths with the rows: observationDate, expectedPositiveExposure, expectedNegativeExposure
+	 * @throws SolverException
+	 * @throws CalculationException
+	 */
 	public static List<Map<String, String>> printExpectedExposurePathsLmm()
 			throws SolverException, CalculationException {
-		return printExpectedExposurePaths(NumberOfFactorsLmm, lmmCalibrationMaschine);
+		return printExpectedExposurePaths(NumberOfFactorsLmm, lmmCalibrationmashine);
 	}
 
+	
+	/** Print the exposure paths for the Hull White model
+	 * 
+	 * @return A HashMap of Exposure paths with the columns: observationDate, expectedPositiveExposure, expectedNegativeExposure
+	 * @throws SolverException
+	 * @throws CalculationException
+	 */
 	public static List<Map<String, String>> printExpectedExposurePathsHw()
 			throws SolverException, CalculationException {
-		return printExpectedExposurePaths(NumberOfFactorsHW, hwCalibrationMaschine);
+		return printExpectedExposurePaths(NumberOfFactorsHW, hwCalibrationmashine);
 	}
+	
+	
+	/**This method returns the calibration results of the LIBOR Market Model with the corresponding calibration quality
+	 * <br>
+	 * The columns are: 
+	 * <br>
+	 * Calibration Item: Some String that is the name of the Calibration Product
+	 * <br>
+	 * Model_Value: The value of these calibration product, the model calculates after calibration
+	 * <br>
+	 * Target: The target value. The value "Model_Value" should hit.
+	 * <br>
+	 * Deviation: the difference between Model value and target.
+	 * @return
+	 */
+	public static ArrayList<Map<String, Object>> printCalibrationTestLmm(){
+		return lmmCalibrationmashine.getCalibrationTable(forcedCalculation);
+	}
+	
+
+	/**This method returns the calibration results of the Hull White Model with the corresponding calibration quality
+	 * <br>
+	 * The columns are: 
+	 * <br>
+	 * Calibration Item: Some String that is the name of the Calibration Product
+	 * <br>
+	 * Model_Value: The value of the calibration product, the model calculates after calibration
+	 * <br>
+	 * Target: The target value. The value "Model_Value" should hit.
+	 * <br>
+	 * Deviation: the difference between Model value and target.
+	 * @return
+	 */
+	public static ArrayList<Map<String, Object>> printCalibrationTestHw(){
+		return hwCalibrationmashine.getCalibrationTable(forcedCalculation);
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	private static List<Map<String, String>> printExpectedExposurePaths(int numberOFFactors,
-			CalibrationMachineInterface CalibrationMaschine) throws SolverException, CalculationException {
+			CalibrationMachineInterface Calibrationmashine) throws SolverException, CalculationException {
 
 		// brownian motion
 		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(simulationTimeDiscretization,
@@ -153,10 +211,10 @@ public class CVAandCalibrationTestForPython {
 				EulerSchemeFromProcessModel.Scheme.EULER);
 
 		// simulation machine
-		LIBORModelMonteCarloSimulationModel simulationModel = CalibrationMaschine
+		LIBORModelMonteCarloSimulationModel simulationModel = Calibrationmashine
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
-		System.out.println("The name of the Model is: " + CalibrationMaschine.getModelName());
+		System.out.println("The name of the Model is: " + Calibrationmashine.getModelName());
 		System.out.println(
 				"\n We want to see the exposure paths of the given model an the swap: " + inputSwap.getSwapName());
 

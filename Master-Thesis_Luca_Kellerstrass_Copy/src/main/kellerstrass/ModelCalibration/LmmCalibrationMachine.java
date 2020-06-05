@@ -213,16 +213,6 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 
 		double calibationStart = System.currentTimeMillis();
 
-		// Get the calibrated Analytic model
-		// AnalyticModel curveModel =
-		// this.curveModelCalibrationMaschine.getCalibratedCurve();
-		// Create the forward curve (initial value of the LIBOR market model)
-		// final ForwardCurve forwardCurve = super.curveModel
-		// .getForwardCurve("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
-		// final DiscountCurve discountCurve =
-		// super.curveModel.getDiscountCurve("discountCurve-EUR");
-
-		/* Calibration */
 
 		/*
 		 * Create a set of calibration products.
@@ -250,18 +240,31 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		 * Create a volatility Model Here one can adjust the volatility matrix
 		 * dimensions
 		 */
-		/*
-		 * LIBORVolatilityModel volatilityModel = new
-		 * LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
-		 * liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
-		 * 10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
-		 * 100);
-		 */
-		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
-				liborPeriodDiscretization,
-				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30),
-				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30), 0.30 / 100);
+		
+		//The standard version
+//		  LIBORVolatilityModel volatilityModel = new
+//		  LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
+//		  liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
+//		  10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
+//		 100);
+		
+		//The extreme extended verion
+//		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
+//				liborPeriodDiscretization,
+//				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30),
+//				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30), 0.50 / 100);
 
+		//The medium version
+			LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
+			liborPeriodDiscretization,
+			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30),
+			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30), 0.50 / 100);
+
+		  
+
+		  
+		  
+		  
 		// Create correlationModel
 		LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray,
 				liborPeriodDiscretization, super.numberOfFactors, 0.05, false);
@@ -289,8 +292,8 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		// works also without
 		// Set calibration properties (should use our brownianMotion for calibration -
 		// needed to have to right correlation).
-		Double accuracy = new Double(1E-6); // Lower accuracy to reduce runtime of the unit test
-		int maxIterations = 100;
+		Double accuracy = new Double(1E-8); // Lower accuracy to reduce runtime of the unit test  //was 1E-6
+		int maxIterations = 300;    //was 100
 		int numberOfThreads = 4;
 		OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
 				numberOfThreads);

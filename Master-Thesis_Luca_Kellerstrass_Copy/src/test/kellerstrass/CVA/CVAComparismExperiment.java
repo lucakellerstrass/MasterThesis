@@ -3,7 +3,10 @@ package kellerstrass.CVA;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 
 import kellerstrass.ModelCalibration.CalibrationMachineInterface;
 import kellerstrass.ModelCalibration.CurveModelCalibrationMachine;
@@ -25,8 +28,10 @@ import net.finmath.montecarlo.interestrate.products.TermStructureMonteCarloProdu
 import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
+import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHolidays;
+import net.finmath.time.daycount.DayCountConvention;
 
-public class CVAComparism {
+public class CVAComparismExperiment {
 
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
 			new DecimalFormatSymbols(new Locale("en")));
@@ -40,56 +45,79 @@ public class CVAComparism {
 	public static void main(String[] args) throws Exception {
 		boolean forcedCalculation = true;
 
-		
-		
-		
-		// Set the Calibration set. Here: e.g. Example Co-Terminals
-		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+		// First we calibrate the Hull White Model
+
+		CalibrationInformation calibrationInformationForHw = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.EXAMPLE);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
 				CurveModelDataType.Example);
 
 		int numberOfPaths = 1000;
-		int numberOfFactorsM1 = 3; // For Libor Market Model
-		int numberOfFactorsM2 = 2; // For Hull white Model
+
+		int numberOfFactorsHw = 2; // For Hull white Model
 
 		// Simulation time discretization
 		double lastTime = 40.0;
 		double dt = 0.25;
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
 				(int) (lastTime / dt), dt);
-
 		// brownian motion
-		BrownianMotion brownianMotionM1 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
-				numberOfFactorsM1, numberOfPaths, 31415 /* seed */);
-		BrownianMotion brownianMotionM2 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
-				numberOfFactorsM2, numberOfPaths, 31415 /* seed */);
-		
+		BrownianMotion brownianMotionHw = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+				numberOfFactorsHw, numberOfPaths, 31415 /* seed */);
 		// process
-		EulerSchemeFromProcessModel process1 = new EulerSchemeFromProcessModel(brownianMotionM1,
+		EulerSchemeFromProcessModel processHw = new EulerSchemeFromProcessModel(brownianMotionHw,
 				EulerSchemeFromProcessModel.Scheme.EULER);
-		EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotionM2,
+
+		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactorsHw,
+				calibrationInformationForHw, curveModelCalibrationMaschine);
+
+		LIBORModelMonteCarloSimulationModel HwModel = HwCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(processHw, forcedCalculation);
+
+		
+		
+		// We want to use the Hull White Model calibrated swaption volatilities to
+		// calibrate the LIBOR Market Model
+		double swapPeriodLength = calibrationInformationForHw.getSwapPeriodLength();
+		String targetVolatilityType = calibrationInformationForHw.getTargetVolatilityType();
+		LocalDate referenceDate = calibrationInformationForHw.getReferenceDate();
+		BusinessdayCalendarExcludingTARGETHolidays cal = calibrationInformationForHw.getCal();
+		DayCountConvention modelDC = calibrationInformationForHw.getModelDC();
+		String DataName = calibrationInformationForHw.getName() + " from HullWhite";
+
+		ArrayList<Map<String, Object>> calibrationTable = HwCalibrationMaschine.getCalibrationTable(forcedCalculation);
+		String[] atmExpiries = new String[calibrationTable.size() - 1];
+		String[] atmTenors = new String[calibrationTable.size() - 1];
+		double[] atmVolatilitiesByHw = new double[calibrationTable.size() - 1];
+
+		for (int i = 0; i < calibrationTable.size() - 1; i++) {
+			atmExpiries[i] = (String) calibrationTable.get(i).get("Expiry");
+			atmTenors[i] = (String) calibrationTable.get(i).get("Tenor");
+			atmVolatilitiesByHw[i] = (double) calibrationTable.get(i).get("Model_Value");
+		}
+
+		CalibrationInformation calibrationInformationForLmm = new CalibrationInformation(swapPeriodLength, atmExpiries,
+				atmTenors, atmVolatilitiesByHw, targetVolatilityType, referenceDate, cal, modelDC, DataName);
+
+		int numberOfFactorsLmm = 3; // For Libor Market Model
+		BrownianMotion brownianMotionLmm = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+				numberOfFactorsLmm, numberOfPaths, 31415 /* seed */);
+		
+		
+		EulerSchemeFromProcessModel processLmm = new EulerSchemeFromProcessModel(brownianMotionLmm,
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
 		
 		
-		CalibrationMachineInterface Model1CalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
-				numberOfFactorsM1, calibrationInformation, curveModelCalibrationMaschine);
-		CalibrationMachineInterface Model2CalibrationMaschine = new HWCalibrationMachine(numberOfPaths,
-				numberOfFactorsM2, calibrationInformation, curveModelCalibrationMaschine);
+		CalibrationMachineInterface LmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
+				numberOfFactorsLmm, calibrationInformationForLmm, curveModelCalibrationMaschine);
 		
-		
-		
-		
-		// simulation machine
-		LIBORModelMonteCarloSimulationModel Model1 = Model1CalibrationMaschine
-				.getLIBORModelMonteCarloSimulationModel(process1, forcedCalculation);
+		// simulation model
+		LIBORModelMonteCarloSimulationModel LiborMarketModel = LmmCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(processLmm, forcedCalculation);
 		
 				
-		
-		LIBORModelMonteCarloSimulationModel Model2 = Model2CalibrationMaschine
-				.getLIBORModelMonteCarloSimulationModel(process2, forcedCalculation);
 
 		// Swap
 		StoredSwap testStoredSwap = new StoredSwap("Example 2");
@@ -99,29 +127,30 @@ public class CVAComparism {
 
 		double[] cdsSpreads = { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
 
-		CVA cvaM1 = new CVA(Model1, testSwap, recoveryRate, cdsSpreads, Model1CalibrationMaschine.getDiscountCurve());
-		CVA cvaM2 = new CVA(Model2, testSwap, recoveryRate, cdsSpreads, Model2CalibrationMaschine.getDiscountCurve());
-		double cvaValueM1 = cvaM1.getValue();
-		double cvaValueM2 = cvaM2.getValue();
+		CVA cvaHw = new CVA(HwModel, testSwap, recoveryRate, cdsSpreads, HwCalibrationMaschine.getDiscountCurve());
+		CVA cvaLmm = new CVA(LiborMarketModel, testSwap, recoveryRate, cdsSpreads, LmmCalibrationMaschine.getDiscountCurve());
+		double cvaValueHw = cvaHw.getValue();
+		double cvaValueLmm = cvaLmm.getValue();
 
 		// Exposure Maschine
 		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
 		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(testSwap);
 
 		System.out.println("\n We want to compare the given models");
-		System.out.println("Model 1 is: " + Model1CalibrationMaschine.getModelName());
-		System.out.println("Model 2 is: " + Model2CalibrationMaschine.getModelName() + "\n");
+		System.out.println("Model 1 is: " + HwCalibrationMaschine.getModelName());
+		System.out.println("Model 2 is: " + LmmCalibrationMaschine.getModelName() + "\n");
 
-		System.out.println("The CVA with Model 1 is \t" + formatterValue.format(cvaValueM1));
-		System.out.println("The CVA with Model 2 is \t" + formatterValue.format(cvaValueM2));
-		System.out.println("The deviation (CVA1 - CVA2) is: \t" + formatterValue.format(cvaValueM1 - cvaValueM2)
-				+ ", which is " + formatterPercentage.format((cvaValueM1 - cvaValueM2) / cvaValueM1) + "\n");
+		System.out.println("The CVA with Model 1 is \t" + formatterValue.format(cvaValueHw));
+		System.out.println("The CVA with Model 2 is \t" + formatterValue.format(cvaValueLmm));
+		System.out.println("The deviation (CVA1 - CVA2) is: \t" + formatterValue.format(cvaValueHw - cvaValueLmm)
+				+ ", which is " + formatterPercentage.format((cvaValueHw - cvaValueLmm) / cvaValueHw) + "\n");
 
 		// Print the Calibration Tests for two two models
-		Model1CalibrationMaschine.printCalibrationTest();
-		Model2CalibrationMaschine.printCalibrationTest();
+		HwCalibrationMaschine.printCalibrationTest();
+		
+		LmmCalibrationMaschine.printCalibrationTest();
 
-		printExpectedExposurePathsCpmarism(swapExposureEstimator, Model1, Model2, testSwap);
+		printExpectedExposurePathsCpmarism(swapExposureEstimator, HwModel, LiborMarketModel, testSwap);
 
 	}
 
@@ -138,9 +167,9 @@ public class CVAComparism {
 			 * if(observationDate == 0) { continue; }
 			 */
 
-			/*
-			 * Calculate expected positive exposure of a swap
-			 */
+			
+			 //Calculate expected positive exposure of a swap
+			
 			// Model 1
 			RandomVariable valuesSwapM1 = testSwap.getValue(observationDate, Model1);
 			RandomVariable valuesEstimatedExposureM1 = swapExposureEstimator.getValue(observationDate, Model1);
