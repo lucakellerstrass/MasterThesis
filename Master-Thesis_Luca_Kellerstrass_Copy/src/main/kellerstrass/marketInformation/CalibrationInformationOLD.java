@@ -16,7 +16,7 @@ import net.finmath.time.daycount.DayCountConvention_ACT_365;
  * @author lucak
  *
  */
-public class CalibrationInformation {
+public class CalibrationInformationOLD {
 
 	// The market information we need for calibration
 	private double swapPeriodLength;
@@ -43,7 +43,7 @@ public class CalibrationInformation {
 	 * @param dataSource || example data, true market Data; if null example data is
 	 *                   used
 	 */
-	public CalibrationInformation(DataScope dataScope, DataSource dataSource) {
+	public CalibrationInformationOLD(DataScope dataScope, DataSource dataSource) {
 
 		if (dataScope == null) {
 			this.dataScope = DataScope.CoTerminals;
@@ -63,6 +63,10 @@ public class CalibrationInformation {
 
 	}
 
+	
+	
+	
+	
 	/**
 	 * Fill the Data Vectors with information based on the data scope and data
 	 * source. Not all combinations will work
@@ -75,124 +79,104 @@ public class CalibrationInformation {
 		switch (dataSource2) {
 
 		case EXAMPLE:
-			this.swapPeriodLength = 0.5;
-			this.targetVolatilityType = "VOLATILITYLOGNORMAL";
-			this.referenceDate = LocalDate.of(2019, Month.OCTOBER, 24); // 24.10.2019
-			this.cal = new BusinessdayCalendarExcludingTARGETHolidays();
-			this.modelDC = new DayCountConvention_ACT_365();
-
-			String[] ExpiriesFullSurface = { "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M",
-					"1M", "1M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M",
-					"6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "1Y", "1Y",
-					"1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "2Y", "2Y", "2Y", "2Y",
-					"2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "3Y", "3Y", "3Y", "3Y", "3Y", "3Y",
-					"3Y", "3Y", "3Y", "3Y", "3Y", "3Y", "3Y", "3Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y",
-					"4Y", "4Y", "4Y", "4Y", "4Y", "4Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y",
-					"5Y", "5Y", "5Y", "5Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y",
-					"7Y", "7Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y",
-					"10Y", "10Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y",
-					"15Y", "15Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y",
-					"20Y", "20Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y",
-					"25Y", "25Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y",
-					"30Y", "30Y" };
-			String[] TenorsFullSurface = { "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y",
-					"25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y",
-					"30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y",
-					"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y",
-					"3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y",
-					"5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y",
-					"7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y",
-					"9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y",
-					"10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y",
-					"15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y",
-					"20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y",
-					"25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y",
-					"30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y" };
-			double[] VolatilitiesFullSurface = { 0.00151, 0.00169, 0.0021, 0.00248, 0.00291, 0.00329, 0.00365, 0.004,
-					0.00437, 0.00466, 0.00527, 0.00571, 0.00604, 0.00625, 0.0016, 0.00174, 0.00217, 0.00264, 0.00314,
-					0.00355, 0.00398, 0.00433, 0.00469, 0.00493, 0.00569, 0.00607, 0.00627, 0.00645, 0.00182, 0.00204,
-					0.00238, 0.00286, 0.00339, 0.00384, 0.00424, 0.00456, 0.00488, 0.0052, 0.0059, 0.00623, 0.0064,
-					0.00654, 0.00205, 0.00235, 0.00272, 0.0032, 0.00368, 0.00406, 0.00447, 0.00484, 0.00515, 0.00544,
-					0.00602, 0.00629, 0.0064, 0.00646, 0.00279, 0.00319, 0.0036, 0.00396, 0.00436, 0.00469, 0.00503,
-					0.0053, 0.00557, 0.00582, 0.00616, 0.00628, 0.00638, 0.00641, 0.00379, 0.00406, 0.00439, 0.00472,
-					0.00504, 0.00532, 0.0056, 0.00582, 0.00602, 0.00617, 0.0063, 0.00636, 0.00638, 0.00639, 0.00471,
-					0.00489, 0.00511, 0.00539, 0.00563, 0.00583, 0.006, 0.00618, 0.0063, 0.00644, 0.00641, 0.00638,
-					0.00635, 0.00634, 0.00544, 0.00557, 0.00572, 0.00591, 0.00604, 0.00617, 0.0063, 0.00641, 0.00651,
-					0.00661, 0.00645, 0.00634, 0.00627, 0.00624, 0.00625, 0.00632, 0.00638, 0.00644, 0.0065, 0.00655,
-					0.00661, 0.00667, 0.00672, 0.00673, 0.00634, 0.00614, 0.00599, 0.00593, 0.00664, 0.00671, 0.00675,
-					0.00676, 0.00676, 0.00675, 0.00676, 0.00674, 0.00672, 0.00669, 0.00616, 0.00586, 0.00569, 0.00558,
-					0.00647, 0.00651, 0.00651, 0.00651, 0.00652, 0.00649, 0.00645, 0.0064, 0.00637, 0.00631, 0.00576,
-					0.00534, 0.00512, 0.00495, 0.00615, 0.0062, 0.00618, 0.00613, 0.0061, 0.00607, 0.00602, 0.00596,
-					0.00591, 0.00586, 0.00536, 0.00491, 0.00469, 0.0045, 0.00578, 0.00583, 0.00579, 0.00574, 0.00567,
-					0.00562, 0.00556, 0.00549, 0.00545, 0.00538, 0.00493, 0.00453, 0.00435, 0.0042, 0.00542, 0.00547,
-					0.00539, 0.00532, 0.00522, 0.00516, 0.0051, 0.00504, 0.005, 0.00495, 0.00454, 0.00418, 0.00404,
-					0.00394 };
 
 			switch (dataScope2) {
 
-			case FullSurface:
-				this.atmExpiries = ExpiriesFullSurface;
-				this.atmTenors = TenorsFullSurface;
-				this.atmVolatilities = VolatilitiesFullSurface;
+			case RisingTerminals:
+
+				// Create (no)co-terminals (atmExpiry + atmTenor = 11Y)
+				String[] atmExpiries2 = { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y" };
+				String[] atmTenors2 = { "1Y", "4Y", "6Y", "7Y", "8Y", "9Y", "10Y" };
+				double[] atmNormalVolatilities2 = { 0.00504, 0.005, 0.00495, 0.00454, 0.00418, 0.00404, 0.00394 };
+
+				this.swapPeriodLength = 0.5;
+				this.atmExpiries = atmExpiries2;
+				this.atmTenors = atmTenors2;
+				this.atmVolatilities = atmNormalVolatilities2;
+				this.targetVolatilityType = "VOLATILITYNORMAL";
+				this.referenceDate = LocalDate.of(2016, Month.SEPTEMBER, 30);
+				this.cal = new BusinessdayCalendarExcludingTARGETHolidays();
+				this.modelDC = new DayCountConvention_ACT_365();
 				break;
 
 			case CoTerminals:
-				String[] atmExpiriesCoTerminals = { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y" };
-				String[] atmTenorsCoTerminals = { "10Y", "9Y", "8Y", "7Y", "6Y", "4Y", "1Y" };
-				double[] atmVolatilitiesCoTerminals = getVolatilitiesForExpiriesAndTenors(
-						atmExpiriesCoTerminals, atmTenorsCoTerminals, ExpiriesFullSurface, TenorsFullSurface,
-						VolatilitiesFullSurface);
+				String[] atmExpiries4 = { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y" };
+				String[] atmTenors4 = { "10Y", "9Y", "8Y", "7Y", "6Y", "4Y", "1Y" }; // co-terminals
+				double[] atmNormalVolatilities4 = { 0.00504, 0.005, 0.00495, 0.00454, 0.00418, 0.00404, 0.00394 };
 
-				this.atmExpiries = atmExpiriesCoTerminals;
-				this.atmTenors = atmTenorsCoTerminals;
-				this.atmVolatilities = atmVolatilitiesCoTerminals;
-
+				this.swapPeriodLength = 0.5;
+				this.atmExpiries = atmExpiries4;
+				this.atmTenors = atmTenors4;
+				this.atmVolatilities = atmNormalVolatilities4;
+				this.targetVolatilityType = "VOLATILITYNORMAL";
+				this.referenceDate = LocalDate.of(2016, Month.SEPTEMBER, 30);
+				this.cal = new BusinessdayCalendarExcludingTARGETHolidays();
+				this.modelDC = new DayCountConvention_ACT_365();
 				break;
 
-            //combination of 1Y,1Y, 2Y, 2Y stc.
-			case RisingTerminals:
-				String[] atmExpiriesRisingTerminals = { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "25Y", "30Y" };
-				
-				String[] atmTenorsRisingTerminals =  { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "25Y", "30Y" };
-				
-				double[] atmVolatilitiesRisingTerminals = getVolatilitiesForExpiriesAndTenors(
-						atmExpiriesRisingTerminals, atmTenorsRisingTerminals, ExpiriesFullSurface, TenorsFullSurface,
-						VolatilitiesFullSurface);
-
-				this.atmExpiries = atmExpiriesRisingTerminals;
-				this.atmTenors = atmTenorsRisingTerminals;
-				this.atmVolatilities = atmVolatilitiesRisingTerminals;
-
-				break;
-				// 10,11 and 12 year Co-Terminals
 			case ExtendedCoTermindals:
-				String[] atmExpiriesExtendedCoTermindals = { 
-						"1Y", "1Y",
-						"2Y","2Y","2Y",
-						"3Y","3Y","3Y",
-						"4Y","4Y","4Y",
-						"5Y","5Y","5Y",
-						"7Y","7Y","7Y",
-						"10Y","10Y",
-						};
-				
-				String[] atmTenorsExtendedCoTermindals = {  
-						"9Y","10Y",
-						"8Y","9Y","10Y",
-						"7Y","8Y","9Y",
-						"6Y","7Y","8Y",
-						"5Y","6Y","7Y",
-						"3Y","4Y","5Y",
-						"1Y","2Y"
-						};
-				
-				double[] atmVolatilitiesExtendedCoTermindals = getVolatilitiesForExpiriesAndTenors(
-						atmExpiriesExtendedCoTermindals, atmTenorsExtendedCoTermindals, ExpiriesFullSurface, TenorsFullSurface,
-						VolatilitiesFullSurface);
+				System.out.println("data Source not available YET");
+				break;
 
-				this.atmExpiries = atmExpiriesExtendedCoTermindals;
-				this.atmTenors = atmTenorsExtendedCoTermindals;
-				this.atmVolatilities = atmVolatilitiesExtendedCoTermindals;
+			case FullSurface:
+				// Full Volatilityy
+				String[] atmExpiries3 = { "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M", "1M",
+						"1M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "3M", "6M",
+						"6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "6M", "1Y", "1Y", "1Y",
+						"1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "1Y", "2Y", "2Y", "2Y", "2Y", "2Y",
+						"2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "2Y", "3Y", "3Y", "3Y", "3Y", "3Y", "3Y", "3Y",
+						"3Y", "3Y", "3Y", "3Y", "3Y", "3Y", "3Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y", "4Y",
+						"4Y", "4Y", "4Y", "4Y", "4Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y", "5Y",
+						"5Y", "5Y", "5Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y", "7Y",
+						"7Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y", "10Y",
+						"10Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y", "15Y",
+						"15Y", "15Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y", "20Y",
+						"20Y", "20Y", "20Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y", "25Y",
+						"25Y", "25Y", "25Y", "25Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y", "30Y",
+						"30Y", "30Y", "30Y", "30Y", "30Y" };
+				String[] atmTenors3 = { "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y",
+						"25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y",
+						"30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y",
+						"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y",
+						"2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y",
+						"3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y",
+						"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y",
+						"5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y",
+						"6Y", "7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y",
+						"7Y", "8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y",
+						"8Y", "9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y",
+						"9Y", "10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y",
+						"10Y", "15Y", "20Y", "25Y", "30Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y",
+						"15Y", "20Y", "25Y", "30Y" };
+				double[] atmNormalVolatilities3 = { 0.00151, 0.00169, 0.0021, 0.00248, 0.00291, 0.00329, 0.00365, 0.004,
+						0.00437, 0.00466, 0.00527, 0.00571, 0.00604, 0.00625, 0.0016, 0.00174, 0.00217, 0.00264,
+						0.00314, 0.00355, 0.00398, 0.00433, 0.00469, 0.00493, 0.00569, 0.00607, 0.00627, 0.00645,
+						0.00182, 0.00204, 0.00238, 0.00286, 0.00339, 0.00384, 0.00424, 0.00456, 0.00488, 0.0052, 0.0059,
+						0.00623, 0.0064, 0.00654, 0.00205, 0.00235, 0.00272, 0.0032, 0.00368, 0.00406, 0.00447, 0.00484,
+						0.00515, 0.00544, 0.00602, 0.00629, 0.0064, 0.00646, 0.00279, 0.00319, 0.0036, 0.00396, 0.00436,
+						0.00469, 0.00503, 0.0053, 0.00557, 0.00582, 0.00616, 0.00628, 0.00638, 0.00641, 0.00379,
+						0.00406, 0.00439, 0.00472, 0.00504, 0.00532, 0.0056, 0.00582, 0.00602, 0.00617, 0.0063, 0.00636,
+						0.00638, 0.00639, 0.00471, 0.00489, 0.00511, 0.00539, 0.00563, 0.00583, 0.006, 0.00618, 0.0063,
+						0.00644, 0.00641, 0.00638, 0.00635, 0.00634, 0.00544, 0.00557, 0.00572, 0.00591, 0.00604,
+						0.00617, 0.0063, 0.00641, 0.00651, 0.00661, 0.00645, 0.00634, 0.00627, 0.00624, 0.00625,
+						0.00632, 0.00638, 0.00644, 0.0065, 0.00655, 0.00661, 0.00667, 0.00672, 0.00673, 0.00634,
+						0.00614, 0.00599, 0.00593, 0.00664, 0.00671, 0.00675, 0.00676, 0.00676, 0.00675, 0.00676,
+						0.00674, 0.00672, 0.00669, 0.00616, 0.00586, 0.00569, 0.00558, 0.00647, 0.00651, 0.00651,
+						0.00651, 0.00652, 0.00649, 0.00645, 0.0064, 0.00637, 0.00631, 0.00576, 0.00534, 0.00512,
+						0.00495, 0.00615, 0.0062, 0.00618, 0.00613, 0.0061, 0.00607, 0.00602, 0.00596, 0.00591, 0.00586,
+						0.00536, 0.00491, 0.00469, 0.0045, 0.00578, 0.00583, 0.00579, 0.00574, 0.00567, 0.00562,
+						0.00556, 0.00549, 0.00545, 0.00538, 0.00493, 0.00453, 0.00435, 0.0042, 0.00542, 0.00547,
+						0.00539, 0.00532, 0.00522, 0.00516, 0.0051, 0.00504, 0.005, 0.00495, 0.00454, 0.00418, 0.00404,
+						0.00394 };
+
+				this.swapPeriodLength = 0.5;
+				this.atmExpiries = atmExpiries3;
+				this.atmTenors = atmTenors3;
+				this.atmVolatilities = atmNormalVolatilities3;
+				this.targetVolatilityType = "VOLATILITYNORMAL";
+				this.referenceDate = LocalDate.of(2016, Month.SEPTEMBER, 30);
+				this.cal = new BusinessdayCalendarExcludingTARGETHolidays();
+				this.modelDC = new DayCountConvention_ACT_365();
 				break;
 
 			default:
@@ -353,26 +337,6 @@ public class CalibrationInformation {
 		}
 	}
 
-	private double[] getVolatilitiesForExpiriesAndTenors(String[] Expiries, String[] Tenors,
-			String[] expiriesFullSurface, String[] tenorsFullSurface, double[] volatilitiesFullSurface) {
-
-		double[] volatilities = new double[Expiries.length];
-
-		// ExperiesLoop
-		for (int j = 0; j < Expiries.length; j++) {
-
-			// Surface Experies Loop
-			for (int i = 0; i < expiriesFullSurface.length; i++) {
-
-				if ((expiriesFullSurface[i] == Expiries[j]) & (tenorsFullSurface[i] == Tenors[j])) {
-					volatilities[j] = volatilitiesFullSurface[i];
-					continue;
-				}
-			}
-		}
-		return volatilities;
-	}
-
 	/**
 	 * Set all the parameters
 	 * 
@@ -382,13 +346,13 @@ public class CalibrationInformation {
 	 * @param atmNormalVolatilities
 	 * @param targetVolatilityType
 	 * @param referenceDate
-	 * @param cal                   (BusinessdayCalendarExcludingTARGETHolidays)
+	 * @param cal (BusinessdayCalendarExcludingTARGETHolidays)
 	 * @param modelDC
 	 * @param dataName
 	 */
-	public CalibrationInformation(double swapPeriodLength, String[] atmExpiries, String[] atmTenors,
+	public CalibrationInformationOLD(double swapPeriodLength, String[] atmExpiries, String[] atmTenors,
 			double[] atmNormalVolatilities, String targetVolatilityType, LocalDate referenceDate,
-			BusinessdayCalendarExcludingTARGETHolidays cal, DayCountConvention modelDC, String dataName) {
+			BusinessdayCalendarExcludingTARGETHolidays cal, DayCountConvention modelDC,String dataName) {
 		this.swapPeriodLength = swapPeriodLength;
 		this.atmExpiries = atmExpiries;
 		this.atmTenors = atmTenors;
