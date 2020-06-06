@@ -21,7 +21,7 @@ public class CalibrationInformationTester {
 
 		printCalibrationInformation(calibrationInformation1);
 
-	}
+	} 
 
 	/**
 	 * This is the toSring method to be for the CalibrationInformation
