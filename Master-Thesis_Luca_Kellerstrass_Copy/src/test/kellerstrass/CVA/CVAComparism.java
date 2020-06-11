@@ -48,7 +48,7 @@ public class CVAComparism {
 				DataSource.EXAMPLE);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.Example);
+				CurveModelDataType.OIS6M);
 
 		int numberOfPaths = 1000;
 		int numberOfFactorsM1 = 3; // For Libor Market Model

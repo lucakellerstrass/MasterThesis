@@ -132,11 +132,11 @@ public class CVAandCalibrationTestForPython {
 
 	}
 
-	
-	
-	/** Print the exposure paths for the Libor market model
+	/**
+	 * Print the exposure paths for the Libor market model
 	 * 
-	 * @return A HashMap of Exposure paths with the rows: observationDate, expectedPositiveExposure, expectedNegativeExposure
+	 * @return A HashMap of Exposure paths with the rows: observationDate,
+	 *         expectedPositiveExposure, expectedNegativeExposure
 	 * @throws SolverException
 	 * @throws CalculationException
 	 */
@@ -145,10 +145,11 @@ public class CVAandCalibrationTestForPython {
 		return printExpectedExposurePaths(NumberOfFactorsLmm, lmmCalibrationmashine);
 	}
 
-	
-	/** Print the exposure paths for the Hull White model
+	/**
+	 * Print the exposure paths for the Hull White model
 	 * 
-	 * @return A HashMap of Exposure paths with the columns: observationDate, expectedPositiveExposure, expectedNegativeExposure
+	 * @return A HashMap of Exposure paths with the columns: observationDate,
+	 *         expectedPositiveExposure, expectedNegativeExposure
 	 * @throws SolverException
 	 * @throws CalculationException
 	 */
@@ -156,49 +157,40 @@ public class CVAandCalibrationTestForPython {
 			throws SolverException, CalculationException {
 		return printExpectedExposurePaths(NumberOfFactorsHW, hwCalibrationmashine);
 	}
-	
-	
-	/**This method returns the calibration results of the LIBOR Market Model with the corresponding calibration quality
-	 * <br>
-	 * The columns are: 
-	 * <br>
+
+	/**
+	 * This method returns the calibration results of the LIBOR Market Model with
+	 * the corresponding calibration quality <br>
+	 * The columns are: <br>
 	 * Calibration Item: Some String that is the name of the Calibration Product
 	 * <br>
-	 * Model_Value: The value of these calibration product, the model calculates after calibration
-	 * <br>
-	 * Target: The target value. The value "Model_Value" should hit.
-	 * <br>
+	 * Model_Value: The value of these calibration product, the model calculates
+	 * after calibration <br>
+	 * Target: The target value. The value "Model_Value" should hit. <br>
 	 * Deviation: the difference between Model value and target.
+	 * 
 	 * @return
 	 */
-	public static ArrayList<Map<String, Object>> printCalibrationTestLmm(){
+	public static ArrayList<Map<String, Object>> printCalibrationTestLmm() {
 		return lmmCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
-	
 
-	/**This method returns the calibration results of the Hull White Model with the corresponding calibration quality
-	 * <br>
-	 * The columns are: 
-	 * <br>
+	/**
+	 * This method returns the calibration results of the Hull White Model with the
+	 * corresponding calibration quality <br>
+	 * The columns are: <br>
 	 * Calibration Item: Some String that is the name of the Calibration Product
 	 * <br>
-	 * Model_Value: The value of the calibration product, the model calculates after calibration
-	 * <br>
-	 * Target: The target value. The value "Model_Value" should hit.
-	 * <br>
+	 * Model_Value: The value of the calibration product, the model calculates after
+	 * calibration <br>
+	 * Target: The target value. The value "Model_Value" should hit. <br>
 	 * Deviation: the difference between Model value and target.
+	 * 
 	 * @return
 	 */
-	public static ArrayList<Map<String, Object>> printCalibrationTestHw(){
+	public static ArrayList<Map<String, Object>> printCalibrationTestHw() {
 		return hwCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
-	
-	
-	
-	
-	
-	
-	
 
 	private static List<Map<String, String>> printExpectedExposurePaths(int numberOFFactors,
 			CalibrationMachineInterface Calibrationmashine) throws SolverException, CalculationException {
@@ -253,6 +245,9 @@ public class CVAandCalibrationTestForPython {
 			i++;
 
 		}
+		Map<String, String> OutTableRow = new HashMap<>();
+		OutTableRow.put("ModelName", Calibrationmashine.getModelName());
+		OutTable.add(i, OutTableRow);
 		return OutTable;
 
 	}

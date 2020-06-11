@@ -28,7 +28,7 @@ public class HwCalibrationMachineTest {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	private static boolean forcedCalculation = true;
-	private static int numberOfPaths = 100;
+	private static int numberOfPaths = 1000;
 	private static int numberOfFactors = 2;
 
 	public static void main(String[] args) throws SolverException, CalculationException {

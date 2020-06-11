@@ -43,7 +43,7 @@ public class CVAComparismExperiment {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	public static void main(String[] args) throws Exception {
-		boolean forcedCalculation = false;
+		boolean forcedCalculation = true;
 
 		// First we calibrate the Hull White Model
 

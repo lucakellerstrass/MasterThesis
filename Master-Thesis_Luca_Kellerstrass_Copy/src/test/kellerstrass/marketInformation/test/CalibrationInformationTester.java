@@ -16,7 +16,7 @@ public class CalibrationInformationTester {
 
 	public static void main(String[] args) {
 
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.RisingTerminals,
+		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.EXAMPLE);
 
 		printCalibrationInformation(calibrationInformation1);

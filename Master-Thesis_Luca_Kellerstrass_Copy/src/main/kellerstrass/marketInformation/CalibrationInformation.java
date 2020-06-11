@@ -76,7 +76,7 @@ public class CalibrationInformation {
 
 		case EXAMPLE:
 			this.swapPeriodLength = 0.5;
-			this.targetVolatilityType = "VOLATILITYLOGNORMAL";
+			this.targetVolatilityType = "VOLATILITYNORMAL";
 			this.referenceDate = LocalDate.of(2019, Month.OCTOBER, 24); // 24.10.2019
 			this.cal = new BusinessdayCalendarExcludingTARGETHolidays();
 			this.modelDC = new DayCountConvention_ACT_365();

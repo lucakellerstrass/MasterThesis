@@ -185,6 +185,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 		// We get the calibration information from the "CalibrationInformation" instance
 		CalibrationProduct[] calibrationProducts = getCalibrationProducts();
 
+		
 		/*
 		 * Create a simulation time discretization
 		 */
@@ -207,7 +208,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 		 new double[] { 0, 1, 2, 3, 5, 7, 10, 15 });
 
 		// New
-		
+//		
 //		  TimeDiscretization volatilityDiscretization = new
 //		  TimeDiscretizationFromArray(new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 //		  15, 20, 25, 30});
@@ -225,19 +226,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 		calibrationParameters.put("brownianMotion", brownianMotion);
 		properties.put("calibrationParameters", calibrationParameters);
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		
 		HullWhiteModel hullWhiteModelCalibrated = null;
 		try {

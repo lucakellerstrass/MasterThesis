@@ -41,7 +41,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 			new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterVolatility = new DecimalFormat(" #0.0000;-#0.0000",
 			new DecimalFormatSymbols(Locale.ENGLISH));
-	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
+	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.000E00;-0.00E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	// Input Parameters
@@ -158,8 +158,8 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
 			double tenor = calibrationInformation.getModelDC().getDaycountFraction(exerciseDate, tenorEndDate);
 
-			// System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
-			// tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
+			//System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
+		    //tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
 
 			// We consider an idealized tenor grid (alternative: adapt the model grid)
 			// To ensure the dates fit into the timediscretization
@@ -200,10 +200,13 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 			calibrationItems[j] = new CalibrationProduct(calibrationProducts.get(j).getProduct(),
 					calibrationProducts.get(j).getTargetValue(), calibrationProducts.get(j).getWeight());
 		}
-
 		return calibrationItems;
 	}
 
+	
+	
+	
+	
 	public String[] getCalibrationItemNames(CalibrationInformation calibrationInformation) {
 
 		ArrayList<String> calibrationItemNames = new ArrayList<>();
@@ -460,7 +463,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				OutTableRow.put("Tenor", calibrationItemTenors[i]);
 				OutTableRow.put("Model_Value", valueModel);
 				OutTableRow.put("Target", valueTarget);
-				OutTableRow.put("Deviation", (valueModel - valueTarget));
+				OutTableRow.put("Deviation", (valueModel - valueTarget)*100);
 
 				OutTable.add(i, OutTableRow);
 			} catch (Exception e) {

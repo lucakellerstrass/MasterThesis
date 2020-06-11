@@ -292,8 +292,8 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		// works also without
 		// Set calibration properties (should use our brownianMotion for calibration -
 		// needed to have to right correlation).
-		Double accuracy = new Double(1E-8); // Lower accuracy to reduce runtime of the unit test  //was 1E-6
-		int maxIterations = 300;    //was 100
+		Double accuracy = new Double(1E-6); // Lower accuracy to reduce runtime of the unit test  //was 1E-6
+		int maxIterations = 100;    //was 100, better 300
 		int numberOfThreads = 4;
 		OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
 				numberOfThreads);
