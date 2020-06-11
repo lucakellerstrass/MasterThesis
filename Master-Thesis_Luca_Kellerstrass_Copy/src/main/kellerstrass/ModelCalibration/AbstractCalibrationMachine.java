@@ -473,8 +473,8 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		Map<String, Object> OutTableRow = new HashMap<String, Object>();
 
 		double averageDeviation = deviationSum / calibrationItems.length;
-		OutTableRow.put("Mean Deviation ", formatterDeviation.format(averageDeviation));
-		OutTableRow.put("RMS Error..... ",
+		OutTableRow.put("Mean Deviation", formatterDeviation.format(averageDeviation));
+		OutTableRow.put("RMS Error",
 				formatterDeviation.format(Math.sqrt(deviationSquaredSum / calibrationItems.length)));
 
 		OutTable.add(OutTable.size(), OutTableRow);

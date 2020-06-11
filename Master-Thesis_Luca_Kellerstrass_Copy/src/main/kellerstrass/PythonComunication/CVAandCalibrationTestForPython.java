@@ -21,6 +21,7 @@ import kellerstrass.swap.StoredSwap;
 import kellerstrass.useful.StringToUseful;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.BrownianMotion;
+import net.finmath.montecarlo.RandomVariableFactory;
 import net.finmath.montecarlo.RandomVariableFromDoubleArray;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.products.Swap;
@@ -228,14 +229,22 @@ public class CVAandCalibrationTestForPython {
 		int i = 0;
 		for (double observationDate : simulationModel.getTimeDiscretization()) {
 
-			/*
-			 * if(observationDate == 0) { continue; }
-			 */
+			
 
 			/*
 			 * Calculate expected positive exposure of a swap
 			 */
-			RandomVariable valuesSwap = swap.getValue(observationDate, simulationModel);
+			RandomVariable valuesSwap;
+			
+			// To control the value for t=0.
+			if(observationDate == 0) { valuesSwap = new RandomVariableFromDoubleArray(0); }
+			else {
+				valuesSwap = swap.getValue(observationDate, simulationModel);
+				if(swap.getValue(observationDate, simulationModel).getAverage() == 0) {
+					continue;
+				}
+			}
+			
 			RandomVariable valuesEstimatedExposure = swapExposureEstimator.getValue(observationDate, simulationModel);
 			RandomVariable valuesPositiveExposure = valuesSwap.mult(valuesEstimatedExposure
 					.choose(new RandomVariableFromDoubleArray(1.0), new RandomVariableFromDoubleArray(0.0)));
