@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import kellerstrass.CVA.CVA;
 import kellerstrass.ModelCalibration.CalibrationMachineInterface;
 import kellerstrass.ModelCalibration.HWCalibrationMachine;
 import kellerstrass.ModelCalibration.LmmCalibrationMachine;
@@ -56,20 +57,21 @@ public class CVAandCalibrationTestForPython {
 
 	private static boolean forcedCalculation = false;
 
-	static StoredSwap inputSwap;
-	private static Swap swap;
-	private static TermStructureMonteCarloProduct swapExposureEstimator;
-	private static CalibrationInformation calibrationInformation;
-	private static TimeDiscretizationFromArray simulationTimeDiscretization;
+	 static StoredSwap inputSwap;
+	private static  Swap swap;
+	private static  TermStructureMonteCarloProduct swapExposureEstimator;
+	private  CalibrationInformation calibrationInformation;
+	private static  TimeDiscretizationFromArray simulationTimeDiscretization;
 
-	private static int NumberOfFactorsHW;
-	private static int NumberOfFactorsLmm;
-	private static int numberOfPaths;
+	private static  int NumberOfFactorsHW;
+	private static  int NumberOfFactorsLmm;
+	private static  int numberOfPaths;
 
-	private static CalibrationMachineInterface lmmCalibrationmashine;
-	private static CalibrationMachineInterface hwCalibrationmashine;
+	private static  CalibrationMachineInterface lmmCalibrationmashine;
+	private static  CalibrationMachineInterface hwCalibrationmashine;
 
-	double[] cdsSpreads10y = new double[10];
+	private static  double recoveryRate;
+	private static  double[] cdsSpreads10y = new double[10];
 	// Counterparty information
 
 	public CVAandCalibrationTestForPython(String SwapName, String BuySell, int notional, double fixedRate,
@@ -85,6 +87,7 @@ public class CVAandCalibrationTestForPython {
 
 	) {
 
+		this.recoveryRate = recoveryRateInput;
 		// Fill in the cdsSpread array
 		this.cdsSpreads10y[0] = cdsSpread1y;
 		this.cdsSpreads10y[1] = cdsSpread2y;
@@ -137,11 +140,10 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return A HashMap of Exposure paths with the rows: observationDate,
 	 *         expectedPositiveExposure, expectedNegativeExposure
-	 * @throws SolverException
-	 * @throws CalculationException
+	 * @throws Exception 
 	 */
 	public static List<Map<String, String>> printExpectedExposurePathsLmm()
-			throws SolverException, CalculationException {
+			throws Exception {
 		return printExpectedExposurePaths(NumberOfFactorsLmm, lmmCalibrationmashine);
 	}
 
@@ -150,11 +152,10 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return A HashMap of Exposure paths with the columns: observationDate,
 	 *         expectedPositiveExposure, expectedNegativeExposure
-	 * @throws SolverException
-	 * @throws CalculationException
+	 * @throws Exception 
 	 */
 	public static List<Map<String, String>> printExpectedExposurePathsHw()
-			throws SolverException, CalculationException {
+			throws Exception {
 		return printExpectedExposurePaths(NumberOfFactorsHW, hwCalibrationmashine);
 	}
 
@@ -192,8 +193,18 @@ public class CVAandCalibrationTestForPython {
 		return hwCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
 
+	
+	
+	
+	/**
+	 * Returns a List<Map<String, String>> with the exposure paths, model name and CVA
+	 * @param numberOFFactors
+	 * @param CalibrationMachine
+	 * @return
+	 * @throws Exception 
+	 */
 	private static List<Map<String, String>> printExpectedExposurePaths(int numberOFFactors,
-			CalibrationMachineInterface Calibrationmashine) throws SolverException, CalculationException {
+			CalibrationMachineInterface CalibrationMachine) throws Exception {
 
 		// brownian motion
 		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(simulationTimeDiscretization,
@@ -203,10 +214,10 @@ public class CVAandCalibrationTestForPython {
 				EulerSchemeFromProcessModel.Scheme.EULER);
 
 		// simulation machine
-		LIBORModelMonteCarloSimulationModel simulationModel = Calibrationmashine
+		LIBORModelMonteCarloSimulationModel simulationModel = CalibrationMachine
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
-		System.out.println("The name of the Model is: " + Calibrationmashine.getModelName());
+		System.out.println("The name of the Model is: " + CalibrationMachine.getModelName());
 		System.out.println(
 				"\n We want to see the exposure paths of the given model an the swap: " + inputSwap.getSwapName());
 
@@ -245,8 +256,11 @@ public class CVAandCalibrationTestForPython {
 			i++;
 
 		}
+		CVA cva = new CVA(simulationModel, swap, recoveryRate, cdsSpreads10y, CalibrationMachine.getDiscountCurve());
+		
 		Map<String, String> OutTableRow = new HashMap<>();
-		OutTableRow.put("ModelName", Calibrationmashine.getModelName());
+		OutTableRow.put("ModelName", CalibrationMachine.getModelName());
+		OutTableRow.put("CVA", formatterValue.format(cva.getValue()));
 		OutTable.add(i, OutTableRow);
 		return OutTable;
 
