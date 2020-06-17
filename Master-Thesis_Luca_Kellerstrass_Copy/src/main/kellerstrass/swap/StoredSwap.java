@@ -106,7 +106,7 @@ public class StoredSwap {
 				new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */, 0 /* fixingOffsetDays */,
 				0 /* paymentOffsetDays */);
 
-		if (BuySell.equals("Buy")) {
+		if (BuySell.equals("Sell")) {
 			notionalInput = -notionalInput;
 		}
 		double notionalBuySelladjusted = notionalInput;
@@ -222,8 +222,8 @@ public class StoredSwap {
 		 */
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
 				LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-				LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-				LocalDate.of(2035, Month.JANUARY, 06) /* maturityDate */,
+				LocalDate.of(2015, Month.JANUARY, 03) /* startDate */,
+				LocalDate.of(2035, Month.JANUARY, 03) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -233,8 +233,8 @@ public class StoredSwap {
 
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
 				LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-				LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-				LocalDate.of(2035, Month.JANUARY, 06) /* maturityDate */,
+				LocalDate.of(2015, Month.JANUARY, 03) /* startDate */,
+				LocalDate.of(2035, Month.JANUARY, 03) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -255,9 +255,9 @@ public class StoredSwap {
 	 * @return
 	 */
 	public Swap getSwap() {
-		SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional, null, fixedCoupon /* spread */,
+		SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional,  index, 0.0 /* spread */,
 				false /* isNotionalExchanged */);
-		SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional, index, 0.0 /* spread */,
+		SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional ,null, fixedCoupon /* spread */,
 				false /* isNotionalExchanged */);
 		return new Swap(swapLegRec, swapLegPay);
 	}

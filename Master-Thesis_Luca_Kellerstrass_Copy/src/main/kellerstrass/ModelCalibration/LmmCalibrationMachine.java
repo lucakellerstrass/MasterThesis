@@ -248,7 +248,7 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 //		  10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
 //		 100);
 		
-		//The extreme extended verion
+		//The extreme extended version
 //		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
 //				liborPeriodDiscretization,
 //				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30),
@@ -311,7 +311,7 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		calibrationParameters.put("accuracy", accuracy);
 		calibrationParameters.put("brownianMotion", brownianMotion);
 		calibrationParameters.put("optimizerFactory", optimizerFactory);
-		calibrationParameters.put("parameterStep", new Double(1E-4));
+		calibrationParameters.put("parameterStep", new Double(1E-4));  // könnte man auf 1E-5 setzen.
 		properties.put("calibrationParameters", calibrationParameters);
 
 		LIBORModel liborMarketModelCalibrated = null;
