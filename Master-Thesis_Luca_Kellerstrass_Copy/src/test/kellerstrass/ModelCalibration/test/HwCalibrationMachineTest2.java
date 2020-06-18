@@ -18,7 +18,7 @@ import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.optimizer.SolverException;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class HwCalibrationMachineTest {
+public class HwCalibrationMachineTest2 {
 
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));
@@ -38,17 +38,65 @@ public class HwCalibrationMachineTest {
 				DataSource.EXAMPLE);
 
 		System.out.println("First via the extra test methode of this test class");
-		Tester(calibrationInformation1, forcedCalculation);
+		//Tester(calibrationInformation1, forcedCalculation);
 
 		System.out.println("Second via the Calibration maschine intern calibration test methode");
 		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
 				calibrationInformation1);
-		HwCalibrationMaschine.printCalibrationTest(forcedCalculation);
+		//HwCalibrationMaschine.printCalibrationTest(forcedCalculation);
 		
 		System.out.println("The calibration took " + HwCalibrationMaschine.getCalculationDuration()/60000 + " mins");
 
+		checkForCalibrationItems(calibrationInformation1, forcedCalculation);
+		
+		
 	}
 
+	private static void checkForCalibrationItems(CalibrationInformation calibrationInformation, boolean forcedCalculation)
+			throws SolverException, CalculationException {
+		
+		// Initialization
+				CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
+						calibrationInformation);
+				
+				// create the process:
+
+				double lastTime = 60.0;
+				double dt = 0.25;
+				TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
+						(int) (lastTime / dt), dt);
+				BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+						numberOfFactors, numberOfPaths, 31415 /* seed */);
+				EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion,
+						EulerSchemeFromProcessModel.Scheme.EULER);
+
+				LIBORModelMonteCarloSimulationModel lIBORMarketModelSimulation = HwCalibrationMaschine
+						.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
+				
+				// We get the calibration information from the "CalibrationInformation" instance
+				CalibrationProduct[] calibrationItems = HwCalibrationMaschine.getCalibrationProducts();
+				
+				String ItemName = HwCalibrationMaschine.getCalibrationItemNames(calibrationInformation)[0];
+				AbstractLIBORMonteCarloProduct calibrationProduct = calibrationItems[0].getProduct();
+				
+				
+
+				// The model name
+				System.out.println("The name of the Model is: " + HwCalibrationMaschine.getModelName());
+		
+				System.out.println("calibrationProduct 1 is " + ItemName + " and the value is " +  calibrationProduct.getValue(0, lIBORMarketModelSimulation).getAverage());
+				System.out.println("the target black implied volatility is "+ calibrationItems[0].getTargetValue().getAverage());
+				
+				
+				
+				
+				
+				
+				
+		
+	}
+
+	
 	
 	
 	

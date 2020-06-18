@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import kellerstrass.useful.StringToUseful;
+import net.finmath.marketdata.model.AnalyticModel;
+import net.finmath.marketdata.model.curves.ForwardCurve;
 import net.finmath.montecarlo.interestrate.products.Swap;
 import net.finmath.montecarlo.interestrate.products.SwapLeg;
 import net.finmath.montecarlo.interestrate.products.components.AbstractNotional;
@@ -28,12 +30,28 @@ public class StoredSwap {
 
 	private Schedule legScheduleRec;
 	private Schedule legSchedulePay;
+
 	private AbstractNotional notional;
 	private AbstractIndex index;
 	private double fixedCoupon;
 
 	public void setFixedCoupon(double fixedCoupon) {
+		
+		
+		
 		this.fixedCoupon = fixedCoupon;
+	}
+	
+	
+	/**
+	 * replaces the fixed rate with the swap rate
+	 * @param forwardCurve
+	 * @param curveModel
+	 */
+	public void changeToATMswap( ForwardCurve forwardCurve, AnalyticModel curveModel) {
+		double swaprate = net.finmath.marketdata.products.Swap.getForwardSwapRate(legSchedulePay,
+				legScheduleRec, forwardCurve, curveModel);
+		this.fixedCoupon = swaprate;
 	}
 
 	private String swapName;
@@ -221,9 +239,9 @@ public class StoredSwap {
 		 * Create a receiver swap (receive fix, pay float)
 		 */
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
-				LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-				LocalDate.of(2015, Month.JANUARY, 03) /* startDate */,
-				LocalDate.of(2035, Month.JANUARY, 03) /* maturityDate */,
+				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
+				LocalDate.of(2019, Month.OCTOBER, 24) /* startDate */,
+				LocalDate.of(2029, Month.OCTOBER, 24) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -232,20 +250,22 @@ public class StoredSwap {
 				0 /* paymentOffsetDays */);
 
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
-				LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-				LocalDate.of(2015, Month.JANUARY, 03) /* startDate */,
-				LocalDate.of(2035, Month.JANUARY, 03) /* maturityDate */,
-				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
+				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
+				LocalDate.of(2019, Month.OCTOBER, 24) /* startDate */,
+				LocalDate.of(2029, Month.OCTOBER, 24) /* maturityDate */,
+				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
 				BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
 				new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */, 0 /* fixingOffsetDays */,
 				0 /* paymentOffsetDays */);
-		notional = new Notional(1.0);
+		notional = new Notional(1000000.0);
 		index = new LIBORIndex(null /* "forwardCurve" */, 0.0, 0.5);
 		fixedCoupon = 0.005;
 
 		swapName = "ExampleSwap2";
+		
+		
 
 	}
 
@@ -255,12 +275,26 @@ public class StoredSwap {
 	 * @return
 	 */
 	public Swap getSwap() {
-		SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional,  index, 0.0 /* spread */,
+		SwapLeg swapLegRec = new SwapLeg(legScheduleRec, notional,  null, fixedCoupon /* spread */,
 				false /* isNotionalExchanged */);
-		SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional ,null, fixedCoupon /* spread */,
+		
+		
+		SwapLeg swapLegPay = new SwapLeg(legSchedulePay, notional ,index,  0.0/* spread */,
 				false /* isNotionalExchanged */);
 		return new Swap(swapLegRec, swapLegPay);
 	}
+	
+	
+	public SwapLeg getSwapLegRec() {
+		return new SwapLeg(legScheduleRec, notional,  null, fixedCoupon /* spread */,
+				false /* isNotionalExchanged */);
+	}
+	
+	public SwapLeg getSwapLegPay() {
+		return new SwapLeg(legSchedulePay, notional ,index,  0.0/* spread */,
+				false /* isNotionalExchanged */);
+	}
+	
 
 	public Schedule getLegScheduleRec() {
 		return legScheduleRec;

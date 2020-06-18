@@ -232,7 +232,7 @@ public class CurveModelData {
 	public LocalDate getLocalDate() {
 		switch (curveModelDataType) {
 		case Example:
-			return LocalDate.of(2016, Month.SEPTEMBER, 30);
+			return LocalDate.of(2019, Month.OCTOBER, 24);
 
 		case SETTEDVALUES:
 			return localDateSet;

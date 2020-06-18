@@ -93,6 +93,9 @@ public class CVAComparism {
 
 		// Swap
 		StoredSwap testStoredSwap = new StoredSwap("Example 2");
+		
+		testStoredSwap.changeToATMswap(Model1CalibrationMaschine.getForwardCurve(), Model1CalibrationMaschine.getCurveModel());
+		
 		Swap testSwap = testStoredSwap.getSwap();
 
 		double recoveryRate = 0.4;
@@ -129,8 +132,8 @@ public class CVAComparism {
 			LIBORModelMonteCarloSimulationModel Model1, LIBORModelMonteCarloSimulationModel Model2,
 			AbstractLIBORMonteCarloProduct testSwap) throws CalculationException {
 		System.out.println(
-				"observationDate  \t Model 1: \t   expected positive Exposure   \t   expected negative Exposure "
-						+ "\t Model 2: \t   expected positive Exposure   \t   expected negative Exposure"
+				"observationDate  \t Model 1:   \t   expected Exposure   \t   expected positive Exposure   \t   expected negative Exposure "
+						+ "\t Model 2:   \t   expected Exposure   \t   expected positive Exposure   \t   expected negative Exposure"
 						+ "\t deviation Model 1 - Model 2: \t   expected positive Exposure   \t   expected negative Exposure");
 		for (double observationDate : Model1.getTimeDiscretization()) {
 
@@ -165,8 +168,10 @@ public class CVAComparism {
 			double expectedNegativeExposureDeviation = expectedNegativeExposureM1 - expectedNegativeExposureM2;
 
 			System.out.println(observationDate + "    \t                                   \t"
+					+ formatter6.format(valuesEstimatedExposureM1.getAverage()) + "    \t                        "
 					+ formatter6.format(expectedPositiveExposureM1) + "    \t                        "
 					+ formatter6.format(expectedNegativeExposureM1) + "\t                                   \t"
+					+ formatter6.format(valuesEstimatedExposureM2.getAverage()) + "    \t                        "
 					+ formatter6.format(expectedPositiveExposureM2) + "    \t                        "
 					+ formatter6.format(expectedNegativeExposureM2) + "\t                                   \t"
 					+ formatter6.format(expectedPositiveExposureDeviation) + "    \t                        "

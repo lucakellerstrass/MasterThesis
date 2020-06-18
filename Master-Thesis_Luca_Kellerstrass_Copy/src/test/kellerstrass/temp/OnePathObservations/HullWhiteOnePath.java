@@ -164,6 +164,14 @@ public class HullWhiteOnePath {
 
 		hullWhiteModelSimulation = new LIBORMonteCarloSimulationFromLIBORModel(hullWhiteModel, process);
 
+		//The reference date of the model is:
+		System.out.println("The reference date of the simulationModel is: "+ hullWhiteModel.getReferenceDate());
+		
+		//The reference date of the simulationModel is:
+				System.out.println("The reference date of the simulationModel is: "+ hullWhiteModelSimulation.getReferenceDate());
+			
+		
+		
 //		double value = hullWhiteModelSimulation.getLIBOR(0, 1).get(0);
 //		System.out.println("LIBOR(0, 1)= "+ value);
 //		

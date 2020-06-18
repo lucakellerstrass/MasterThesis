@@ -88,7 +88,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		}
 		this.forwardCurve = curveModel.getForwardCurve("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
 		this.discountCurve = curveModel.getDiscountCurve("discountCurve-EUR");
-
+		System.out.println("When initiated in the Abstract class the reference date of the interne discountCurve is: "+ discountCurve.getReferenceDate());
+		System.out.println("When initiated Abstract class the reference date of the interne forwardCurve is: "+ forwardCurve.getReferenceDate());
+		
 	}
 
 	public ForwardCurve getForwardCurve() {
@@ -97,6 +99,10 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 	public DiscountCurve getDiscountCurve() {
 		return discountCurve;
+	}
+	
+	public AnalyticModel getCurveModel() {
+		return curveModel;
 	}
 
 	/**

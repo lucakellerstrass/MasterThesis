@@ -6,6 +6,7 @@ import java.util.Map;
 
 import kellerstrass.marketInformation.CalibrationInformation;
 import net.finmath.exception.CalculationException;
+import net.finmath.marketdata.model.AnalyticModel;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.ForwardCurve;
 import net.finmath.montecarlo.interestrate.CalibrationProduct;
@@ -169,5 +170,11 @@ public interface CalibrationMachineInterface {
 	 * @return
 	 */
 	public DiscountCurve getDiscountCurve();
+	
+	/**
+	 * Get the used Curve Model with forward curve and discount curve inside.
+	 * @return
+	 */
+	public AnalyticModel getCurveModel();
 
 }

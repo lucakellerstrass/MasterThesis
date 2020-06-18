@@ -119,7 +119,7 @@ public class CurveModelCalibrationMachine {
 
 		HashMap<String, Object> parameters = new HashMap<>();
 
-		parameters.put("referenceDate", curveModelData.getLocalDate());
+		parameters.put("referenceDate", curveModelData.getLocalDate()); System.out.println("reference date was setted as: "+ curveModelData.getLocalDate());
 		parameters.put("currency", "EUR");
 		parameters.put("forwardCurveTenor", curveModelData.getForwardCurveTenor());
 		parameters.put("maturities", maturity);
@@ -217,6 +217,8 @@ public class CurveModelCalibrationMachine {
 		// Get best parameters
 		double[] parametersBest = calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getParameter();
 
+		model			= calibratedModel;
+		
 		/*
 		 * We want to create a real forward curve that can be used without refering to
 		 * the curveModel
@@ -240,7 +242,6 @@ public class CurveModelCalibrationMachine {
 				0.5 /* liborPeriodLength */ /* tenor / period length */
 		);
 
-		model = CurveModelCalibrationItem.getCalibratedCurve();
 
 		return model;
 	}

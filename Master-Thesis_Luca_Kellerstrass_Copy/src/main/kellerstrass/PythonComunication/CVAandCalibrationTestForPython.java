@@ -110,11 +110,7 @@ public class CVAandCalibrationTestForPython {
 		 * = fixedCouponConvention; this.xiborCouponConvention = xiborCouponConvention;
 		 */
 
-		this.inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
-				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
-				xiborCouponConvention);
-		this.swap = inputSwap.getSwap();
-		this.swapExposureEstimator = new ExposureMachine(swap);
+		
 
 		DataScope dataScope = StringToUseful.dataScopeFromString(dataScopeInput);
 		DataSource dataSource = StringToUseful.dataSourceFromString(dataSourceInput);
@@ -134,6 +130,16 @@ public class CVAandCalibrationTestForPython {
 		// Initialization
 		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths, NumberOfFactorsHW, calibrationInformation);
 
+		
+		this.inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
+				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
+				xiborCouponConvention);
+		//do ATM
+	inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
+		
+		this.swap = inputSwap.getSwap();
+		this.swapExposureEstimator = new ExposureMachine(swap);
+		
 	}
 
 	/**
