@@ -86,7 +86,7 @@ public class CVAandCalibrationTestForPython {
 			String referencedate, int numberOfPaths, int NumberOfFactorsLMM, int NumberOfFactorsHW,
 			String dataSourceInput, String dataScopeInput, String curveModelInput, double Range
 
-	) {
+	) throws SolverException {
 
 		this.recoveryRate = recoveryRateInput;
 		// Fill in the cdsSpread array

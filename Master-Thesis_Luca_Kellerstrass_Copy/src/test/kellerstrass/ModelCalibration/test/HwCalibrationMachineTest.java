@@ -34,7 +34,7 @@ public class HwCalibrationMachineTest {
 	public static void main(String[] args) throws SolverException, CalculationException {
 
 		System.out.println("Test of example rising terminals calibration:");
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.CoTerminals,
+		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.EXAMPLE);
 
 		System.out.println("First via the extra test methode of this test class");

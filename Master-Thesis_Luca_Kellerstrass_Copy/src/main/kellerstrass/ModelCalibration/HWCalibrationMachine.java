@@ -238,10 +238,6 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 			e.printStackTrace();
 		}
 
-		//The reference date of the hullWhiteModelCalibrated is:
-				System.out.println("The reference date of the hullWhiteModelCalibrated inside the Calibration Machine is: "+ hullWhiteModelCalibrated.getReferenceDate());
-				System.out.println("The reference date of the interne discountCurve inside the Calibration Machine is: "+ discountCurve.getReferenceDate());
-				System.out.println("The reference date of the interne forwardCurve inside the Calibration Machine is: "+ forwardCurve.getReferenceDate());
 		
 		
 		

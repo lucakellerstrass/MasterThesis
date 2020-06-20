@@ -132,6 +132,11 @@ public class StringToUseful {
 		return referenceDate;
 	}
 
+
+
+	
+	
+	
 	/**
 	 * This only works for 1Y, 6M, 3M
 	 * 
@@ -139,7 +144,7 @@ public class StringToUseful {
 	 * @return
 	 * @return
 	 */
-	public static double getDoubleFromString(String rateFrequency) {
+	public static double getDoubleFromRateFrequencyString(String rateFrequency) {
 
 		if (rateFrequency.equals("3m") ^ rateFrequency.equals("3M")) {
 			return 0.25;

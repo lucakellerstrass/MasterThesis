@@ -27,8 +27,8 @@ public class LmmCalibrationMachineTest {
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private static boolean forcedCalculation = true;
-	private static int numberOfPaths = 1000;
+	private static boolean forcedCalculation = false;
+	private static int numberOfPaths = 1000; //1000 or 5000
 	private static int numberOfFactors = 3;
 
 	public static void main(String[] args) throws SolverException, CalculationException {

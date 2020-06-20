@@ -71,7 +71,7 @@ public class HullWhiteOnePath {
 		// (2) Test the discount curve
 //		System.out.println("Test the discount curve");
 		// Create the forward curve (initial value of the LIBOR market model)
-		DiscountCurve discountCurve = DiscountCurveInterpolation.createDiscountCurveFromZeroRates("discount curve",
+		DiscountCurve discountCurve = DiscountCurveInterpolation.createDiscountCurveFromZeroRates("discountCurve-" + "EUR",
 				referenceDate, new double[] { 0.5, 40.00 } /* zero rate end points */,
 				new double[] { 0.03, 0.04 } /* zeros */, new boolean[] { false, false }, InterpolationMethod.LINEAR,
 				ExtrapolationMethod.CONSTANT, InterpolationEntity.LOG_OF_VALUE_PER_TIME);
@@ -107,6 +107,8 @@ public class HullWhiteOnePath {
 
 		// Create the discount curve
 		ForwardCurve forwardCurve2 = new ForwardCurveFromDiscountCurve(discountCurve.getName(), referenceDate, "6M");
+		String forwardCurve2Name =  forwardCurve2.getName();
+		
 
 	
 		curveModel = new AnalyticModelFromCurvesAndVols(new Curve[] { discountCurve, forwardCurve2 });
@@ -264,7 +266,7 @@ public class HullWhiteOnePath {
 
 		// Par swap rate
 		double swaprate = net.finmath.marketdata.products.Swap.getForwardSwapRate(fixedLegSchedulePay,
-				floatLegScheduleRec, forwardCurve2, curveModel);
+				floatLegScheduleRec, curveModel.getForwardCurve(forwardCurve2Name), curveModel);
 
 		System.out.println("swaprate= \t" + swaprate);
 

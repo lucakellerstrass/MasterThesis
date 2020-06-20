@@ -40,6 +40,7 @@ import net.finmath.time.businessdaycalendar.BusinessdayCalendarExcludingTARGETHo
  */
 public class CurveModelCalibrationMachine {
 
+	private static String ForwardCurveName;
 	private static CurveModelData curveModelData;
 
 	/**
@@ -51,7 +52,7 @@ public class CurveModelCalibrationMachine {
 	 * @throws SolverException
 	 */
 	public CurveModelCalibrationMachine(CurveModelData curveModelData) {
-		this.curveModelData = curveModelData;
+		CurveModelCalibrationMachine.curveModelData = curveModelData;
 
 	}
 
@@ -63,7 +64,7 @@ public class CurveModelCalibrationMachine {
 	 * @throws SolverException
 	 */
 	public CurveModelCalibrationMachine(CurveModelDataType curveModelDataType) {
-		this.curveModelData = new CurveModelData(curveModelDataType);
+		CurveModelCalibrationMachine.curveModelData = new CurveModelData(curveModelDataType);
 
 	}
 
@@ -85,7 +86,7 @@ public class CurveModelCalibrationMachine {
 			String[] daycountConventions, String[] daycountConventionsFloat, double[] rates, LocalDate localDate,
 			String forwardCurveTenor, int spotOffsetDays, String forwardStartPeriod) {
 
-		this.curveModelData = new CurveModelData(maturity, frequency, frequencyFloat, daycountConventions,
+		CurveModelCalibrationMachine.curveModelData = new CurveModelData(maturity, frequency, frequencyFloat, daycountConventions,
 				daycountConventionsFloat, rates, localDate, forwardCurveTenor, spotOffsetDays, forwardStartPeriod);
 	}
 
@@ -93,8 +94,18 @@ public class CurveModelCalibrationMachine {
 		return curveModelData.getCurveModelDataType() + "CurveModel";
 
 	}
+	
+	/**
+	 * get the name of the forward curve to reference it inside the CurveModel
+	 * @return
+	 */
+	public String getForwardCurvelName() {
+		return CurveModelCalibrationMachine.ForwardCurveName;
 
-	public AnalyticModel getCalibratedCurve() throws SolverException {
+	}
+
+
+	public AnalyticModel getCalibratedCurveModel() throws SolverException {
 
 		if (curveModelData.isInitiationOverExistingDiscountValues() == true) {
 
@@ -104,10 +115,11 @@ public class CurveModelCalibrationMachine {
 			LocalDate referenceDate = discountCurve.getReferenceDate();
 
 			ForwardCurve forwardCurve = new ForwardCurveFromDiscountCurve(curveNameDiscount, referenceDate, "6M");
+			CurveModelCalibrationMachine.ForwardCurveName = forwardCurve.getName();
 			AnalyticModel model = new AnalyticModelFromCurvesAndVols(new Curve[] { discountCurve, forwardCurve });
 
 			return model;
-		}
+		}else {
 
 		final String[] maturity = curveModelData.getMaturity();
 		final String[] frequency = curveModelData.getFrequency();
@@ -130,6 +142,7 @@ public class CurveModelCalibrationMachine {
 		parameters.put("rates", rates);
 
 		return getCalibratedCurve(null, parameters);
+		}
 	}
 
 	private static AnalyticModel getCalibratedCurve(AnalyticModel model2, Map<String, Object> parameters)
@@ -160,6 +173,7 @@ public class CurveModelCalibrationMachine {
 		 */
 		ForwardCurve forwardCurve = new ForwardCurveFromDiscountCurve(curveNameDiscount, referenceDate,
 				forwardCurveTenor);
+		ForwardCurveName = forwardCurve.getName();
 
 		// Create a collection of objective functions (calibration products)
 		Vector<AnalyticProduct> calibrationProducts = new Vector<>();
@@ -215,7 +229,7 @@ public class CurveModelCalibrationMachine {
 		// System.out.println("Solver reported acccurary....: " + solver.getAccuracy());
 
 		// Get best parameters
-		double[] parametersBest = calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getParameter();
+		//double[] parametersBest = calibratedModel.getDiscountCurve(discountCurveInterpolation.getName()).getParameter();
 
 		model			= calibratedModel;
 		
@@ -224,23 +238,23 @@ public class CurveModelCalibrationMachine {
 		 * the curveModel
 		 */
 		// The fixing time points:
-		double[] forwardFixings = new double[51];
-		for (int i = 0; i < forwardFixings.length; i++) {
-			forwardFixings[i] = i;
-		}
-		// The forward Curve values an an array
-		double[] forwardCurveValues = new double[forwardFixings.length];
-		for (int i = 0; i < forwardCurveValues.length; i++) {
-			forwardCurveValues[i] = forwardCurve.getForward(calibratedModel, i);
-		}
-
-		// Create the forward curve (initial value of the LIBOR market model)
-		ForwardCurve forwardCurveInterpolation = ForwardCurveInterpolation.createForwardCurveFromForwards(
-				"forwardCurve", // "ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)" /* name of the curve
-								// */,
-				forwardFixings /* fixings of the forward */, forwardCurveValues /* forwards */,
-				0.5 /* liborPeriodLength */ /* tenor / period length */
-		);
+//		double[] forwardFixings = new double[51];
+//		for (int i = 0; i < forwardFixings.length; i++) {
+//			forwardFixings[i] = i;
+//		}
+//		// The forward Curve values an an array
+//		double[] forwardCurveValues = new double[forwardFixings.length];
+//		for (int i = 0; i < forwardCurveValues.length; i++) {
+//			forwardCurveValues[i] = forwardCurve.getForward(calibratedModel, i);
+//		}
+//
+//		// Create the forward curve (initial value of the LIBOR market model)
+//		ForwardCurve forwardCurveInterpolation = ForwardCurveInterpolation.createForwardCurveFromForwards(
+//				"forwardCurve", // "ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)" /* name of the curve
+//								// */,
+//				forwardFixings /* fixings of the forward */, forwardCurveValues /* forwards */,
+//				0.5 /* liborPeriodLength */ /* tenor / period length */
+//		);
 
 
 		return model;

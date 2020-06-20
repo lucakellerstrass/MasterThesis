@@ -3,6 +3,7 @@ package kellerstrass.marketInformation.test;
 import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
+import net.finmath.optimizer.SolverException;
 
 /**
  * This class tests the class CalibrationInformation
@@ -14,12 +15,19 @@ import kellerstrass.marketInformation.DataSource;
  */
 public class CalibrationInformationTester {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SolverException {
 
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
+		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
 				DataSource.EXAMPLE);
+		CalibrationInformation calibrationInformation2 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
+				DataSource.Market24_10_2019);
+		CalibrationInformation calibrationInformation3 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
+				DataSource.Market23_10_2019);
+		
 
 		printCalibrationInformation(calibrationInformation1);
+		printCalibrationInformation(calibrationInformation2);
+		printCalibrationInformation(calibrationInformation3);
 
 	} 
 

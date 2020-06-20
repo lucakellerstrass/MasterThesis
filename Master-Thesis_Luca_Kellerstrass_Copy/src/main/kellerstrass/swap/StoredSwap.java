@@ -105,9 +105,13 @@ public class StoredSwap {
 		DaycountConvention fixDayCount = StringToUseful.getDayCountFromString(fixedCouponConvention);
 		DaycountConvention floatDayCount = StringToUseful.getDayCountFromString(xiborCouponConvention);
 
+		
+		LocalDate startDate = StringToUseful.addToDate(refDate, swapStart);
+		LocalDate endDate = StringToUseful.addToDate(startDate, swapEnd);
+
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(refDate /* referenceDate */,
-				StringToUseful.addToDate(refDate, swapStart) /* startDate */,
-				StringToUseful.addToDate(refDate, swapEnd) /* maturityDate */, fixFrequency /* frequency */,
+				startDate /* startDate */,
+				endDate /* maturityDate */, fixFrequency /* frequency */,
 				fixDayCount /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
 				BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
@@ -115,8 +119,8 @@ public class StoredSwap {
 				0 /* paymentOffsetDays */);
 
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(refDate /* referenceDate */,
-				StringToUseful.addToDate(refDate, swapStart) /* startDate */,
-				StringToUseful.addToDate(refDate, swapEnd) /* maturityDate */,
+				startDate /* startDate */,
+				endDate /* maturityDate */,
 				floatingFrequency /* ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				floatDayCount /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -130,7 +134,7 @@ public class StoredSwap {
 		double notionalBuySelladjusted = notionalInput;
 		notional = new Notional(notionalBuySelladjusted);
 
-		double rateFrequency = StringToUseful.getDoubleFromString(RateFrequency);
+		double rateFrequency = StringToUseful.getDoubleFromRateFrequencyString(RateFrequency);
 
 		index = new LIBORIndex(null /* "forwardCurve" */, 0.0, rateFrequency);
 

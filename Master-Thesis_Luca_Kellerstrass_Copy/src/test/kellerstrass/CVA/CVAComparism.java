@@ -45,10 +45,10 @@ public class CVAComparism {
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.EXAMPLE);
+				DataSource.Market24_10_2019);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.OIS6M);
+				CurveModelDataType.OIS6M2410);
 
 		int numberOfPaths = 1000;
 		int numberOfFactorsM1 = 3; // For Libor Market Model

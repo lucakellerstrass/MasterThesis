@@ -27,7 +27,7 @@ public class LogToNormalSwaptionValueTest {
 
 		System.out.println("today= " + today + "\t swapstartDate = " + swapstartDate + "\t FinalDate = " + FinalDate);
 
-		CurveModelData curveModelData = new CurveModelData(CurveModelDataType.OIS6M);
+		CurveModelData curveModelData = new CurveModelData(CurveModelDataType.OIS6M2410);
 
 		DiscountCurve discountCurve = curveModelData.getDiscountCurve();
 

@@ -81,15 +81,13 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 		// Fill in the class calibration maschine intern parameters
 		try {
-			this.curveModel = this.curveModelCalibrationMaschine.getCalibratedCurve();
+			this.curveModel = this.curveModelCalibrationMaschine.getCalibratedCurveModel();
 		} catch (SolverException e) {
 			System.out.println("adding the curve model to the AbstractCalibrationMaschine failed ");
 			e.printStackTrace();
 		}
 		this.forwardCurve = curveModel.getForwardCurve("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
 		this.discountCurve = curveModel.getDiscountCurve("discountCurve-EUR");
-		System.out.println("When initiated in the Abstract class the reference date of the interne discountCurve is: "+ discountCurve.getReferenceDate());
-		System.out.println("When initiated Abstract class the reference date of the interne forwardCurve is: "+ forwardCurve.getReferenceDate());
 		
 	}
 
@@ -164,8 +162,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
 			double tenor = calibrationInformation.getModelDC().getDaycountFraction(exerciseDate, tenorEndDate);
 
-			//System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
-		    //tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
+			
 
 			// We consider an idealized tenor grid (alternative: adapt the model grid)
 			// To ensure the dates fit into the timediscretization
@@ -176,6 +173,10 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				continue;
 			}
 
+			//System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
+			//	    tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
+			
+			
 			int numberOfPeriods = (int) Math.round(tenor / calibrationInformation.getSwapPeriodLength());
 
 			double moneyness = 0.0;
@@ -404,6 +405,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 						+ "\t Target: " + "\t" + formatterValue.format(valueTarget) + "\t Deviation: " + "\t"
 						+ formatterDeviation.format(valueModel - valueTarget));
 			} catch (Exception e) {
+				//System.out.println(ItemNames[i] + " did not work");
 			}
 		}
 

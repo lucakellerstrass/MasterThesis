@@ -221,7 +221,7 @@ public class LMMCalibrationCVA5RebuildAsCalibrationmaschine {
 
 		AnalyticModel curveModelNEW = null;
 		try {
-			curveModelNEW = lmmCalibrationMaschine.getCurveModelCalibrationMaschine().getCalibratedCurve();
+			curveModelNEW = lmmCalibrationMaschine.getCurveModelCalibrationMaschine().getCalibratedCurveModel();
 		} catch (SolverException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -312,7 +312,7 @@ public class LMMCalibrationCVA5RebuildAsCalibrationmaschine {
 
 		AnalyticModel curveModelNEW = null;
 		try {
-			curveModelNEW = lmmCalibrationMaschine.getCurveModelCalibrationMaschine().getCalibratedCurve();
+			curveModelNEW = lmmCalibrationMaschine.getCurveModelCalibrationMaschine().getCalibratedCurveModel();
 		} catch (SolverException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
