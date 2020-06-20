@@ -26,6 +26,7 @@ import net.finmath.montecarlo.interestrate.models.covariance.LIBORCorrelationMod
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORCovarianceModelFromVolatilityAndCorrelation;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModel;
 import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModelPiecewiseConstant;
+import net.finmath.montecarlo.interestrate.models.covariance.LIBORVolatilityModelTimeHomogenousPiecewiseConstant;
 import net.finmath.montecarlo.process.MonteCarloProcess;
 import net.finmath.optimizer.OptimizerFactory;
 import net.finmath.optimizer.OptimizerFactoryLevenbergMarquardt;
@@ -213,7 +214,6 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 
 		double calibationStart = System.currentTimeMillis();
 
-
 		/*
 		 * Create a set of calibration products.
 		 */
@@ -240,31 +240,33 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		 * Create a volatility Model Here one can adjust the volatility matrix
 		 * dimensions
 		 */
-		
-		//The standard version
+
+		// The standard version
 //		  LIBORVolatilityModel volatilityModel = new
 //		  LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
 //		  liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
 //		  10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
 //		 100);
-		
-		//The extreme extended version
+
+		// The extreme extended version
 //		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
 //				liborPeriodDiscretization,
 //				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30),
 //				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30), 0.50 / 100);
 
-		//The medium version
+		// The medium version
 			LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
 			liborPeriodDiscretization,
 			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30),
 			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30), 0.50 / 100);
 
-		  
+		// LIBORVolatilityModelTimeHomogenousPiecewiseConstant
+//		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelTimeHomogenousPiecewiseConstant(
+//				timeDiscretizationFromArray, liborPeriodDiscretization,
+//				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30), new double[]{0.50 / 100});
+		
+		
 
-		  
-		  
-		  
 		// Create correlationModel
 		LIBORCorrelationModel correlationModel = new LIBORCorrelationModelExponentialDecay(timeDiscretizationFromArray,
 				liborPeriodDiscretization, super.numberOfFactors, 0.05, false);
@@ -292,8 +294,8 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		// works also without
 		// Set calibration properties (should use our brownianMotion for calibration -
 		// needed to have to right correlation).
-		Double accuracy = new Double(1E-6); // Lower accuracy to reduce runtime of the unit test  //was 1E-6
-		int maxIterations = 100;    //was 100, better 300
+		Double accuracy = new Double(1E-7); // Lower accuracy to reduce runtime of the unit test //was 1E-6
+		int maxIterations = 200; // was 100, better 300
 		int numberOfThreads = 4;
 		OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
 				numberOfThreads);
@@ -311,7 +313,7 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		calibrationParameters.put("accuracy", accuracy);
 		calibrationParameters.put("brownianMotion", brownianMotion);
 		calibrationParameters.put("optimizerFactory", optimizerFactory);
-		calibrationParameters.put("parameterStep", new Double(1E-4));  // könnte man auf 1E-5 setzen.
+		calibrationParameters.put("parameterStep", new Double(1E-4)); // könnte man auf 1E-5 setzen.
 		properties.put("calibrationParameters", calibrationParameters);
 
 		LIBORModel liborMarketModelCalibrated = null;

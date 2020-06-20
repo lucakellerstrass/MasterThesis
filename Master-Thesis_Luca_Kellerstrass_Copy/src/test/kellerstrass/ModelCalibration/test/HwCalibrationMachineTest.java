@@ -7,6 +7,7 @@ import java.util.Locale;
 import kellerstrass.ModelCalibration.CalibrationMachineInterface;
 import kellerstrass.ModelCalibration.HWCalibrationMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
+import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import net.finmath.exception.CalculationException;
@@ -28,24 +29,28 @@ public class HwCalibrationMachineTest {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	private static boolean forcedCalculation = true;
-	private static int numberOfPaths = 1000;
+	private static int numberOfPaths = 5000;
 	private static int numberOfFactors = 2;
 
 	public static void main(String[] args) throws SolverException, CalculationException {
 
 		System.out.println("Test of example rising terminals calibration:");
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.EXAMPLE);
+		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+				DataSource.Market24_10_2019);
+		
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2410;
 
-		System.out.println("First via the extra test methode of this test class");
-		Tester(calibrationInformation1, forcedCalculation);
 
-		System.out.println("Second via the Calibration maschine intern calibration test methode");
+
+		System.out.println("Via the Calibration maschine intern calibration test methode");
 		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
-				calibrationInformation1);
+				calibrationInformation, curveModelDataType);
 		HwCalibrationMaschine.printCalibrationTest(forcedCalculation);
 		
 		System.out.println("The calibration took " + HwCalibrationMaschine.getCalculationDuration()/60000 + " mins");
+		
+//		System.out.println("Via the extra test methode of this test class");
+//		Tester(calibrationInformation, forcedCalculation);
 
 	}
 

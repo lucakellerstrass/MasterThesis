@@ -7,6 +7,7 @@ import java.util.Locale;
 import kellerstrass.ModelCalibration.CalibrationMachineInterface;
 import kellerstrass.ModelCalibration.LmmCalibrationMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
+import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import net.finmath.exception.CalculationException;
@@ -27,7 +28,7 @@ public class LmmCalibrationMachineTest {
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private static boolean forcedCalculation = false;
+	private static boolean forcedCalculation = true;
 	private static int numberOfPaths = 1000; //1000 or 5000
 	private static int numberOfFactors = 3;
 
@@ -35,14 +36,16 @@ public class LmmCalibrationMachineTest {
 
 		System.out.println("Test of example rising terminals calibration:");
 		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.EXAMPLE);
+				DataSource.Market23_10_2019);
+		
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2310;
 
 		System.out.println("First via the a extra test methode of this test class");
 		//Tester(calibrationInformation1, forcedCalculation);
 
 		System.out.println("Second via the Calibration maschine intern calibration test methode");
 		CalibrationMachineInterface lmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, numberOfFactors,
-				calibrationInformation1);
+				calibrationInformation1, curveModelDataType);
 		lmmCalibrationMaschine.printCalibrationTest(forcedCalculation);
 
 	}

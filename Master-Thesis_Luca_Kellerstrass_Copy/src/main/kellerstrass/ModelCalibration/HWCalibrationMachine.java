@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import net.finmath.marketdata.model.curves.Curve;
 import net.finmath.montecarlo.BrownianMotion;
 import net.finmath.montecarlo.RandomVariableFactory;
 import net.finmath.montecarlo.interestrate.CalibrationProduct;
+import net.finmath.montecarlo.interestrate.LIBORModel;
 import net.finmath.montecarlo.interestrate.LIBORModelMonteCarloSimulationModel;
 import net.finmath.montecarlo.interestrate.LIBORMonteCarloSimulationFromLIBORModel;
 import net.finmath.montecarlo.interestrate.models.HullWhiteModel;
@@ -24,6 +26,8 @@ import net.finmath.montecarlo.interestrate.models.covariance.AbstractShortRateVo
 import net.finmath.montecarlo.interestrate.models.covariance.ShortRateVolatilityModelParametric;
 import net.finmath.montecarlo.interestrate.models.covariance.ShortRateVolatilityModelPiecewiseConstant;
 import net.finmath.montecarlo.process.MonteCarloProcess;
+import net.finmath.optimizer.OptimizerFactory;
+import net.finmath.optimizer.OptimizerFactoryLevenbergMarquardt;
 import net.finmath.optimizer.SolverException;
 import net.finmath.time.TimeDiscretization;
 import net.finmath.time.TimeDiscretizationFromArray;
@@ -205,7 +209,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 		// OLD
 		 TimeDiscretization volatilityDiscretization = new
 		 TimeDiscretizationFromArray(
-		 new double[] { 0, 1, 2, 3, 5, 7, 10, 15 });
+		 new double[] { 0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30});
 
 		// New
 //		
@@ -218,15 +222,43 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 
 		AbstractShortRateVolatilityModel volatilityModel = new ShortRateVolatilityModelPiecewiseConstant(
 				randomVariableFactory, timeDiscretizationFromArray, volatilityDiscretization, new double[] { 0.02 },
-				new double[] { 0.1 }, true, false);
+				new double[] { 0.1 }, true, true);
 
-		// //Create map (mainly use calibration defaults)
-		Map<String, Object> properties = new HashMap<>();
-		Map<String, Object> calibrationParameters = new HashMap<>();
-		calibrationParameters.put("brownianMotion", brownianMotion);
-		properties.put("calibrationParameters", calibrationParameters);
+//		// //Create map (mainly use calibration defaults)
+//		Map<String, Object> properties = new HashMap<>();
+//		Map<String, Object> calibrationParameters = new HashMap<>();
+//		calibrationParameters.put("brownianMotion", brownianMotion);
+//		properties.put("calibrationParameters", calibrationParameters);
 
 		
+		// works also without
+		// Set model properties
+				Map<String, Object> properties = new HashMap<>();
+				// Set calibration properties (should use our brownianMotion for calibration -
+				// needed to have to right correlation).
+				Double accuracy = new Double(1E-8); // Lower accuracy to reduce runtime of the unit test //was 1E-6
+				int maxIterations = 500; // was 100, better 300
+				int numberOfThreads = 4;
+				OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
+						numberOfThreads);
+
+				double[] parameterStandardDeviation = new double[volatilityDiscretization.getNumberOfTimes()];
+				double[] parameterLowerBound = new double[volatilityDiscretization.getNumberOfTimes()];
+				double[] parameterUpperBound = new double[volatilityDiscretization.getNumberOfTimes()];
+				Arrays.fill(parameterStandardDeviation, 0.20 / 100.0);
+				Arrays.fill(parameterLowerBound, 0.0);
+				Arrays.fill(parameterUpperBound, Double.POSITIVE_INFINITY);
+
+				// Set calibration properties (should use our brownianMotion for calibration -
+				// needed to have to right correlation).
+				Map<String, Object> calibrationParameters = new HashMap<>();
+				calibrationParameters.put("accuracy", accuracy);
+				calibrationParameters.put("brownianMotion", brownianMotion);
+				calibrationParameters.put("optimizerFactory", optimizerFactory);
+				calibrationParameters.put("parameterStep", new Double(1E-4)); // könnte man auf 1E-5 setzen.
+				properties.put("calibrationParameters", calibrationParameters);
+
+				
 		
 		HullWhiteModel hullWhiteModelCalibrated = null;
 		try {

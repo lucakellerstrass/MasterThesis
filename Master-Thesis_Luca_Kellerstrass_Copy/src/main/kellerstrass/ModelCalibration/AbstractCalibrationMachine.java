@@ -39,7 +39,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.000%;-##0.000%",
 			new DecimalFormatSymbols(Locale.ENGLISH));
-	private static DecimalFormat formatterVolatility = new DecimalFormat(" #0.0000;-#0.0000",
+	private static DecimalFormat formatterVolatility = new DecimalFormat(" #0.000000000;-#0.000000000",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.000E00;-0.00E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
@@ -471,7 +471,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				OutTableRow.put("Tenor", calibrationItemTenors[i]);
 				OutTableRow.put("Model_Value", valueModel);
 				OutTableRow.put("Target", valueTarget);
-				OutTableRow.put("Deviation", (valueModel - valueTarget)*100);
+				OutTableRow.put("Deviation", formatterVolatility.format((valueModel - valueTarget)));
 
 				OutTable.add(i, OutTableRow);
 			} catch (Exception e) {
