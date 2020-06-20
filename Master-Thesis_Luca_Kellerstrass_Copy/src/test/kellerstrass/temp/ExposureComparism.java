@@ -32,13 +32,16 @@ public class ExposureComparism {
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	// Set the Calibration set. Here: e.g. Example Co-Terminals
-	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-			DataSource.EXAMPLE);
 
 	public static void main(String[] args) throws CalculationException, SolverException {
 		boolean forcedCalculation = true;
 
+
+		// Set the Calibration set. Here: e.g. Example Co-Terminals
+		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+				DataSource.EXAMPLE);
+		
+		
 		int numberOfPaths = 1000;
 		int numberOfFactors = 3;
 

@@ -35,11 +35,13 @@ public class ExposureMaschineLMMTest {
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
 			new DecimalFormatSymbols(new Locale("en")));
 
-	// Set the Calibration set. Here: e.g. Example Co-Terminals
-	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-			DataSource.EXAMPLE);
+	
 
 	public static void main(String[] args) throws SolverException, CalculationException {
+		
+		// Set the Calibration set. Here: e.g. Example Co-Terminals
+		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+				DataSource.EXAMPLE);
 
 		boolean forcedCalculation = true;
 

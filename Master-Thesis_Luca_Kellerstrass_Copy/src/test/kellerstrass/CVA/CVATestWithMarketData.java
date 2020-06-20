@@ -33,11 +33,7 @@ import net.finmath.time.TimeDiscretizationFromArray;
  */
 public class CVATestWithMarketData {
 
-	// Set the Calibration set. Here: e.g. Example Co-Terminals
-	private static CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-			DataSource.EXAMPLE);//EXAMPLE
-	private static CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-			CurveModelDataType.Example); //OIS6M
+
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
 			new DecimalFormatSymbols(new Locale("en")));
 	private static DecimalFormat formatterValue = new DecimalFormat(" ##0.00000;-##0.00000",
@@ -45,6 +41,13 @@ public class CVATestWithMarketData {
 
 	public static void main(String[] args) throws Exception {
 		boolean forcedCalculation = false;
+		
+		// Set the Calibration set. Here: e.g. Example Co-Terminals
+		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+				DataSource.EXAMPLE);//EXAMPLE
+		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
+				CurveModelDataType.Example);
+		
 
 		int numberOfPaths = 1000;
 		int numberOfFactors = 3;
