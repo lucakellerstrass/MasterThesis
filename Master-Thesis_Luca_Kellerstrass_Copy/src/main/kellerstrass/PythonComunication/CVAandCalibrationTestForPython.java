@@ -15,6 +15,7 @@ import kellerstrass.ModelCalibration.HWCalibrationMachine;
 import kellerstrass.ModelCalibration.LmmCalibrationMachine;
 import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
+import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import kellerstrass.swap.StoredSwap;
@@ -58,32 +59,35 @@ public class CVAandCalibrationTestForPython {
 
 	private static boolean forcedCalculation = false;
 
-	 static StoredSwap inputSwap;
-	private static  Swap swap;
-	private static  TermStructureMonteCarloProduct swapExposureEstimator;
-	private  CalibrationInformation calibrationInformation;
-	private static  TimeDiscretizationFromArray simulationTimeDiscretization;
+	static StoredSwap inputSwap;
+	private static Swap swap;
+	private static TermStructureMonteCarloProduct swapExposureEstimator;
+	private CalibrationInformation calibrationInformation;
+	private static TimeDiscretizationFromArray simulationTimeDiscretization;
 
-	private static  int NumberOfFactorsHW;
-	private static  int NumberOfFactorsLmm;
-	private static  int numberOfPaths;
+//	private static  int NumberOfFactorsHW;
+	private static int NumberOfFactorsLmm;
+	private static int numberOfPaths;
 
-	private static  CalibrationMachineInterface lmmCalibrationmashine;
-	private static  CalibrationMachineInterface hwCalibrationmashine;
+	private static CalibrationMachineInterface lmmCalibrationmashine;
+	private static CalibrationMachineInterface hwCalibrationmashine;
 
-	private static  double recoveryRate;
-	private static  double[] cdsSpreads10y = new double[10];
+	private static double recoveryRate;
+	private static double[] cdsSpreads10y = new double[10];
 	// Counterparty information
 
 	public CVAandCalibrationTestForPython(String SwapName, String BuySell, int notional, double fixedRate,
 			String swapStart, String swapEnd, String fixedFrequency, String floatFrequency, String RateFrequency,
-			String discountCurve, String forecastCurve, String fixedCouponConvention, String xiborCouponConvention,
-			String counterpartyName, double recoveryRateInput, double cdsSpread1y, double cdsSpread2y,
-			double cdsSpread3y, double cdsSpread4y, double cdsSpread5y, double cdsSpread6y, double cdsSpread7y,
-			double cdsSpread8y, double cdsSpread9y, double cdsSpread10y,
+			/* String discountCurve, String forecastCurve, */ String fixedCouponConvention,
+			String xiborCouponConvention, String counterpartyName, double recoveryRateInput, double cdsSpread1y,
+			double cdsSpread2y, double cdsSpread3y, double cdsSpread4y, double cdsSpread5y, double cdsSpread6y,
+			double cdsSpread7y, double cdsSpread8y, double cdsSpread9y, double cdsSpread10y,
 
 			// Modelling parameters
-			String referencedate, int numberOfPaths, int NumberOfFactorsLMM, int NumberOfFactorsHW,
+			String referencedate, int numberOfPaths, int NumberOfFactorsLMM, /*
+																				 * int NumberOfFactorsHW should be
+																				 * deleted,
+																				 */
 			String dataSourceInput, String dataScopeInput, String curveModelInput, double Range
 
 	) throws SolverException {
@@ -110,14 +114,15 @@ public class CVAandCalibrationTestForPython {
 		 * = fixedCouponConvention; this.xiborCouponConvention = xiborCouponConvention;
 		 */
 
-		
-
 		DataScope dataScope = StringToUseful.dataScopeFromString(dataScopeInput);
 		DataSource dataSource = StringToUseful.dataSourceFromString(dataSourceInput);
-
 		this.calibrationInformation = new CalibrationInformation(dataScope, dataSource);
+		
+		CurveModelDataType curveModelDataType = StringToUseful.getCurveModelDataTypeFromString(curveModelInput);
+		
+		
 
-		this.NumberOfFactorsHW = NumberOfFactorsHW;
+//		this.NumberOfFactorsHW = NumberOfFactorsHW;
 		this.NumberOfFactorsLmm = NumberOfFactorsLMM;
 		this.numberOfPaths = numberOfPaths;
 
@@ -126,20 +131,20 @@ public class CVAandCalibrationTestForPython {
 
 		// Initialization
 		this.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths, NumberOfFactorsLMM,
-				calibrationInformation);
+				calibrationInformation, curveModelDataType);
 		// Initialization
-		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths, NumberOfFactorsHW, calibrationInformation);
+		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths, 2 /* NumberOfFactorsHW */,
+				calibrationInformation, curveModelDataType);
 
-		
 		this.inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
-				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
-				xiborCouponConvention);
-		//do ATM
-	inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
-		
+				fixedFrequency, floatFrequency, RateFrequency/* , discountCurve, forecastCurve */,
+				fixedCouponConvention, xiborCouponConvention);
+		// do ATM
+		inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
+
 		this.swap = inputSwap.getSwap();
 		this.swapExposureEstimator = new ExposureMachine(swap);
-		
+
 	}
 
 	/**
@@ -147,10 +152,9 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return A HashMap of Exposure paths with the rows: observationDate,
 	 *         expectedPositiveExposure, expectedNegativeExposure
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public static List<Map<String, String>> printExpectedExposurePathsLmm()
-			throws Exception {
+	public static List<Map<String, String>> printExpectedExposurePathsLmm() throws Exception {
 		return printExpectedExposurePaths(NumberOfFactorsLmm, lmmCalibrationmashine);
 	}
 
@@ -159,11 +163,10 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return A HashMap of Exposure paths with the columns: observationDate,
 	 *         expectedPositiveExposure, expectedNegativeExposure
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public static List<Map<String, String>> printExpectedExposurePathsHw()
-			throws Exception {
-		return printExpectedExposurePaths(NumberOfFactorsHW, hwCalibrationmashine);
+	public static List<Map<String, String>> printExpectedExposurePathsHw() throws Exception {
+		return printExpectedExposurePaths( 2 /* NumberOfFactorsHW */, hwCalibrationmashine);
 	}
 
 	/**
@@ -200,15 +203,14 @@ public class CVAandCalibrationTestForPython {
 		return hwCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
 
-	
-	
-	
 	/**
-	 * Returns a List<Map<String, String>> with the exposure paths, model name and CVA
+	 * Returns a List<Map<String, String>> with the exposure paths, model name and
+	 * CVA
+	 * 
 	 * @param numberOFFactors
 	 * @param CalibrationMachine
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private static List<Map<String, String>> printExpectedExposurePaths(int numberOFFactors,
 			CalibrationMachineInterface CalibrationMachine) throws Exception {
@@ -235,22 +237,21 @@ public class CVAandCalibrationTestForPython {
 		int i = 0;
 		for (double observationDate : simulationModel.getTimeDiscretization()) {
 
-			
-
 			/*
 			 * Calculate expected positive exposure of a swap
 			 */
 			RandomVariable valuesSwap;
-			
+
 			// To control the value for t=0.
-			if(observationDate == 0) { valuesSwap = new RandomVariableFromDoubleArray(0); }
-			else {
+			if (observationDate == 0) {
+				valuesSwap = new RandomVariableFromDoubleArray(0);
+			} else {
 				valuesSwap = swap.getValue(observationDate, simulationModel);
-				if(swap.getValue(observationDate, simulationModel).getAverage() == 0) {
+				if (swap.getValue(observationDate, simulationModel).getAverage() == 0) {
 					continue;
 				}
 			}
-			
+
 			RandomVariable valuesEstimatedExposure = swapExposureEstimator.getValue(observationDate, simulationModel);
 			RandomVariable valuesPositiveExposure = valuesSwap.mult(valuesEstimatedExposure
 					.choose(new RandomVariableFromDoubleArray(1.0), new RandomVariableFromDoubleArray(0.0)));
@@ -272,7 +273,7 @@ public class CVAandCalibrationTestForPython {
 
 		}
 		CVA cva = new CVA(simulationModel, swap, recoveryRate, cdsSpreads10y, CalibrationMachine.getDiscountCurve());
-		
+
 		Map<String, String> OutTableRow = new HashMap<>();
 		OutTableRow.put("ModelName", CalibrationMachine.getModelName());
 		OutTableRow.put("CVA", formatterValue.format(cva.getValue()));

@@ -79,7 +79,7 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 	 * @param numberOfPaths
 	 * @param numberOfFactors
 	 * @param calibrationInformation
-	 * @param forceCalculation
+	 * @param curveModelDataType
 	 */
 	public HWCalibrationMachine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
 			CurveModelDataType curveModelDataType) {

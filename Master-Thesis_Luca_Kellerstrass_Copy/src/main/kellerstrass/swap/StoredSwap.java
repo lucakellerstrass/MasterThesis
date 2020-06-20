@@ -94,8 +94,8 @@ public class StoredSwap {
 	 * @param xiborCouponConvention
 	 */
 	public StoredSwap(String SwapName, String BuySell, int notionalInput, double fixedRate, String referenceDate,
-			String swapStart, String swapEnd, String fixedFrequency, String floatFrequency, String RateFrequency,
-			String discountCurve, String forecastCurve, String fixedCouponConvention, String xiborCouponConvention) {
+			String swapStart, String swapEnd, String fixedFrequency, String floatFrequency, String RateFrequency, 
+			/*String discountCurve, String forecastCurve,*/ String fixedCouponConvention, String xiborCouponConvention) {
 
 		Frequency fixFrequency = StringToUseful.getpaymentFrequency(fixedFrequency);
 		Frequency floatingFrequency = StringToUseful.getpaymentFrequency(fixedFrequency);

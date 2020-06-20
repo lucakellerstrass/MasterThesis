@@ -2,6 +2,7 @@ package kellerstrass.useful;
 
 import java.time.LocalDate;
 
+import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import net.finmath.time.ScheduleGenerator;
@@ -173,10 +174,10 @@ public class StringToUseful {
 		if (dataSourceInput.equals("Example")) {
 			return DataSource.EXAMPLE;
 		} else {
-			if (dataSourceInput.equals("volas 24.10.2019")) {
+			if (dataSourceInput.equals("Market24_10_2019")) {
 				return DataSource.Market24_10_2019;
 			} else {
-				if (dataSourceInput.equals("volas 23.10.2019")) {
+				if (dataSourceInput.equals("Market23_10_2019")) {
 					return DataSource.Market23_10_2019;
 				} else {
 
@@ -215,6 +216,30 @@ public class StringToUseful {
 			}
 		}
 
+	}
+/**
+ *  Get a CurveModelDataType out of a given String
+ * @param curveModelInput
+ * @return
+ */
+	public static CurveModelDataType getCurveModelDataTypeFromString(String curveModelInput) {
+		
+		if (curveModelInput.equals("Example")) {
+			return CurveModelDataType.Example;
+		} else {
+			if (curveModelInput.equals("OIS6M2310")) {
+				return CurveModelDataType.OIS6M2310;
+			} else {
+				if (curveModelInput.equals("OIS6M2410")) {
+					return CurveModelDataType.OIS6M2410;
+				} else {
+
+					System.out.println("CurveModelDataType not Valid");
+					return null;
+				}
+
+			}
+		}
 	}
 
 }

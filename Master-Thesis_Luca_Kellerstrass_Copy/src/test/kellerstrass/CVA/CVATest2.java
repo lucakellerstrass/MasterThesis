@@ -135,7 +135,7 @@ public class CVATest2 {
 		// Swap
 
 		StoredSwap inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
-				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
+				fixedFrequency, floatFrequency, RateFrequency/*, discountCurve, forecastCurve*/, fixedCouponConvention,
 				xiborCouponConvention);
 
 		Swap Swap = inputSwap.getSwap();
@@ -262,7 +262,7 @@ public class CVATest2 {
 		// Swap
 
 		StoredSwap inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
-				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
+				fixedFrequency, floatFrequency, RateFrequency,/* discountCurve, forecastCurve, */fixedCouponConvention,
 				xiborCouponConvention);
 
 		Swap Swap = inputSwap.getSwap();

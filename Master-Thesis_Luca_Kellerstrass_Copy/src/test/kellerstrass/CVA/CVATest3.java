@@ -111,7 +111,7 @@ public class CVATest3 {
 		LIBORModelMonteCarloSimulationModel simulationModel = lmmCalibrationMaschine
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 		StoredSwap inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate, swapStart, swapEnd,
-				fixedFrequency, floatFrequency, RateFrequency, discountCurve, forecastCurve, fixedCouponConvention,
+				fixedFrequency, floatFrequency, RateFrequency,/* discountCurve, forecastCurve,*/ fixedCouponConvention,
 				xiborCouponConvention);
 		Swap Swap2 = inputSwap.getSwap();
 		ExposureMachine swapExposureEstimator = new ExposureMachine(Swap2);

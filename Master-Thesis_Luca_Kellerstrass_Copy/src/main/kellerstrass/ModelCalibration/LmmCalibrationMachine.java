@@ -89,7 +89,7 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 	 * @param numberOfPaths
 	 * @param numberOfFactors
 	 * @param calibrationInformation
-	 * @param forceCalculation
+	 * @param curveModelDataType
 	 */
 	public LmmCalibrationMachine(int numberOfPaths, int numberOfFactors, CalibrationInformation calibrationInformation,
 			CurveModelDataType curveModelDataType) {
