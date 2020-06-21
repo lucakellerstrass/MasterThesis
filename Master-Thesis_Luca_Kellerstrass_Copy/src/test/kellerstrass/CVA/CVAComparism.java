@@ -38,17 +38,17 @@ public class CVAComparism {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	public static void main(String[] args) throws Exception {
-		boolean forcedCalculation = false;
+		boolean forcedCalculation = true;
 
 		
 		
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.Market24_10_2019);
+				DataSource.EXAMPLE);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.OIS6M2410);
+				CurveModelDataType.Example);
 
 		int numberOfPaths = 1000;
 		int numberOfFactorsM1 = 3; // For Libor Market Model
@@ -92,7 +92,8 @@ public class CVAComparism {
 				.getLIBORModelMonteCarloSimulationModel(process2, forcedCalculation);
 
 		// Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example 2");
+		StoredSwap testStoredSwap = new StoredSwap("TrueSwap1");
+		
 		
 		testStoredSwap.changeToATMswap(Model1CalibrationMaschine.getForwardCurve(), Model1CalibrationMaschine.getCurveModel());
 		
@@ -100,7 +101,7 @@ public class CVAComparism {
 
 		double recoveryRate = 0.4;
 
-		double[] cdsSpreads = { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
+		double[] cdsSpreads =  {6, 9, 15, 22, 35, 40, 45, 45.67, 46.33, 47 };   //{ 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
 
 		CVA cvaM1 = new CVA(Model1, testSwap, recoveryRate, cdsSpreads, Model1CalibrationMaschine.getDiscountCurve());
 		CVA cvaM2 = new CVA(Model2, testSwap, recoveryRate, cdsSpreads, Model2CalibrationMaschine.getDiscountCurve());

@@ -471,7 +471,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				OutTableRow.put("Tenor", calibrationItemTenors[i]);
 				OutTableRow.put("Model_Value", valueModel);
 				OutTableRow.put("Target", valueTarget);
-				OutTableRow.put("Deviation", formatterVolatility.format((valueModel - valueTarget)));
+				OutTableRow.put("Deviation", formatterVolatility.format(Math.abs(valueModel - valueTarget)));
 
 				OutTable.add(i, OutTableRow);
 			} catch (Exception e) {
