@@ -58,20 +58,20 @@ public class CVAandCalibrationTestForPython {
 	private static boolean forcedCalculation = false;
 
 	static StoredSwap inputSwap;
-	private static Swap swap;
-	private static TermStructureMonteCarloProduct swapExposureEstimator;
+	private  Swap swap;
+	private  TermStructureMonteCarloProduct swapExposureEstimator;
 	private CalibrationInformation calibrationInformation;
 	private TimeDiscretizationFromArray simulationTimeDiscretization;
 
 //	private static  int NumberOfFactorsHW;
-	private static int NumberOfFactorsLmm;
-	private static int numberOfPaths;
+	private  int NumberOfFactorsLmm;
+	private  int numberOfPaths;
 
-	private static CalibrationMachineInterface lmmCalibrationmashine;
-	private static CalibrationMachineInterface hwCalibrationmashine;
+	private  CalibrationMachineInterface lmmCalibrationmashine;
+	private  CalibrationMachineInterface hwCalibrationmashine;
 
-	private static double recoveryRate;
-	private static double[] cdsSpreads10y = new double[10];
+	private  double recoveryRate;
+	private  double[] cdsSpreads10y = new double[10];
 	// Counterparty information
 
 	public CVAandCalibrationTestForPython(String SwapName, String BuySell, int notional, double fixedRate,
@@ -90,18 +90,18 @@ public class CVAandCalibrationTestForPython {
 
 	) throws SolverException {
 
-		CVAandCalibrationTestForPython.recoveryRate = recoveryRateInput;
+		this.recoveryRate = recoveryRateInput;
 		// Fill in the cdsSpread array
-		CVAandCalibrationTestForPython.cdsSpreads10y[0] = cdsSpread1y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[1] = cdsSpread2y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[2] = cdsSpread3y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[3] = cdsSpread4y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[4] = cdsSpread5y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[5] = cdsSpread6y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[6] = cdsSpread7y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[7] = cdsSpread8y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[8] = cdsSpread9y;
-		CVAandCalibrationTestForPython.cdsSpreads10y[9] = cdsSpread10y;
+		this.cdsSpreads10y[0] = cdsSpread1y;
+		this.cdsSpreads10y[1] = cdsSpread2y;
+		this.cdsSpreads10y[2] = cdsSpread3y;
+		this.cdsSpreads10y[3] = cdsSpread4y;
+		this.cdsSpreads10y[4] = cdsSpread5y;
+		this.cdsSpreads10y[5] = cdsSpread6y;
+		this.cdsSpreads10y[6] = cdsSpread7y;
+		this.cdsSpreads10y[7] = cdsSpread8y;
+		this.cdsSpreads10y[8] = cdsSpread9y;
+		this.cdsSpreads10y[9] = cdsSpread10y;
 
 		/*
 		 * this.SwapName = SwapName; this.BuySell = BuySell; this.notional =notional;
@@ -119,17 +119,17 @@ public class CVAandCalibrationTestForPython {
 		CurveModelDataType curveModelDataType = StringToUseful.getCurveModelDataTypeFromString(curveModelInput);
 
 //		this.NumberOfFactorsHW = NumberOfFactorsHW;
-		CVAandCalibrationTestForPython.NumberOfFactorsLmm = NumberOfFactorsLMM;
-		CVAandCalibrationTestForPython.numberOfPaths = numberOfPaths;
+		this.NumberOfFactorsLmm = NumberOfFactorsLMM;
+		this.numberOfPaths = numberOfPaths;
 
 		double dt = 0.25;
 		this.simulationTimeDiscretization = new TimeDiscretizationFromArray(0.0, (int) (Range / dt), dt);
 
 		// Initialization
-		CVAandCalibrationTestForPython.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths,
+		this.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths,
 				NumberOfFactorsLMM, calibrationInformation, curveModelDataType);
 		// Initialization
-		CVAandCalibrationTestForPython.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths,
+		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths,
 				2 /* NumberOfFactorsHW */, calibrationInformation, curveModelDataType);
 
 		CVAandCalibrationTestForPython.inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate,
@@ -138,8 +138,8 @@ public class CVAandCalibrationTestForPython {
 		// do ATM
 		inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
 
-		CVAandCalibrationTestForPython.swap = inputSwap.getSwap();
-		CVAandCalibrationTestForPython.swapExposureEstimator = new ExposureMachine(swap);
+		this.swap = inputSwap.getSwap();
+		this.swapExposureEstimator = new ExposureMachine(swap);
 
 	}
 
@@ -178,7 +178,7 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<Map<String, Object>> printCalibrationTestLmm() {
+	public  ArrayList<Map<String, Object>> printCalibrationTestLmm() {
 		return lmmCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
 
@@ -195,7 +195,7 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return
 	 */
-	public static ArrayList<Map<String, Object>> printCalibrationTestHw() {
+	public  ArrayList<Map<String, Object>> printCalibrationTestHw() {
 		return hwCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
 
