@@ -208,9 +208,9 @@ public class StoredSwap {
 		 * Create a receiver swap (receive fix, pay float)
 		 */
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
-				LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-				LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-				LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
+				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
+				LocalDate.of(2020, Month.OCTOBER, 24) /* startDate */,
+				LocalDate.of(2040, Month.OCTOBER, 24) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -219,16 +219,16 @@ public class StoredSwap {
 				0 /* paymentOffsetDays */);
 
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
-				LocalDate.of(2015, Month.JANUARY, 03) /* referenceDate */,
-				LocalDate.of(2015, Month.JANUARY, 06) /* startDate */,
-				LocalDate.of(2025, Month.JANUARY, 06) /* maturityDate */,
-				ScheduleGenerator.Frequency.QUARTERLY /* frequency */,
+				LocalDate.of(2015, Month.OCTOBER, 24) /* referenceDate */,
+				LocalDate.of(2015, Month.OCTOBER, 24) /* startDate */,
+				LocalDate.of(2025, Month.OCTOBER, 24) /* maturityDate */,
+				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
 				BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
 				new BusinessdayCalendarExcludingTARGETHolidays() /* businessdayCalendar */, 0 /* fixingOffsetDays */,
 				0 /* paymentOffsetDays */);
-		notional = new Notional(1.0);
+		notional = new Notional(1000000.0);
 		index = new LIBORIndex(null /* "forwardCurve" */, 0.0, 0.5);
 		fixedCoupon = 0.001252;
 
@@ -245,7 +245,7 @@ public class StoredSwap {
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
 				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
 				LocalDate.of(2019, Month.OCTOBER, 24) /* startDate */,
-				LocalDate.of(2029, Month.OCTOBER, 24) /* maturityDate */,
+				LocalDate.of(2039, Month.OCTOBER, 24) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -256,7 +256,7 @@ public class StoredSwap {
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
 				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
 				LocalDate.of(2019, Month.OCTOBER, 24) /* startDate */,
-				LocalDate.of(2029, Month.OCTOBER, 24) /* maturityDate */,
+				LocalDate.of(2039, Month.OCTOBER, 24) /* maturityDate */,
 				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,

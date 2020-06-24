@@ -11,6 +11,7 @@ import kellerstrass.ModelCalibration.HWCalibrationMachineAlternative;
 import kellerstrass.ModelCalibration.LmmCalibrationMachine;
 import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
+import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import kellerstrass.swap.StoredSwap;
@@ -42,10 +43,12 @@ public class ExposureMaschineHWTest {
 	public static void main(String[] args) throws SolverException, CalculationException {
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
-		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.CoTerminals,
-				DataSource.EXAMPLE);
+		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
+				DataSource.Market24_10_2019);
+		
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2410;
 
-		boolean forcedCalculation = true;
+		boolean forcedCalculation = false;
 
 		int numberOfPaths = 1000;
 		int numberOfFactors = 2;
@@ -63,13 +66,14 @@ public class ExposureMaschineHWTest {
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
 		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
-				calibrationInformation);
+				calibrationInformation, curveModelDataType);
 		// simulation machine
 		LIBORModelMonteCarloSimulationModel simulationModel = HwCalibrationMaschine
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
 		// Swap
 		StoredSwap testStoredSwap = new StoredSwap("Example 2");
+		testStoredSwap.changeToATMswap(HwCalibrationMaschine.getForwardCurve(), HwCalibrationMaschine.getCurveModel());
 		Swap testSwap = testStoredSwap.getSwap();
 
 		// AbstractLIBORMonteCarloProduct testSwap =

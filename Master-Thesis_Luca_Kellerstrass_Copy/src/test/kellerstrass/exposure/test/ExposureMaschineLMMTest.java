@@ -9,6 +9,7 @@ import kellerstrass.ModelCalibration.CalibrationMachineInterface;
 import kellerstrass.ModelCalibration.LmmCalibrationMachine;
 import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
+import kellerstrass.marketInformation.CurveModelDataType;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
 import kellerstrass.swap.StoredSwap;
@@ -41,9 +42,11 @@ public class ExposureMaschineLMMTest {
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.EXAMPLE);
+				DataSource.Market23_10_2019);
 
-		boolean forcedCalculation = true;
+		
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2310;
+		boolean forcedCalculation = false;
 
 		int numberOfPaths = 1000;
 		int numberOfFactors = 3;
@@ -61,13 +64,14 @@ public class ExposureMaschineLMMTest {
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
 		CalibrationMachineInterface lmmCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, numberOfFactors,
-				calibrationInformation);
+				calibrationInformation, curveModelDataType);
 		// simulation machine
 		LIBORModelMonteCarloSimulationModel simulationModel = lmmCalibrationMaschine
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
 		// Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example");
+		StoredSwap testStoredSwap = new StoredSwap("Example 2");
+		testStoredSwap.changeToATMswap(lmmCalibrationMaschine.getForwardCurve(), lmmCalibrationMaschine.getCurveModel());
 		Swap testSwap = testStoredSwap.getSwap();
 
 		// AbstractLIBORMonteCarloProduct testSwap =

@@ -38,17 +38,17 @@ public class CVAComparism {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	public static void main(String[] args) throws Exception {
-		boolean forcedCalculation = true;
+		boolean forcedCalculation = false;
 
 		
 		
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.EXAMPLE);
+				DataSource.Market24_10_2019);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.Example);
+				CurveModelDataType.OIS6M2410);
 
 		int numberOfPaths = 1000;
 		int numberOfFactorsM1 = 3; // For Libor Market Model

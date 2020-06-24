@@ -456,6 +456,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 		double deviationSum = 0.0;
 		double deviationSquaredSum = 0.0;
+		int indexForOutTable = 0;
 		for (int i = 0; i < calibrationItems.length; i++) {
 			AbstractLIBORMonteCarloProduct calibrationProduct = calibrationItems[i].getProduct();
 			try {
@@ -473,8 +474,11 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				OutTableRow.put("Target", valueTarget);
 				OutTableRow.put("Deviation", formatterVolatility.format(Math.abs(valueModel - valueTarget)));
 
-				OutTable.add(i, OutTableRow);
+				OutTable.add(indexForOutTable, OutTableRow);
+				indexForOutTable +=1;
+				System.out.println("Expiry= " + calibrationItemExpiries[i] +" and "+ "Tenor = " + calibrationItemTenors[i] +" worked");
 			} catch (Exception e) {
+				System.out.println("Expiry= " + calibrationItemExpiries[i] +" and "+ "Tenor = " + calibrationItemTenors[i] +" failed");
 			}
 		}
 

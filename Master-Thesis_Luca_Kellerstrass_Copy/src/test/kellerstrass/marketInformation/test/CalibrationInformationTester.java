@@ -17,17 +17,17 @@ public class CalibrationInformationTester {
 
 	public static void main(String[] args) throws SolverException {
 
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
-				DataSource.EXAMPLE);
-		CalibrationInformation calibrationInformation2 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
+		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.CoTerminals,
 				DataSource.Market24_10_2019);
-		CalibrationInformation calibrationInformation3 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
-				DataSource.Market23_10_2019);
-		
+//		CalibrationInformation calibrationInformation2 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
+//				DataSource.Market24_10_2019);
+//		CalibrationInformation calibrationInformation3 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
+//				DataSource.Market23_10_2019);
+//		
 
 		printCalibrationInformation(calibrationInformation1);
-		printCalibrationInformation(calibrationInformation2);
-		printCalibrationInformation(calibrationInformation3);
+//		printCalibrationInformation(calibrationInformation2);
+//		printCalibrationInformation(calibrationInformation3);
 
 	} 
 

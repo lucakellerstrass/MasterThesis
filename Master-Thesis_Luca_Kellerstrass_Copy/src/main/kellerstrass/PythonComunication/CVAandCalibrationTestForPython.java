@@ -122,8 +122,10 @@ public class CVAandCalibrationTestForPython {
 		this.NumberOfFactorsLmm = NumberOfFactorsLMM;
 		this.numberOfPaths = numberOfPaths;
 
+		
+		double lastTime = 40.0;
 		double dt = 0.25;
-		this.simulationTimeDiscretization = new TimeDiscretizationFromArray(0.0, (int) (Range / dt), dt);
+		this.simulationTimeDiscretization = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 
 		// Initialization
 		this.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths,
