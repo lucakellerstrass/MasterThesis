@@ -61,7 +61,7 @@ public class CVATest {
 				.getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
 
 		// Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example");
+		StoredSwap testStoredSwap = new StoredSwap("Example 2");
 		Swap testSwap = testStoredSwap.getSwap();
 
 		// AbstractLIBORMonteCarloProduct testSwap =

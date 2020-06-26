@@ -242,11 +242,11 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		 */
 
 		// The standard version
-//		  LIBORVolatilityModel volatilityModel = new
-//		  LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
-//		  liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
-//		  10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
-//		 100);
+		  LIBORVolatilityModel volatilityModel = new
+		  LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
+		  liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
+		  10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
+		 100);
 
 		// The extreme extended version
 //		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
@@ -255,10 +255,10 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 //				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30), 0.50 / 100);
 
 		// The medium version
-			LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
-			liborPeriodDiscretization,
-			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30),
-			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30), 0.50 / 100);
+//			LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
+//			liborPeriodDiscretization,
+//			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30),
+//			new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30), 0.50 / 100);
 
 		// LIBORVolatilityModelTimeHomogenousPiecewiseConstant
 //		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelTimeHomogenousPiecewiseConstant(

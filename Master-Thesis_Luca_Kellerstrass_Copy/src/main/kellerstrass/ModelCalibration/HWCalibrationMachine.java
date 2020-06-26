@@ -207,9 +207,9 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 				numberOfFactors, numberOfPaths, 31415 /* seed */);
 
 		// OLD
-//		 TimeDiscretization volatilityDiscretization = new
-//		 TimeDiscretizationFromArray(
-//		 new double[] { 0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30});
+		 TimeDiscretization volatilityDiscretization = new
+		 TimeDiscretizationFromArray(
+		 new double[] { 0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30});
 		 
 
 		// Test for (extended) Co-Terminals
@@ -229,9 +229,9 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 		 // -> a = 0.359957087163325
 
 		// New		
-		  TimeDiscretization volatilityDiscretization = new
-		  TimeDiscretizationFromArray(new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-		  15, 20, 25, 30});
+//		  TimeDiscretization volatilityDiscretization = new
+//		  TimeDiscretizationFromArray(new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+//		  15, 20, 25, 30});
 		 
 
 		RandomVariableFactory randomVariableFactory = new RandomVariableFactory();
@@ -252,8 +252,8 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 				Map<String, Object> properties = new HashMap<>();
 				// Set calibration properties (should use our brownianMotion for calibration -
 				// needed to have to right correlation).
-				Double accuracy = new Double(1E-6); // Lower accuracy to reduce runtime of the unit test //was 1E-6
-				int maxIterations = 100; // was 100, better 300
+				Double accuracy = new Double(1E-7); // Lower accuracy to reduce runtime of the unit test //was 1E-6
+				int maxIterations = 200; // was 100, better 300
 				int numberOfThreads = 4;
 				OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
 						numberOfThreads);
@@ -288,11 +288,11 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 
 		
 
-		for (double obeservationTime: volatilityDiscretization) {
-			double meanReversion = hullWhiteModelCalibrated.getVolatilityModel().getMeanReversion((int)obeservationTime).getAverage();
-		System.out.println("meanReversion at  \t"+ obeservationTime +"\t is \t"  + meanReversion);
-		}
-		
+//		for (double obeservationTime: volatilityDiscretization) {
+//			double meanReversion = hullWhiteModelCalibrated.getVolatilityModel().getMeanReversion((int)obeservationTime).getAverage();
+//		System.out.println("meanReversion at  \t"+ obeservationTime +"\t is \t"  + meanReversion);
+//		}
+//		
 		
 		
 		

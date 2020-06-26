@@ -137,9 +137,13 @@ public class CVAandCalibrationTestForPython {
 		CVAandCalibrationTestForPython.inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate,
 				swapStart, swapEnd, fixedFrequency, floatFrequency, RateFrequency/* , discountCurve, forecastCurve */,
 				fixedCouponConvention, xiborCouponConvention);
+		
+		if (fixedRate == -1.0) {
 		// do ATM
 		inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
-
+		}
+		
+		
 		this.swap = inputSwap.getSwap();
 		this.swapExposureEstimator = new ExposureMachine(swap);
 
@@ -233,6 +237,7 @@ public class CVAandCalibrationTestForPython {
 
 		System.out.println("observationDate  \t   expected positive Exposure  \t   expected negative Exposure");
 		int i = 0;
+		double endObservationDate = 0;
 		for (double observationDate : simulationModel.getTimeDiscretization()) {
 
 			/*
@@ -262,6 +267,7 @@ public class CVAandCalibrationTestForPython {
 			System.out.println(observationDate + "    \t         " + formatter6.format(expectedPositiveExposure)
 					+ "    \t         " + formatter6.format(expectedNegativeExposure));
 
+			endObservationDate = observationDate;
 			Map<String, String> OutTableRow = new HashMap<>();
 			OutTableRow.put("observationDate", formatter2.format(observationDate));
 			OutTableRow.put("expectedPositiveExposure", formatter6.format(expectedPositiveExposure));
@@ -270,12 +276,23 @@ public class CVAandCalibrationTestForPython {
 			i++;
 
 		}
+		
+		
+		endObservationDate = endObservationDate + 0.25;
+		
+		//Print out one more time where everything is zero
+		Map<String, String> OutTableRow2 = new HashMap<>();
+		OutTableRow2.put("observationDate", formatter2.format(endObservationDate));
+		OutTableRow2.put("expectedPositiveExposure", formatter6.format(0.0));
+		OutTableRow2.put("expectedNegativeExposure", formatter6.format(0.0));
+		OutTable.add(i, OutTableRow2);
+		
 		CVA cva = new CVA(simulationModel, swap, recoveryRate, cdsSpreads10y, CalibrationMachine.getDiscountCurve());
 
 		Map<String, String> OutTableRow = new HashMap<>();
 		OutTableRow.put("ModelName", CalibrationMachine.getModelName());
 		OutTableRow.put("CVA", formatterValue.format(cva.getValue()));
-		OutTable.add(i, OutTableRow);
+		OutTable.add(i+1, OutTableRow);
 		return OutTable;
 
 	}

@@ -52,6 +52,8 @@ public class StoredSwap {
 		double swaprate = net.finmath.marketdata.products.Swap.getForwardSwapRate(legSchedulePay,
 				legScheduleRec, forwardCurve, curveModel);
 		this.fixedCoupon = swaprate;
+		
+
 	}
 
 	private String swapName;
@@ -186,7 +188,7 @@ public class StoredSwap {
 				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
 				LocalDate.of(2019, Month.OCTOBER, 29) /* startDate */,
 				LocalDate.of(2029, Month.OCTOBER, 29) /* maturityDate */,
-				ScheduleGenerator.Frequency.QUARTERLY /* frequency */,
+				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_360 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
 				BusinessdayCalendar.DateRollConvention.FOLLOWING /* dateRollConvention */,
@@ -244,8 +246,8 @@ public class StoredSwap {
 		 */
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
 				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
-				LocalDate.of(2019, Month.OCTOBER, 24) /* startDate */,
-				LocalDate.of(2039, Month.OCTOBER, 24) /* maturityDate */,
+				LocalDate.of(2020, Month.OCTOBER, 24) /* startDate */,
+				LocalDate.of(2044, Month.OCTOBER, 24) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -255,8 +257,8 @@ public class StoredSwap {
 
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
 				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
-				LocalDate.of(2019, Month.OCTOBER, 24) /* startDate */,
-				LocalDate.of(2039, Month.OCTOBER, 24) /* maturityDate */,
+				LocalDate.of(2020, Month.OCTOBER, 24) /* startDate */,
+				LocalDate.of(2044, Month.OCTOBER, 24) /* maturityDate */,
 				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,

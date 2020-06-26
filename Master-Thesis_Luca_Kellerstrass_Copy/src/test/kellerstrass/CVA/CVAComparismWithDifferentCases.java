@@ -26,7 +26,7 @@ import net.finmath.montecarlo.process.EulerSchemeFromProcessModel;
 import net.finmath.stochastic.RandomVariable;
 import net.finmath.time.TimeDiscretizationFromArray;
 
-public class CVAComparism {
+public class CVAComparismWithDifferentCases {
 
 	private final static NumberFormat formatter6 = new DecimalFormat("0.000000",
 			new DecimalFormatSymbols(new Locale("en")));
@@ -44,7 +44,10 @@ public class CVAComparism {
 		
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
-		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.CoTerminals,
+		CalibrationInformation calibrationInformationLMM = new CalibrationInformation(DataScope.FullSurface,
+				DataSource.Market23_10_2019);
+		
+		CalibrationInformation calibrationInformationHW = new CalibrationInformation(DataScope.CoTerminals,
 				DataSource.Market23_10_2019);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
@@ -61,41 +64,41 @@ public class CVAComparism {
 				(int) (lastTime / dt), dt);
 
 		// brownian motion
-		BrownianMotion brownianMotionM1 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+		BrownianMotion brownianMotionLMM = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
 				numberOfFactorsM1, numberOfPaths, 31415 /* seed */);
-		BrownianMotion brownianMotionM2 = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+		BrownianMotion brownianMotionHW = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
 				numberOfFactorsM2, numberOfPaths, 31415 /* seed */);
 		
 		// process
-		EulerSchemeFromProcessModel process1 = new EulerSchemeFromProcessModel(brownianMotionM1,
+		EulerSchemeFromProcessModel processLMM = new EulerSchemeFromProcessModel(brownianMotionLMM,
 				EulerSchemeFromProcessModel.Scheme.EULER);
-		EulerSchemeFromProcessModel process2 = new EulerSchemeFromProcessModel(brownianMotionM2,
+		EulerSchemeFromProcessModel processHW = new EulerSchemeFromProcessModel(brownianMotionHW,
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
 		
 		
-		CalibrationMachineInterface Model1CalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
-				numberOfFactorsM1, calibrationInformation, curveModelCalibrationMaschine);
-		CalibrationMachineInterface Model2CalibrationMaschine = new HWCalibrationMachine(numberOfPaths,
-				numberOfFactorsM2, calibrationInformation, curveModelCalibrationMaschine);
+		CalibrationMachineInterface LMMCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
+				numberOfFactorsM1, calibrationInformationLMM, curveModelCalibrationMaschine);
+		CalibrationMachineInterface HWCalibrationMaschine = new HWCalibrationMachine(numberOfPaths,
+				numberOfFactorsM2, calibrationInformationHW, curveModelCalibrationMaschine);
 		
 		
 		
 		
 		// simulation machine
-		LIBORModelMonteCarloSimulationModel Model1 = Model1CalibrationMaschine
-				.getLIBORModelMonteCarloSimulationModel(process1, forcedCalculation);
+		LIBORModelMonteCarloSimulationModel LMsimulationModel = LMMCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(processLMM, forcedCalculation);
 		
 				
 		
-		LIBORModelMonteCarloSimulationModel Model2 = Model2CalibrationMaschine
-				.getLIBORModelMonteCarloSimulationModel(process2, forcedCalculation);
+		LIBORModelMonteCarloSimulationModel HWsimulationModel = HWCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(processHW, forcedCalculation);
 
 		// Swap
 		StoredSwap testStoredSwap = new StoredSwap("Example 2");
 		
 		
-		testStoredSwap.changeToATMswap(Model1CalibrationMaschine.getForwardCurve(), Model1CalibrationMaschine.getCurveModel());
+		testStoredSwap.changeToATMswap(LMMCalibrationMaschine.getForwardCurve(), LMMCalibrationMaschine.getCurveModel());
 		
 		Swap testSwap = testStoredSwap.getSwap();
 
@@ -103,18 +106,18 @@ public class CVAComparism {
 
 		double[] cdsSpreads =  {6, 9, 15, 22, 35, 40, 45, 45.67, 46.33, 47 };   //{ 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
 
-		CVA cvaM1 = new CVA(Model1, testSwap, recoveryRate, cdsSpreads, Model1CalibrationMaschine.getDiscountCurve());
-		CVA cvaM2 = new CVA(Model2, testSwap, recoveryRate, cdsSpreads, Model2CalibrationMaschine.getDiscountCurve());
-		double cvaValueM1 = cvaM1.getValue();
-		double cvaValueM2 = cvaM2.getValue();
+		CVA cvaLM = new CVA(LMsimulationModel, testSwap, recoveryRate, cdsSpreads, LMMCalibrationMaschine.getDiscountCurve());
+		CVA cvaHW = new CVA(HWsimulationModel, testSwap, recoveryRate, cdsSpreads, HWCalibrationMaschine.getDiscountCurve());
+		double cvaValueM1 = cvaLM.getValue();
+		double cvaValueM2 = cvaHW.getValue();
 
 		// Exposure Maschine
 		// ExposureMaschine exposureMaschine = new ExposureMaschine(testSwap);
 		TermStructureMonteCarloProduct swapExposureEstimator = new ExposureMachine(testSwap);
 
 		System.out.println("\n We want to compare the given models");
-		System.out.println("Model 1 is: " + Model1CalibrationMaschine.getModelName());
-		System.out.println("Model 2 is: " + Model2CalibrationMaschine.getModelName() + "\n");
+		System.out.println("Model 1 is: " + LMMCalibrationMaschine.getModelName());
+		System.out.println("Model 2 is: " + HWCalibrationMaschine.getModelName() + "\n");
 
 		System.out.println("The CVA with Model 1 is \t" + formatterValue.format(cvaValueM1));
 		System.out.println("The CVA with Model 2 is \t" + formatterValue.format(cvaValueM2));
@@ -122,10 +125,10 @@ public class CVAComparism {
 				+ ", which is " + formatterPercentage.format((cvaValueM1 - cvaValueM2) / cvaValueM1) + "\n");
 
 		// Print the Calibration Tests for two two models
-		Model1CalibrationMaschine.printCalibrationTest();
-		Model2CalibrationMaschine.printCalibrationTest();
+		LMMCalibrationMaschine.printCalibrationTest();
+		HWCalibrationMaschine.printCalibrationTest();
 
-		printExpectedExposurePathsCpmarism(swapExposureEstimator, Model1, Model2, testSwap);
+		printExpectedExposurePathsCpmarism(swapExposureEstimator, LMsimulationModel, HWsimulationModel, testSwap);
 
 	}
 

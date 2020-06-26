@@ -476,9 +476,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 				OutTable.add(indexForOutTable, OutTableRow);
 				indexForOutTable +=1;
-				System.out.println("Expiry= " + calibrationItemExpiries[i] +" and "+ "Tenor = " + calibrationItemTenors[i] +" worked");
+				
 			} catch (Exception e) {
-				System.out.println("Expiry= " + calibrationItemExpiries[i] +" and "+ "Tenor = " + calibrationItemTenors[i] +" failed");
+				
 			}
 		}
 

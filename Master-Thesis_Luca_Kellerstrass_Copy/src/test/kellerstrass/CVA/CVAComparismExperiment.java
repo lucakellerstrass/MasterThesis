@@ -43,15 +43,15 @@ public class CVAComparismExperiment {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	public static void main(String[] args) throws Exception {
-		boolean forcedCalculation = true;
+		boolean forcedCalculation = false;
 
 		// First we calibrate the Hull White Model
 
 		CalibrationInformation calibrationInformationForHw = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.EXAMPLE);
+				DataSource.Market23_10_2019);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.Example);
+				CurveModelDataType.OIS6M2310);
 
 		int numberOfPaths = 1000;
 
@@ -121,11 +121,12 @@ public class CVAComparismExperiment {
 
 		// Swap
 		StoredSwap testStoredSwap = new StoredSwap("Example 2");
+		testStoredSwap.changeToATMswap(LmmCalibrationMaschine.getForwardCurve(), LmmCalibrationMaschine.getCurveModel());
 		Swap testSwap = testStoredSwap.getSwap();
 
 		double recoveryRate = 0.4;
 
-		double[] cdsSpreads = { 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 };
+		double[] cdsSpreads = {6, 9, 15, 22, 35, 40, 45, 45.67, 46.33, 47 };   //{ 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0 }
 
 		CVA cvaHw = new CVA(HwModel, testSwap, recoveryRate, cdsSpreads, HwCalibrationMaschine.getDiscountCurve());
 		CVA cvaLmm = new CVA(LiborMarketModel, testSwap, recoveryRate, cdsSpreads, LmmCalibrationMaschine.getDiscountCurve());
