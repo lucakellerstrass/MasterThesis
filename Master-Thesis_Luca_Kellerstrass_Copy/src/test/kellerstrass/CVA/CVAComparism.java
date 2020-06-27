@@ -38,19 +38,22 @@ public class CVAComparism {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	public static void main(String[] args) throws Exception {
-		boolean forcedCalculation = false;
+		boolean forcedCalculation = true;
 
 		
 		
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
-		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.CoTerminals,
+		CalibrationInformation calibrationInformationLMM = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.Market23_10_2019);
+		CalibrationInformation calibrationInformationHW = new CalibrationInformation(DataScope.CoTerminals,
+				DataSource.Market23_10_2019);
+
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
 				CurveModelDataType.OIS6M2310);
 
-		int numberOfPaths = 1000;
+		int numberOfPaths = 1000;    //1001 for longer vola matrix in LMM
 		int numberOfFactorsM1 = 3; // For Libor Market Model
 		int numberOfFactorsM2 = 2; // For Hull white Model
 
@@ -75,9 +78,9 @@ public class CVAComparism {
 		
 		
 		CalibrationMachineInterface Model1CalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
-				numberOfFactorsM1, calibrationInformation, curveModelCalibrationMaschine);
+				numberOfFactorsM1, calibrationInformationLMM, curveModelCalibrationMaschine);
 		CalibrationMachineInterface Model2CalibrationMaschine = new HWCalibrationMachine(numberOfPaths,
-				numberOfFactorsM2, calibrationInformation, curveModelCalibrationMaschine);
+				numberOfFactorsM2, calibrationInformationHW, curveModelCalibrationMaschine);
 		
 		
 		
@@ -92,11 +95,8 @@ public class CVAComparism {
 				.getLIBORModelMonteCarloSimulationModel(process2, forcedCalculation);
 
 		// Swap
-		StoredSwap testStoredSwap = new StoredSwap("Example 2");
-		
-		
-		testStoredSwap.changeToATMswap(Model1CalibrationMaschine.getForwardCurve(), Model1CalibrationMaschine.getCurveModel());
-		
+		StoredSwap testStoredSwap = new StoredSwap("Example 2");		
+		testStoredSwap.changeToATMswap(Model1CalibrationMaschine.getForwardCurve(), Model1CalibrationMaschine.getCurveModel());		
 		Swap testSwap = testStoredSwap.getSwap();
 
 		double recoveryRate = 0.4;
@@ -116,19 +116,20 @@ public class CVAComparism {
 		System.out.println("Model 1 is: " + Model1CalibrationMaschine.getModelName());
 		System.out.println("Model 2 is: " + Model2CalibrationMaschine.getModelName() + "\n");
 
-		System.out.println("The CVA with Model 1 is \t" + formatterValue.format(cvaValueM1));
-		System.out.println("The CVA with Model 2 is \t" + formatterValue.format(cvaValueM2));
+		System.out.println("The CVA with LMM is \t" + formatterValue.format(cvaValueM1));
+		System.out.println("The CVA with HW is \t" + formatterValue.format(cvaValueM2));
 		System.out.println("The deviation (CVA1 - CVA2) is: \t" + formatterValue.format(cvaValueM1 - cvaValueM2)
 				+ ", which is " + formatterPercentage.format((cvaValueM1 - cvaValueM2) / cvaValueM1) + "\n");
 
 		// Print the Calibration Tests for two two models
-		Model1CalibrationMaschine.printCalibrationTest();
-		Model2CalibrationMaschine.printCalibrationTest();
+//		Model1CalibrationMaschine.printCalibrationTest();
+//		Model2CalibrationMaschine.printCalibrationTest();
 
-		printExpectedExposurePathsCpmarism(swapExposureEstimator, Model1, Model2, testSwap);
+//		printExpectedExposurePathsCpmarism(swapExposureEstimator, Model1, Model2, testSwap);
 
 	}
 
+	
 	private static void printExpectedExposurePathsCpmarism(TermStructureMonteCarloProduct swapExposureEstimator,
 			LIBORModelMonteCarloSimulationModel Model1, LIBORModelMonteCarloSimulationModel Model2,
 			AbstractLIBORMonteCarloProduct testSwap) throws CalculationException {

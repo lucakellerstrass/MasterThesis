@@ -90,8 +90,6 @@ public class StoredSwap {
 	 * @param fixedFrequency
 	 * @param floatFrequency
 	 * @param RateFrequency
-	 * @param discountCurve
-	 * @param forecastCurve
 	 * @param fixedCouponConvention
 	 * @param xiborCouponConvention
 	 */
@@ -245,9 +243,9 @@ public class StoredSwap {
 		 * Create a receiver swap (receive fix, pay float)
 		 */
 		legScheduleRec = ScheduleGenerator.createScheduleFromConventions(
-				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
-				LocalDate.of(2020, Month.OCTOBER, 24) /* startDate */,
-				LocalDate.of(2044, Month.OCTOBER, 24) /* maturityDate */,
+				LocalDate.of(2019, Month.OCTOBER, 23) /* referenceDate */,
+				LocalDate.of(2020, Month.OCTOBER, 23) /* startDate */,
+				LocalDate.of(2041, Month.OCTOBER, 23) /* maturityDate */,
 				ScheduleGenerator.Frequency.ANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,
@@ -256,9 +254,9 @@ public class StoredSwap {
 				0 /* paymentOffsetDays */);
 
 		legSchedulePay = ScheduleGenerator.createScheduleFromConventions(
-				LocalDate.of(2019, Month.OCTOBER, 24) /* referenceDate */,
-				LocalDate.of(2020, Month.OCTOBER, 24) /* startDate */,
-				LocalDate.of(2044, Month.OCTOBER, 24) /* maturityDate */,
+				LocalDate.of(2019, Month.OCTOBER, 23) /* referenceDate */,
+				LocalDate.of(2020, Month.OCTOBER, 23) /* startDate */,
+				LocalDate.of(2040, Month.OCTOBER, 23) /* maturityDate */,
 				ScheduleGenerator.Frequency.SEMIANNUAL /* frequency */,
 				ScheduleGenerator.DaycountConvention.ACT_365 /* daycountConvention */,
 				ScheduleGenerator.ShortPeriodConvention.FIRST /* shortPeriodConvention */,

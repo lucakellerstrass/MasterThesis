@@ -245,7 +245,7 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		  LIBORVolatilityModel volatilityModel = new
 		  LIBORVolatilityModelPiecewiseConstant(timeDiscretizationFromArray,
 		  liborPeriodDiscretization, new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7,
-		  10, 15), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15), 0.50 /
+		  10, 15, 20, 30), new TimeDiscretizationFromArray(0, 1, 2, 3, 5, 7, 10, 15, 20), 0.50 /
 		 100);
 
 		// The extreme extended version
@@ -264,7 +264,7 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 //		LIBORVolatilityModel volatilityModel = new LIBORVolatilityModelTimeHomogenousPiecewiseConstant(
 //				timeDiscretizationFromArray, liborPeriodDiscretization,
 //				new TimeDiscretizationFromArray(0, 1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30), new double[]{0.50 / 100});
-		
+//		
 		
 
 		// Create correlationModel
@@ -294,8 +294,8 @@ public class LmmCalibrationMachine extends AbstractCalibrationMachine implements
 		// works also without
 		// Set calibration properties (should use our brownianMotion for calibration -
 		// needed to have to right correlation).
-		Double accuracy = new Double(1E-7); // Lower accuracy to reduce runtime of the unit test //was 1E-6
-		int maxIterations = 200; // was 100, better 300
+		Double accuracy = new Double(1E-9); // Lower accuracy to reduce runtime of the unit test //was 1E-6
+		int maxIterations = 400; // was 100, better 300
 		int numberOfThreads = 4;
 		OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
 				numberOfThreads);

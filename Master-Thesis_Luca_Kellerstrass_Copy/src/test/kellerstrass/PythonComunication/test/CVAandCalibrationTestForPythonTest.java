@@ -1,6 +1,7 @@
 package kellerstrass.PythonComunication.test;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import kellerstrass.PythonComunication.CVAandCalibrationTestForPython;
@@ -8,7 +9,7 @@ import net.finmath.optimizer.SolverException;
 
 public class CVAandCalibrationTestForPythonTest {
 
-	public static void main(String[] args) throws SolverException {
+	public static void main(String[] args) throws Exception {
 
 		String SwapName = "Swap 1";
 		String BuySell  = "Buy";
@@ -60,7 +61,20 @@ public class CVAandCalibrationTestForPythonTest {
 				 dataSourceInput,  dataScopeInput,  curveModelInput,  Range);
 		
 		
+		
+		List<Map<String, String>>  ExpectedExposurePathsLmm = PythonComunication.printExpectedExposurePathsLmm();
+		
+		
+		System.out.println(ExpectedExposurePathsLmm.size());
+		String CVA = ExpectedExposurePathsLmm.get(ExpectedExposurePathsLmm.size()-1).get("CVA");
+		System.out.println("CVA= "+ CVA);
+		
+		
+		
+		
+		
 		ArrayList<Map<String, Object>>  calibrationTable = PythonComunication.printCalibrationTestLmm();
+		
 		
 		String[] atmExpiries = new String[calibrationTable.size() - 1];
 		String[] atmTenors = new String[calibrationTable.size() - 1];
@@ -76,20 +90,21 @@ public class CVAandCalibrationTestForPythonTest {
 			atmVolatilitiesDeviation[i] = (String) calibrationTable.get(i).get("Deviation");
 		}
 		
+		
+		
+		
 		//print it out
-		System.out.println("Expiry  \t  Tenor  \t  Model_Value  \t Target  \t   Deviation");
-		for(int i = 0; i < calibrationTable.size() - 1; i++) {
-			System.out.print(atmExpiries[i]  + "\t");
-			System.out.print(atmTenors[i]  + "\t");
-			System.out.print(atmVolatilitiesModel[i]  + "\t");
-			System.out.print(atmVolatilitiesTarget[i]  + "\t");
-			System.out.print(atmVolatilitiesDeviation[i]  + "\n");
-			
-			
-			
-		}
+//		System.out.println("Expiry  \t  Tenor  \t  Model_Value  \t Target  \t   Deviation");
+//		for(int i = 0; i < calibrationTable.size() - 1; i++) {
+//			System.out.print(atmExpiries[i]  + "\t");
+//			System.out.print(atmTenors[i]  + "\t");
+//			System.out.print(atmVolatilitiesModel[i]  + "\t");
+//			System.out.print(atmVolatilitiesTarget[i]  + "\t");
+//			System.out.print(atmVolatilitiesDeviation[i]  + "\n");
+//						
+//		}
 		
-		
+
 		
 
 	}

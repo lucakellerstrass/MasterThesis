@@ -151,7 +151,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		final ArrayList<CalibrationProduct> calibrationProducts = new ArrayList<>();
 
 		// We get the calibration information from the "CalibrationInformation" instance
-
+		
+		
+		
 		for (int i = 0; i < calibrationInformation.getAtmNormalVolatilities().length; i++) {
 
 			LocalDate exerciseDate = calibrationInformation.getCal().getDateFromDateAndOffsetCode(
@@ -184,7 +186,14 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 			String targetVolatilityType = calibrationInformation.getTargetVolatilityType();
 
+			//check if there are any weights for the calibration information
 			double weight = 1.0;
+			if(calibrationInformation.getWeights() == null) {
+			 weight = 1.0;
+			}else {
+				 weight = calibrationInformation.getWeights()[i];
+			}
+			
 
 			try {
 				calibrationProducts.add(CurveModelCalibrationItem.createCalibrationItem(weight, exercise,

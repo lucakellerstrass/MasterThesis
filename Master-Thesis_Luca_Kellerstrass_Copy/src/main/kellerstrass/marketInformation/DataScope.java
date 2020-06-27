@@ -10,6 +10,6 @@ package kellerstrass.marketInformation;
  */
 public enum DataScope {
 
-	RisingTerminals, CoTerminals, ExtendedCoTermindals, FullSurface
+	RisingTerminals, CoTerminals, MonstlyCoTerminals, ExtendedCoTermindals, FullSurface
 
 }

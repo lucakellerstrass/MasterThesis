@@ -292,6 +292,7 @@ public class CVAandCalibrationTestForPython {
 		Map<String, String> OutTableRow = new HashMap<>();
 		OutTableRow.put("ModelName", CalibrationMachine.getModelName());
 		OutTableRow.put("CVA", formatterValue.format(cva.getValue()));
+		//OutTableRow.put("CVA", cva.getValue());
 		OutTable.add(i+1, OutTableRow);
 		return OutTable;
 

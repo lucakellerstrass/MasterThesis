@@ -1,5 +1,4 @@
 package kellerstrass.marketInformation;
-
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -35,6 +34,7 @@ public class CalibrationInformation {
 	private String[] atmExpiries = null;
 	private String[] atmTenors = null;
 	private double[] atmVolatilities = null;
+	private double[] weights = null;
 
 	private String[] atmExpiriesFullSurface = null;
 	private String[] atmTenorsFullSurface = null;
@@ -83,6 +83,38 @@ public class CalibrationInformation {
 		DataName = dataSource.toString() + dataScope.toString();
 
 	}
+	
+	
+	/**
+	 * Set all the parameters
+	 * 
+	 * @param swapPeriodLength
+	 * @param atmExpiries
+	 * @param atmTenors
+	 * @param atmNormalVolatilities
+	 * @param targetVolatilityType
+	 * @param referenceDate
+	 * @param cal                   (BusinessdayCalendarExcludingTARGETHolidays)
+	 * @param modelDC
+	 * @param dataName
+	 */
+	public CalibrationInformation(double swapPeriodLength, String[] atmExpiries, String[] atmTenors,
+			double[] atmNormalVolatilities, String targetVolatilityType, LocalDate referenceDate,
+			BusinessdayCalendarExcludingTARGETHolidays cal, DayCountConvention modelDC, String dataName) {
+		this.swapPeriodLength = swapPeriodLength;
+		this.atmExpiries = atmExpiries;
+		this.atmTenors = atmTenors;
+		this.atmVolatilities = atmNormalVolatilities;
+		this.targetVolatilityType = targetVolatilityType;
+		this.referenceDate = referenceDate;
+		this.cal = cal;
+		this.modelDC = modelDC;
+		this.DataName = dataName;
+
+	}
+	
+	
+	
 
 	private void changeForDataScope(DataScope dataScope2) {
 		switch (dataScope2) {
@@ -106,6 +138,18 @@ public class CalibrationInformation {
 
 			break;
 
+		case MonstlyCoTerminals:
+			this.atmExpiries = this.atmExpiriesFullSurface;
+			this.atmTenors = this.atmTenorsFullSurface;
+			this.atmVolatilities = this.atmVolatilitiesFullSurface;
+			String[] atmMainExpiriesCoTerminals = { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y" };
+			String[] atmMainTenorsCoTerminals = { "10Y", "9Y", "8Y", "7Y", "6Y", "4Y", "1Y" };
+
+			this.weights = getWeightsForExpiriesAndTenors(atmMainExpiriesCoTerminals,
+					atmMainTenorsCoTerminals, this.atmExpiriesFullSurface, this.atmTenorsFullSurface);
+
+
+			break;
 		// combination of 1Y,1Y, 2Y, 2Y stc.
 		case RisingTerminals:
 			String[] atmExpiriesRisingTerminals = { "1Y", "2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "15Y", "20Y", "25Y",
@@ -124,7 +168,7 @@ public class CalibrationInformation {
 
 			break;
 		// 10,11 and 12 year Co-Terminals
-		case ExtendedCoTermindals:
+		case ExtendedCoTermindals:   
 			String[] atmExpiriesExtendedCoTermindals = { "1Y", "1Y", "2Y", "2Y", "2Y", "3Y", "3Y", "3Y", "4Y", "4Y",
 					"4Y", "5Y", "5Y", "5Y", "7Y", "7Y", "7Y", "10Y", "10Y", };
 
@@ -147,6 +191,13 @@ public class CalibrationInformation {
 		}
 
 	}
+
+
+
+	public double[] getWeights() {
+		return weights;
+	}
+
 
 	/**
 	 * Fill the Data Vectors with information based on the data scope and data
@@ -450,16 +501,6 @@ public class CalibrationInformation {
 			unshiftetedATMVolatilities[j] = AnalyticFormulas.volatilityConversionLognormalATMtoNormalATM(swaprate,
 					logVolShifts[j], swaptionMaturity, atmShiftedLogVolatilities3[j]);
 
-//			System.out.println(
-//					atmExpiries[j]   +"\t" + 
-//					startDate   +"\t" + 
-//					atmTenors3[j]   +"\t" + 
-//					endDate  +"\t" + 
-//					swaprate  +"\t" + 
-//					atmShiftedLogVolatilities3[j]   +"\t" + 
-//					logVolShifts[j]   +"\t" + 
-//					unshiftetedATMVolatilities[j]
-//							);
 
 		}
 
@@ -497,34 +538,39 @@ public class CalibrationInformation {
 		}
 		return volatilities;
 	}
-
-	/**
-	 * Set all the parameters
+	
+	/** Get 
 	 * 
-	 * @param swapPeriodLength
-	 * @param atmExpiries
-	 * @param atmTenors
-	 * @param atmNormalVolatilities
-	 * @param targetVolatilityType
-	 * @param referenceDate
-	 * @param cal                   (BusinessdayCalendarExcludingTARGETHolidays)
-	 * @param modelDC
-	 * @param dataName
+	 * @param Expiries
+	 * @param Tenors
+	 * @param expiriesFullSurface
+	 * @param tenorsFullSurface
+	 * @return
 	 */
-	public CalibrationInformation(double swapPeriodLength, String[] atmExpiries, String[] atmTenors,
-			double[] atmNormalVolatilities, String targetVolatilityType, LocalDate referenceDate,
-			BusinessdayCalendarExcludingTARGETHolidays cal, DayCountConvention modelDC, String dataName) {
-		this.swapPeriodLength = swapPeriodLength;
-		this.atmExpiries = atmExpiries;
-		this.atmTenors = atmTenors;
-		this.atmVolatilities = atmNormalVolatilities;
-		this.targetVolatilityType = targetVolatilityType;
-		this.referenceDate = referenceDate;
-		this.cal = cal;
-		this.modelDC = modelDC;
-		this.DataName = dataName;
+	private double[] getWeightsForExpiriesAndTenors(String[] Expiries, String[] Tenors,
+			String[] expiriesFullSurface, String[] tenorsFullSurface) {
+		
+		double[] weights = new double[expiriesFullSurface.length];
+		// ExperiesLoop
+		for (int j = 0; j < weights.length; j++) {
 
+			// Surface Experies Loop
+			for (int i = 0; i < Expiries.length; i++) {
+
+				if ((expiriesFullSurface[j] == Expiries[i]) & (tenorsFullSurface[j] == Tenors[i])) {
+					weights[j] = 10;
+					break;
+				}else {
+					weights[j] = 1;
+				}
+			}
+		}
+		return weights;
 	}
+	
+	
+
+
 
 	public double getSwapPeriodLength() {
 		return swapPeriodLength;

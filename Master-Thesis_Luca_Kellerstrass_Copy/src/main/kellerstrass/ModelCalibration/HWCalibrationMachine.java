@@ -252,8 +252,8 @@ public class HWCalibrationMachine extends AbstractCalibrationMachine implements 
 				Map<String, Object> properties = new HashMap<>();
 				// Set calibration properties (should use our brownianMotion for calibration -
 				// needed to have to right correlation).
-				Double accuracy = new Double(1E-7); // Lower accuracy to reduce runtime of the unit test //was 1E-6
-				int maxIterations = 200; // was 100, better 300
+				Double accuracy = new Double(1E-9); // Lower accuracy to reduce runtime of the unit test //was 1E-6
+				int maxIterations = 400; // was 100, better 300
 				int numberOfThreads = 4;
 				OptimizerFactory optimizerFactory = new OptimizerFactoryLevenbergMarquardt(maxIterations, accuracy,
 						numberOfThreads);

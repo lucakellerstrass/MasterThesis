@@ -18,12 +18,12 @@ import net.finmath.stochastic.RandomVariable;
  * @author Luca Kellerstrass
  */
 
-public class Portfolio extends AbstractLIBORMonteCarloProduct {
+public class PortfolioBasic extends AbstractLIBORMonteCarloProduct {
 
 	AbstractLIBORMonteCarloProduct[] underlyings;
 	String name;
 
-	public Portfolio(AbstractLIBORMonteCarloProduct[] underlyings) {
+	public PortfolioBasic(AbstractLIBORMonteCarloProduct[] underlyings) {
 		this.underlyings = underlyings;
 		this.name = ConstructName();
 

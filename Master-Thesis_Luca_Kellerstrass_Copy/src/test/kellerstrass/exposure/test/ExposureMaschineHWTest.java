@@ -44,14 +44,13 @@ public class ExposureMaschineHWTest {
 		
 		// Set the Calibration set. Here: e.g. Example Co-Terminals
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.Market24_10_2019);
+				DataSource.Market23_10_2019);
 		
-		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2410;
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2310;
 
 		boolean forcedCalculation = false;
 
-		int numberOfPaths = 1000;
-		int numberOfFactors = 2;
+		int numberOfPaths = 5000;
 
 		// Simulation time discretization
 		double lastTime = 40.0;
@@ -60,12 +59,12 @@ public class ExposureMaschineHWTest {
 				(int) (lastTime / dt), dt);
 		// brownian motion
 		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
-				numberOfFactors, numberOfPaths, 31415 /* seed */);
+				2 /*numberOfFactors*/, numberOfPaths, 31415 /* seed */);
 		// process
 		EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion,
 				EulerSchemeFromProcessModel.Scheme.EULER);
 		// calibration machine
-		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
+		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, 2 /*numberOfFactors*/,
 				calibrationInformation, curveModelDataType);
 		// simulation machine
 		LIBORModelMonteCarloSimulationModel simulationModel = HwCalibrationMaschine

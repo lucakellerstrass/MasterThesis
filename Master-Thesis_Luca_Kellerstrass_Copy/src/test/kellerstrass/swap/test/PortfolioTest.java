@@ -6,7 +6,7 @@ import kellerstrass.exposure.ExposureMachine;
 import kellerstrass.marketInformation.CalibrationInformation;
 import kellerstrass.marketInformation.DataScope;
 import kellerstrass.marketInformation.DataSource;
-import kellerstrass.swap.Portfolio;
+import kellerstrass.swap.PortfolioBasic;
 import kellerstrass.swap.StoredSwap;
 import net.finmath.exception.CalculationException;
 import net.finmath.montecarlo.BrownianMotion;
@@ -31,7 +31,7 @@ public class PortfolioTest {
 
 		// Create the portfolio
 
-		AbstractLIBORMonteCarloProduct portfolio = new Portfolio(swaps);
+		AbstractLIBORMonteCarloProduct portfolio = new PortfolioBasic(swaps);
 
 		System.out.println(portfolio);
 

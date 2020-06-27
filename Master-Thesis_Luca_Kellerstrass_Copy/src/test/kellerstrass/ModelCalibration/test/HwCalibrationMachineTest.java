@@ -29,8 +29,8 @@ public class HwCalibrationMachineTest {
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
 	private static boolean forcedCalculation = false;
-	private static int numberOfPaths = 1000;
-	private static int numberOfFactors = 2;
+	private static int numberOfPaths = 5000;
+
 
 	public static void main(String[] args) throws SolverException, CalculationException {
 
@@ -41,19 +41,19 @@ public class HwCalibrationMachineTest {
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.Market23_10_2019);
 		
-		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2410;
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2310;
 
 
 
 		System.out.println("Via the Calibration maschine intern calibration test methode");
-		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
+		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, 2,
 				calibrationInformation, curveModelDataType);
 		HwCalibrationMaschine.printCalibrationTest(forcedCalculation);
 		
-		System.out.println("The calibration took " + HwCalibrationMaschine.getCalculationDuration()/60000 + " mins");
+		//System.out.println("The calibration took " + HwCalibrationMaschine.getCalculationDuration()/60000 + " mins");
 		
-		System.out.println("Via the extra test methode of this test class");
-		Tester(calibrationInformation, curveModelDataType,  forcedCalculation);
+//		System.out.println("Via the extra test methode of this test class");
+		//Tester(calibrationInformation, curveModelDataType,  forcedCalculation);
 
 	}
 
@@ -64,7 +64,7 @@ public class HwCalibrationMachineTest {
 			throws SolverException, CalculationException {
 
 		// Initialization
-		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactors,
+		CalibrationMachineInterface HwCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, 2,
 				calibrationInformation,curveModelDataType );
 
 		// The model name
@@ -78,7 +78,7 @@ public class HwCalibrationMachineTest {
 		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
 				(int) (lastTime / dt), dt);
 		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
-				numberOfFactors, numberOfPaths, 31415 /* seed */);
+				2, numberOfPaths, 31415 /* seed */);
 		EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion,
 				EulerSchemeFromProcessModel.Scheme.EULER);
 
