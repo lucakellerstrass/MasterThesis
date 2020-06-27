@@ -45,16 +45,16 @@ public class CVAComparismUnderAllSwaps {
 		
 
 		// Set the Calibration basket
-		DataSource dataSource = DataSource.Market24_10_2019; // relevant for both models
+		DataSource dataSource = DataSource.Market23_10_2019; // relevant for both models
 
 		CalibrationInformation calibrationInformationLMM = new CalibrationInformation(DataScope.FullSurface,
 				dataSource);
 		CalibrationInformation calibrationInformationHW = new CalibrationInformation(DataScope.CoTerminals, dataSource);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.OIS6M2410);
+				CurveModelDataType.OIS6M2310);
 
-		String referenceDate = "24.10.2019";
+		String referenceDate = "23.10.2019";
 		int numberOfPaths = 1000;
 		int numberOfFactorsLMM = 3; // For Libor Market Model
 
@@ -124,7 +124,7 @@ public class CVAComparismUnderAllSwaps {
 		double[] CVADifferenceRelativeToLMM = new double[experiesFromLMM.length];
 		double[] CVADifferenceRelativeToNominal = new double[experiesFromLMM.length];
 		
-		System.out.println("experies" + "   \t   " + "tenors" + "   \t   " + "cvaLMValue" + "   \t   " + "cvaHWValue" + "   \t   " + "CVADifferenceRelativeToLMM"+ "   \t   " + "CVADifferenceRelativeToNominal");
+		System.out.println("experies" + "   \t   " + "tenors" + "   \t   " + "cvaLMValue" + "   \t   " + "cvaHWValue" + "   \t   " + "CVADifferenceRelativeToLMM");//+ "   \t   " + "CVADifferenceRelativeToNominal");
 		
 		for (int i = 0; i < experiesFromLMM.length; i++) {
 			
@@ -161,7 +161,7 @@ public class CVAComparismUnderAllSwaps {
 			CVADifferenceRelativeToLMM[i] = (cvaLMValue - cvaHWValue)/cvaLMValue;
 			CVADifferenceRelativeToNominal[i] = (cvaLMValue - cvaHWValue)/notional;
 			
-			System.out.println(CVADifferenceRelativeToLMM[i] + "\t" + CVADifferenceRelativeToNominal[i]);
+			System.out.println(CVADifferenceRelativeToLMM[i]);// + "\t" + CVADifferenceRelativeToNominal[i]);
 		}
 
 
