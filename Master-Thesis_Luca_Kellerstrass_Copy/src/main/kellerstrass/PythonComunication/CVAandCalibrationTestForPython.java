@@ -415,7 +415,7 @@ public class CVAandCalibrationTestForPython {
 					CVADifferenceRelativeToLMM[i] = Math.abs((cvaLMValue - cvaHWValue)/cvaLMValue);
 					OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
 					
-					
+					OutTable.add(i, OutTableRow);
 					
 					
 				}
