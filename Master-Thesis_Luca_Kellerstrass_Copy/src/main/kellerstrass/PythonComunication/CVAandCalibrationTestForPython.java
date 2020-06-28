@@ -58,24 +58,24 @@ public class CVAandCalibrationTestForPython {
 	private static boolean forcedCalculation = false;
 
 	static StoredSwap inputSwap;
-	private  Swap swap;
-	private  TermStructureMonteCarloProduct swapExposureEstimator;
+	private Swap swap;
+	private TermStructureMonteCarloProduct swapExposureEstimator;
 	private CalibrationInformation calibrationInformation;
 	private TimeDiscretizationFromArray simulationTimeDiscretization;
 
 //	private static  int NumberOfFactorsHW;
-	private  int NumberOfFactorsLmm;
-	private  int numberOfPaths;
+	private int NumberOfFactorsLmm;
+	private int numberOfPaths;
 
-	private  CalibrationMachineInterface lmmCalibrationmashine;
-	private  CalibrationMachineInterface hwCalibrationmashine;
-	
+	private CalibrationMachineInterface lmmCalibrationmashine;
+	private CalibrationMachineInterface hwCalibrationmashine;
+
 	private DataSource dataSource;
 	private CurveModelDataType curveModelDataType;
 	private String referenceDate;
 
-	private  double recoveryRate;
-	private  double[] cdsSpreads10y = new double[10];
+	private double recoveryRate;
+	private double[] cdsSpreads10y = new double[10];
 	// Counterparty information
 
 	public CVAandCalibrationTestForPython(String SwapName, String BuySell, int notional, double fixedRate,
@@ -126,29 +126,27 @@ public class CVAandCalibrationTestForPython {
 		this.NumberOfFactorsLmm = NumberOfFactorsLMM;
 		this.numberOfPaths = numberOfPaths;
 
-		
 		double lastTime = 40.0;
 		double dt = 0.25;
 		this.simulationTimeDiscretization = new TimeDiscretizationFromArray(0.0, (int) (lastTime / dt), dt);
 
 		// Initialization
-		this.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths,
-				NumberOfFactorsLMM, calibrationInformation, curveModelDataType);
+		this.lmmCalibrationmashine = new LmmCalibrationMachine(numberOfPaths, NumberOfFactorsLMM,
+				calibrationInformation, curveModelDataType);
 		// Initialization
-		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths,
-				2 /* NumberOfFactorsHW */, calibrationInformation, curveModelDataType);
+		this.hwCalibrationmashine = new HWCalibrationMachine(numberOfPaths, 2 /* NumberOfFactorsHW */,
+				calibrationInformation, curveModelDataType);
 
 		this.referenceDate = referencedate;
 		CVAandCalibrationTestForPython.inputSwap = new StoredSwap(SwapName, BuySell, notional, fixedRate, referencedate,
 				swapStart, swapEnd, fixedFrequency, floatFrequency, RateFrequency/* , discountCurve, forecastCurve */,
 				fixedCouponConvention, xiborCouponConvention);
-		
+
 		if (fixedRate == -1.0) {
-		// do ATM
-		inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
+			// do ATM
+			inputSwap.changeToATMswap(hwCalibrationmashine.getForwardCurve(), hwCalibrationmashine.getCurveModel());
 		}
-		
-		
+
 		this.swap = inputSwap.getSwap();
 		this.swapExposureEstimator = new ExposureMachine(swap);
 
@@ -189,7 +187,7 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return
 	 */
-	public  ArrayList<Map<String, Object>> printCalibrationTestLmm() {
+	public ArrayList<Map<String, Object>> printCalibrationTestLmm() {
 		return lmmCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
 
@@ -206,7 +204,7 @@ public class CVAandCalibrationTestForPython {
 	 * 
 	 * @return
 	 */
-	public  ArrayList<Map<String, Object>> printCalibrationTestHw() {
+	public ArrayList<Map<String, Object>> printCalibrationTestHw() {
 		return hwCalibrationmashine.getCalibrationTable(forcedCalculation);
 	}
 
@@ -221,7 +219,6 @@ public class CVAandCalibrationTestForPython {
 	 */
 	private List<Map<String, String>> printExpectedExposurePaths(int numberOFFactors,
 			CalibrationMachineInterface CalibrationMachine) throws Exception {
-
 
 		// brownian motion
 		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(simulationTimeDiscretization,
@@ -282,159 +279,145 @@ public class CVAandCalibrationTestForPython {
 			i++;
 
 		}
-		
-		
+
 		endObservationDate = endObservationDate + 0.25;
-		
-		//Print out one more time where everything is zero
+
+		// Print out one more time where everything is zero
 		Map<String, String> OutTableRow2 = new HashMap<>();
 		OutTableRow2.put("observationDate", formatter2.format(endObservationDate));
 		OutTableRow2.put("expectedPositiveExposure", formatter6.format(0.0));
 		OutTableRow2.put("expectedNegativeExposure", formatter6.format(0.0));
 		OutTable.add(i, OutTableRow2);
-		
+
 		CVA cva = new CVA(simulationModel, swap, recoveryRate, cdsSpreads10y, CalibrationMachine.getDiscountCurve());
 
 		Map<String, String> OutTableRow = new HashMap<>();
 		OutTableRow.put("ModelName", CalibrationMachine.getModelName());
 		OutTableRow.put("CVA", formatterValue.format(cva.getValue()));
-		//OutTableRow.put("CVA", cva.getValue());
-		OutTable.add(i+1, OutTableRow);
+		// OutTableRow.put("CVA", cva.getValue());
+		OutTable.add(i + 1, OutTableRow);
 		return OutTable;
 
 	}
-	
-	
-	
+
 	public List<Map<String, Object>> printCVAComparismUnderSwapMatrix() throws Exception {
 
 		// Set the Calibration basket
-				CalibrationInformation calibrationInformationLMM = new CalibrationInformation(DataScope.FullSurface,
-						dataSource);
-				CalibrationInformation calibrationInformationHW = new CalibrationInformation(DataScope.CoTerminals, dataSource);
-		
-		
-				// Simulation time discretization
-				double lastTime = 40.0;
-				double dt = 0.25;
-				TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
-						(int) (lastTime / dt), dt);
-		
-		
-				// brownian motion
-				BrownianMotion brownianMotionLMM = new net.finmath.montecarlo.BrownianMotionLazyInit(
-						timeDiscretizationFromArray, NumberOfFactorsLmm, numberOfPaths, 31415 /* seed */);
-				BrownianMotion brownianMotionHW = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
-						2 /*numberOfFactors*/, numberOfPaths, 31415 /* seed */);
+		CalibrationInformation calibrationInformationLMM = new CalibrationInformation(DataScope.FullSurface,
+				dataSource);
+		CalibrationInformation calibrationInformationHW = new CalibrationInformation(DataScope.CoTerminals, dataSource);
 
-				// process
-				EulerSchemeFromProcessModel processLMM = new EulerSchemeFromProcessModel(brownianMotionLMM,
-						EulerSchemeFromProcessModel.Scheme.EULER);
-				EulerSchemeFromProcessModel processHW = new EulerSchemeFromProcessModel(brownianMotionHW,
-						EulerSchemeFromProcessModel.Scheme.EULER);
+		// Simulation time discretization
+		double lastTime = 40.0;
+		double dt = 0.25;
+		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
+				(int) (lastTime / dt), dt);
 
-				// calibration machine
-				CalibrationMachineInterface LMMCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths, NumberOfFactorsLmm,
-						calibrationInformationLMM, curveModelDataType);
-				CalibrationMachineInterface HWCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, 2 /*numberOfFactors*/,
-						calibrationInformationHW, curveModelDataType);
+		// brownian motion
+		BrownianMotion brownianMotionLMM = new net.finmath.montecarlo.BrownianMotionLazyInit(
+				timeDiscretizationFromArray, NumberOfFactorsLmm, numberOfPaths, 31415 /* seed */);
+		BrownianMotion brownianMotionHW = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+				2 /* numberOfFactors */, numberOfPaths, 31415 /* seed */);
 
-				// simulation models
-				LIBORModelMonteCarloSimulationModel LMsimulationModel = LMMCalibrationMaschine
-						.getLIBORModelMonteCarloSimulationModel(processLMM, forcedCalculation);
-				LIBORModelMonteCarloSimulationModel HWsimulationModel = HWCalibrationMaschine
-						.getLIBORModelMonteCarloSimulationModel(processHW, forcedCalculation);
-		
-		
-		
-				// Swap
-				// initiate the swaps that are capture by the volatility matrix for calibration.
+		// process
+		EulerSchemeFromProcessModel processLMM = new EulerSchemeFromProcessModel(brownianMotionLMM,
+				EulerSchemeFromProcessModel.Scheme.EULER);
+		EulerSchemeFromProcessModel processHW = new EulerSchemeFromProcessModel(brownianMotionHW,
+				EulerSchemeFromProcessModel.Scheme.EULER);
 
-				// Basics for the swap
-				String BuySell = "Buy";
-				int notional = 1000000;
-				double fixedRate = -1.0; // We use them ATM // For a rate take 0.00547
-				String fixedFrequency = "1Y";
-				String floatFrequency = "6M";
-				String RateFrequency = "6M";
-				String fixedCouponConvention = "ACT/365";
-				String xiborCouponConvention = "ACT/365";
-				
-				
-				// Counter party information
-				double recoveryRate = 0.4;
-				double[] cdsSpreads = { 6, 9, 15, 22, 35, 40, 45, 45.67, 46.33, 47 }; // { 300.0, 350.0, 400.0, 450.0, 500.0,
-																						// 550.0, 600.0, 650.0, 700.0, 750.0 };
-				
-				
-				String[] expiriesFromLMM = LMMCalibrationMaschine.getCalibrationItemExpiries(calibrationInformationLMM);
-				String[] tenorsFromLMM = LMMCalibrationMaschine.getCalibrationItemTenors(calibrationInformationLMM);
+		// calibration machine
+		CalibrationMachineInterface LMMCalibrationMaschine = new LmmCalibrationMachine(numberOfPaths,
+				NumberOfFactorsLmm, calibrationInformationLMM, curveModelDataType);
+		CalibrationMachineInterface HWCalibrationMaschine = new HWCalibrationMachine(numberOfPaths,
+				2 /* numberOfFactors */, calibrationInformationHW, curveModelDataType);
 
-				
-				double[] CVADifferenceRelativeToLMM = new double[expiriesFromLMM.length];
+		// simulation models
+		LIBORModelMonteCarloSimulationModel LMsimulationModel = LMMCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(processLMM, forcedCalculation);
+		LIBORModelMonteCarloSimulationModel HWsimulationModel = HWCalibrationMaschine
+				.getLIBORModelMonteCarloSimulationModel(processHW, forcedCalculation);
+
+		// Swap
+		// initiate the swaps that are capture by the volatility matrix for calibration.
+
+		// Basics for the swap
+		String BuySell = "Buy";
+		int notional = 1000000;
+		double fixedRate = -1.0; // We use them ATM // For a rate take 0.00547
+		String fixedFrequency = "1Y";
+		String floatFrequency = "6M";
+		String RateFrequency = "6M";
+		String fixedCouponConvention = "ACT/365";
+		String xiborCouponConvention = "ACT/365";
+
+		// Counter party information
+		double recoveryRate = 0.4;
+		double[] cdsSpreads = { 6, 9, 15, 22, 35, 40, 45, 45.67, 46.33, 47 }; // { 300.0, 350.0, 400.0, 450.0, 500.0,
+																				// 550.0, 600.0, 650.0, 700.0, 750.0 };
+
+		String[] expiriesFromLMM = LMMCalibrationMaschine.getCalibrationItemExpiries(calibrationInformationLMM);
+		String[] tenorsFromLMM = LMMCalibrationMaschine.getCalibrationItemTenors(calibrationInformationLMM);
+
+		double[] CVADifferenceRelativeToLMM = new double[expiriesFromLMM.length];
 //				double[] CVADifferenceRelativeToNominal = new double[expiriesFromLMM.length];
-				
+
 //				System.out.println("expiries" + "   \t   " + "tenors" + "   \t   " + "cvaLMValue" + "   \t   " + "cvaHWValue" + "   \t   " + "CVADifferenceRelativeToLMM");//+ "   \t   " + "CVADifferenceRelativeToNominal");
+
+		// OutTable for return for Python
+		List<Map<String, Object>> OutTable = new ArrayList<Map<String, Object>>();
+
+		int indexForOutTable = 0;
+		for (int i = 0; i < expiriesFromLMM.length; i++) {
+			try {
+
+				// create the corresponding swaps
+				String swapStart = expiriesFromLMM[i];
+				String swapTenor = tenorsFromLMM[i];
+
+				StoredSwap swapInitialization = new StoredSwap(swapStart + " " + swapTenor, BuySell, notional,
+						fixedRate, referenceDate, swapStart, swapTenor, fixedFrequency, floatFrequency, RateFrequency,
+						fixedCouponConvention, xiborCouponConvention);
+				swapInitialization.changeToATMswap(LMMCalibrationMaschine.getForwardCurve(),
+						LMMCalibrationMaschine.getCurveModel());
+				Swap swap = swapInitialization.getSwap();
+
+				CVA cvaLM = new CVA(LMsimulationModel, swap, recoveryRate, cdsSpreads,
+						LMMCalibrationMaschine.getDiscountCurve());
+				CVA cvaHW = new CVA(HWsimulationModel, swap, recoveryRate, cdsSpreads,
+						HWCalibrationMaschine.getDiscountCurve());
+
+				try {
+					double	cvaLMValue = cvaLM.getValue();
+					double cvaHWValue = cvaHW.getValue();
+		
+				Map<String, Object> OutTableRow = new HashMap<>();
+				OutTableRow.put("expiries", expiriesFromLMM[i]);
+				OutTableRow.put("tenors", tenorsFromLMM[i]);
+				OutTableRow.put("cvaValueLMM", formatter2.format(cvaLMValue));
+				OutTableRow.put("cvaValueHW", formatter2.format(cvaHWValue));
+				CVADifferenceRelativeToLMM[i] = Math.abs((cvaLMValue - cvaHWValue) / cvaLMValue);
+				OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
+
 				
 				
-				// OutTable for return for Python
-				List<Map<String, Object>> OutTable = new ArrayList<Map<String, Object>>();
+				OutTable.add(indexForOutTable, OutTableRow);
+				indexForOutTable += 1;
 				
-				int indexForOutTable = 0;
-				for (int i = 0; i < expiriesFromLMM.length; i++) {
-					try {
-
-					// create the corresponding swaps
-					String swapStart = expiriesFromLMM[i];
-					String swapTenor = tenorsFromLMM[i];
-
-					StoredSwap swapInitialization = new StoredSwap(swapStart + " " + swapTenor, BuySell, notional, fixedRate, referenceDate,
-							swapStart, swapTenor, fixedFrequency, floatFrequency, RateFrequency, fixedCouponConvention,
-							xiborCouponConvention);
-						swapInitialization.changeToATMswap(LMMCalibrationMaschine.getForwardCurve(), LMMCalibrationMaschine.getCurveModel());
-					Swap swap = swapInitialization.getSwap();
-					
-
-					
-					
-					CVA cvaLM = new CVA(LMsimulationModel, swap, recoveryRate, cdsSpreads, LMMCalibrationMaschine.getDiscountCurve());
-					CVA cvaHW = new CVA(HWsimulationModel, swap, recoveryRate, cdsSpreads, HWCalibrationMaschine.getDiscountCurve());
-					double cvaLMValue = 0;
-					double cvaHWValue = 0;
-					try {
-						cvaLMValue = cvaLM.getValue();
-						cvaHWValue = cvaHW.getValue();
-					} catch (Exception e) {
-						//break;
-						 System.out.println(e);
-					}			
-					Map<String, Object> OutTableRow = new HashMap<>();
-					OutTableRow.put("expiries", expiriesFromLMM[i]);
-					OutTableRow.put("tenors", tenorsFromLMM[i]);
-					OutTableRow.put("cvaValueLMM", formatter2.format(cvaLMValue));
-					OutTableRow.put("cvaValueHW", formatter2.format(cvaHWValue));
-					CVADifferenceRelativeToLMM[i] = Math.abs((cvaLMValue - cvaHWValue)/cvaLMValue);
-					OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
-					
-					OutTable.add(indexForOutTable, OutTableRow);
-					indexForOutTable += 1;
-					
-					 } catch (Exception e) {
-			                System.out.println(e);
-
-			 
-
-			            }
-					
+				} catch (Exception e) {
+					// break;
+					System.out.println(e);
 				}
 				
-				
+
+			} catch (Exception e) {
+				System.out.println(e);
+
+			}
+
+		}
+
 		return OutTable;
 
 	}
-	
-	
-	
-	
 
 }
