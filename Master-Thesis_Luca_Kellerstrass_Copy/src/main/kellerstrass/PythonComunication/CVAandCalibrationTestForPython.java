@@ -306,8 +306,7 @@ public class CVAandCalibrationTestForPython {
 	
 	
 	
-	public List<Map<String, Object>> printCVAComparismUnderSwapMatrix(int numberOFFactors,
-			CalibrationMachineInterface CalibrationMachine) throws Exception {
+	public List<Map<String, Object>> printCVAComparismUnderSwapMatrix() throws Exception {
 
 		// Set the Calibration basket
 				CalibrationInformation calibrationInformationLMM = new CalibrationInformation(DataScope.FullSurface,
