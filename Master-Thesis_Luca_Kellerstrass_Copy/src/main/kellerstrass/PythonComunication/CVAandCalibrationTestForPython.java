@@ -380,7 +380,7 @@ public class CVAandCalibrationTestForPython {
 				// OutTable for return for Python
 				List<Map<String, Object>> OutTable = new ArrayList<Map<String, Object>>();
 				
-				int j = 0;
+				int indexForOutTable = 0;
 				for (int i = 0; i < expiriesFromLMM.length; i++) {
 					
 
@@ -416,6 +416,7 @@ public class CVAandCalibrationTestForPython {
 					OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
 					
 					OutTable.add(i, OutTableRow);
+					indexForOutTable += 1;
 					
 					
 				}
