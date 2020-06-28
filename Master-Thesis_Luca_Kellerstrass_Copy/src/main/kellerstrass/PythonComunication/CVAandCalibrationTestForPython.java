@@ -367,25 +367,25 @@ public class CVAandCalibrationTestForPython {
 																						// 550.0, 600.0, 650.0, 700.0, 750.0 };
 				
 				
-				String[] experiesFromLMM = LMMCalibrationMaschine.getCalibrationItemExpiries(calibrationInformationLMM);
+				String[] expiriesFromLMM = LMMCalibrationMaschine.getCalibrationItemExpiries(calibrationInformationLMM);
 				String[] tenorsFromLMM = LMMCalibrationMaschine.getCalibrationItemTenors(calibrationInformationLMM);
 
 				
-				double[] CVADifferenceRelativeToLMM = new double[experiesFromLMM.length];
-//				double[] CVADifferenceRelativeToNominal = new double[experiesFromLMM.length];
+				double[] CVADifferenceRelativeToLMM = new double[expiriesFromLMM.length];
+//				double[] CVADifferenceRelativeToNominal = new double[expiriesFromLMM.length];
 				
-//				System.out.println("experies" + "   \t   " + "tenors" + "   \t   " + "cvaLMValue" + "   \t   " + "cvaHWValue" + "   \t   " + "CVADifferenceRelativeToLMM");//+ "   \t   " + "CVADifferenceRelativeToNominal");
+//				System.out.println("expiries" + "   \t   " + "tenors" + "   \t   " + "cvaLMValue" + "   \t   " + "cvaHWValue" + "   \t   " + "CVADifferenceRelativeToLMM");//+ "   \t   " + "CVADifferenceRelativeToNominal");
 				
 				
 				// OutTable for return for Python
 				List<Map<String, Object>> OutTable = new ArrayList<Map<String, Object>>();
 				
 				int j = 0;
-				for (int i = 0; i < experiesFromLMM.length; i++) {
+				for (int i = 0; i < expiriesFromLMM.length; i++) {
 					
 
 					// create the corresponding swaps
-					String swapStart = experiesFromLMM[i];
+					String swapStart = expiriesFromLMM[i];
 					String swapTenor = tenorsFromLMM[i];
 
 					StoredSwap swapInitialization = new StoredSwap(swapStart + " " + swapTenor, BuySell, notional, fixedRate, referenceDate,
@@ -408,7 +408,7 @@ public class CVAandCalibrationTestForPython {
 						continue;
 					}			
 					Map<String, Object> OutTableRow = new HashMap<>();
-					OutTableRow.put("experies", experiesFromLMM[i]);
+					OutTableRow.put("expiries", expiriesFromLMM[i]);
 					OutTableRow.put("tenors", tenorsFromLMM[i]);
 					OutTableRow.put("cvaValueLMM", formatter2.format(cvaLMValue));
 					OutTableRow.put("cvaValueHW", formatter2.format(cvaHWValue));
