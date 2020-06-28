@@ -387,27 +387,24 @@ public class CVAandCalibrationTestForPython {
 						HWCalibrationMaschine.getDiscountCurve());
 
 				try {
-					double	cvaLMValue = cvaLM.getValue();
+					double cvaLMValue = cvaLM.getValue();
 					double cvaHWValue = cvaHW.getValue();
-		
-				Map<String, Object> OutTableRow = new HashMap<>();
-				OutTableRow.put("expiries", expiriesFromLMM[i]);
-				OutTableRow.put("tenors", tenorsFromLMM[i]);
-				OutTableRow.put("cvaValueLMM", formatter2.format(cvaLMValue));
-				OutTableRow.put("cvaValueHW", formatter2.format(cvaHWValue));
-				CVADifferenceRelativeToLMM[i] = Math.abs((cvaLMValue - cvaHWValue) / cvaLMValue);
-				OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
 
-				
-				
-				OutTable.add(indexForOutTable, OutTableRow);
-				indexForOutTable += 1;
-				
+					Map<String, Object> OutTableRow = new HashMap<>();
+					OutTableRow.put("expiries", expiriesFromLMM[i]);
+					OutTableRow.put("tenors", tenorsFromLMM[i]);
+					OutTableRow.put("cvaValueLMM", formatter2.format(cvaLMValue));
+					OutTableRow.put("cvaValueHW", formatter2.format(cvaHWValue));
+					CVADifferenceRelativeToLMM[i] = Math.abs((cvaLMValue - cvaHWValue) / cvaLMValue);
+					OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
+
+					OutTable.add(indexForOutTable, OutTableRow);
+					indexForOutTable += 1;
+
 				} catch (Exception e) {
 					// break;
 					System.out.println(e);
 				}
-				
 
 			} catch (Exception e) {
 				System.out.println(e);
