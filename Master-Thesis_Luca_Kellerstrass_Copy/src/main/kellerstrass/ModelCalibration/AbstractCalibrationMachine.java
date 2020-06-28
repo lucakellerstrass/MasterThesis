@@ -88,7 +88,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		}
 		this.forwardCurve = curveModel.getForwardCurve("ForwardCurveFromDiscountCurve(discountCurve-EUR,6M)");
 		this.discountCurve = curveModel.getDiscountCurve("discountCurve-EUR");
-		
+
 	}
 
 	public ForwardCurve getForwardCurve() {
@@ -98,7 +98,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 	public DiscountCurve getDiscountCurve() {
 		return discountCurve;
 	}
-	
+
 	public AnalyticModel getCurveModel() {
 		return curveModel;
 	}
@@ -151,9 +151,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		final ArrayList<CalibrationProduct> calibrationProducts = new ArrayList<>();
 
 		// We get the calibration information from the "CalibrationInformation" instance
-		
-		
-		
+
 		for (int i = 0; i < calibrationInformation.getAtmNormalVolatilities().length; i++) {
 
 			LocalDate exerciseDate = calibrationInformation.getCal().getDateFromDateAndOffsetCode(
@@ -164,8 +162,6 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 					.getDaycountFraction(calibrationInformation.getReferenceDate(), exerciseDate);
 			double tenor = calibrationInformation.getModelDC().getDaycountFraction(exerciseDate, tenorEndDate);
 
-			
-
 			// We consider an idealized tenor grid (alternative: adapt the model grid)
 			// To ensure the dates fit into the timediscretization
 			exercise = Math.round(exercise / 0.25) * 0.25;
@@ -175,10 +171,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				continue;
 			}
 
-			//System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
-			//	    tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
-			
-			
+			// System.out.println("exerciseDate= "+ exerciseDate + ", tenorEndDate = "+
+			// tenorEndDate + ", exercise= " + exercise + "tenor= " + tenor);
+
 			int numberOfPeriods = (int) Math.round(tenor / calibrationInformation.getSwapPeriodLength());
 
 			double moneyness = 0.0;
@@ -186,14 +181,13 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 			String targetVolatilityType = calibrationInformation.getTargetVolatilityType();
 
-			//check if there are any weights for the calibration information
+			// check if there are any weights for the calibration information
 			double weight = 1.0;
-			if(calibrationInformation.getWeights() == null) {
-			 weight = 1.0;
-			}else {
-				 weight = calibrationInformation.getWeights()[i];
+			if (calibrationInformation.getWeights() == null) {
+				weight = 1.0;
+			} else {
+				weight = calibrationInformation.getWeights()[i];
 			}
-			
 
 			try {
 				calibrationProducts.add(CurveModelCalibrationItem.createCalibrationItem(weight, exercise,
@@ -219,10 +213,6 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		return calibrationItems;
 	}
 
-	
-	
-	
-	
 	public String[] getCalibrationItemNames(CalibrationInformation calibrationInformation) {
 
 		ArrayList<String> calibrationItemNames = new ArrayList<>();
@@ -254,9 +244,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 
 	}
 
-	
 	/**
 	 * Get the Expiries of the products used for calibration.
+	 * 
 	 * @param calibrationInformation
 	 * @return
 	 * @ToDo Do this without code duplication
@@ -289,9 +279,9 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		return calibrationItemExpiriesString;
 	}
 
-	
 	/**
 	 * Get the Tenors of the products used for calibration.
+	 * 
 	 * @param calibrationInformation
 	 * @return
 	 * @ToDo Do this without code duplication
@@ -322,10 +312,8 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 			calibrationItemExpiriesTenors[j] = calibrationItemTenors.get(j);
 		}
 		return calibrationItemExpiriesTenors;
-	}	
-	
-	
-	
+	}
+
 	/**
 	 * Get the number of paths
 	 * 
@@ -414,7 +402,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 						+ "\t Target: " + "\t" + formatterValue.format(valueTarget) + "\t Deviation: " + "\t"
 						+ formatterDeviation.format(valueModel - valueTarget));
 			} catch (Exception e) {
-				//System.out.println(ItemNames[i] + " did not work");
+				// System.out.println(ItemNames[i] + " did not work");
 			}
 		}
 
@@ -422,7 +410,7 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 		System.out.println("Mean Deviation: \t" + formatterDeviation.format(averageDeviation));
 		System.out.println("RMS Error.....: \t"
 				+ formatterDeviation.format(Math.sqrt(deviationSquaredSum / calibrationItems.length)));
-		System.out.println("The calibration took "+ getCalculationDuration()/60000 + " min");
+		System.out.println("The calibration took " + getCalculationDuration() / 60000 + " min");
 		System.out.println(
 				"__________________________________________________________________________________________\n");
 
@@ -484,10 +472,99 @@ public abstract class AbstractCalibrationMachine implements CalibrationMachineIn
 				OutTableRow.put("Deviation", formatterVolatility.format(Math.abs(valueModel - valueTarget)));
 
 				OutTable.add(indexForOutTable, OutTableRow);
-				indexForOutTable +=1;
-				
+				indexForOutTable += 1;
+
 			} catch (Exception e) {
-				
+
+			}
+		}
+
+		Map<String, Object> OutTableRow = new HashMap<String, Object>();
+
+		double averageDeviation = deviationSum / calibrationItems.length;
+		OutTableRow.put("Mean Deviation", formatterDeviation.format(averageDeviation));
+		OutTableRow.put("RMS Error",
+				formatterDeviation.format(Math.sqrt(deviationSquaredSum / calibrationItems.length)));
+
+		OutTable.add(OutTable.size(), OutTableRow);
+
+		return OutTable;
+
+	}
+
+	/**
+	 * Get the Calibration Table (used for the Python GUI)
+	 * 
+	 * @param forcedCalculation (boolean)
+	 * @return
+	 * 
+	 */
+
+	/**
+	 * Get the Calibration table with a different input for the calibration Items.
+	 * For example if the model is calibrated on co-terminals you can use this to
+	 * observe how good the calibration works on the full surface.
+	 * 
+	 * @param forcedCalculation
+	 * @param calibrationItems
+	 * @param calibrationItemExpiries
+	 * @param calibrationItemTenors
+	 * @return
+	 */
+	public ArrayList<Map<String, Object>> getCalibrationTableForDifferntCalibrationInput(boolean forcedCalculation,
+			CalibrationProduct[] calibrationItems, String[] calibrationItemExpiries, String[] calibrationItemTenors) {
+
+		ArrayList<Map<String, Object>> OutTable = new ArrayList<Map<String, Object>>();
+
+		// Simulation properties
+		double lastTime = 40.0;
+		double dt = 0.25;
+		TimeDiscretizationFromArray timeDiscretizationFromArray = new TimeDiscretizationFromArray(0.0,
+				(int) (lastTime / dt), dt);
+		BrownianMotion brownianMotion = new net.finmath.montecarlo.BrownianMotionLazyInit(timeDiscretizationFromArray,
+				numberOfFactors, numberOfPaths, 31415 /* seed */);
+		EulerSchemeFromProcessModel process = new EulerSchemeFromProcessModel(brownianMotion,
+				EulerSchemeFromProcessModel.Scheme.EULER);
+		LIBORModelMonteCarloSimulationModel simulationModel = null;
+		try {
+			simulationModel = getLIBORModelMonteCarloSimulationModel(process, forcedCalculation);
+		} catch (SolverException e1) {
+			System.out.println("Initiating the simulationModel in the calibration test failed.");
+			e1.printStackTrace();
+		} catch (CalculationException e1) {
+			System.out.println("Initiating the simulationModel in the calibration test failed.");
+			e1.printStackTrace();
+		}
+
+//		CalibrationProduct[] calibrationItems = getCalibrationProducts();
+//		String[] calibrationItemExpiries = getCalibrationItemExpiries(calibrationInformation);
+//		String[] calibrationItemTenors = getCalibrationItemTenors(calibrationInformation);
+
+		double deviationSum = 0.0;
+		double deviationSquaredSum = 0.0;
+		int indexForOutTable = 0;
+		for (int i = 0; i < calibrationItems.length; i++) {
+			AbstractLIBORMonteCarloProduct calibrationProduct = calibrationItems[i].getProduct();
+			try {
+				double valueModel = calibrationProduct.getValue(simulationModel);
+				double valueTarget = calibrationItems[i].getTargetValue().getAverage();
+				double error = valueModel - valueTarget;
+				deviationSum += error;
+				deviationSquaredSum += error * error;
+
+				Map<String, Object> OutTableRow = new HashMap<>();
+
+				OutTableRow.put("Expiry", calibrationItemExpiries[i]);
+				OutTableRow.put("Tenor", calibrationItemTenors[i]);
+				OutTableRow.put("Model_Value", valueModel);
+				OutTableRow.put("Target", valueTarget);
+				OutTableRow.put("Deviation", formatterVolatility.format(Math.abs(valueModel - valueTarget)));
+
+				OutTable.add(indexForOutTable, OutTableRow);
+				indexForOutTable += 1;
+
+			} catch (Exception e) {
+
 			}
 		}
 

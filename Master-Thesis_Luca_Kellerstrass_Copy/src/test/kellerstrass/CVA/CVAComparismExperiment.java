@@ -47,7 +47,7 @@ public class CVAComparismExperiment {
 
 		// First we calibrate the Hull White Model
 
-		CalibrationInformation calibrationInformationForHw = new CalibrationInformation(DataScope.FullSurface,
+		CalibrationInformation calibrationInformationForHw = new CalibrationInformation(DataScope.CoTerminals,
 				DataSource.Market23_10_2019);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(

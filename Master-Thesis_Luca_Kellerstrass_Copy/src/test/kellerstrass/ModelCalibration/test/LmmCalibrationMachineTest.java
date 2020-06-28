@@ -40,7 +40,7 @@ public class LmmCalibrationMachineTest {
 	public static void main(String[] args) throws SolverException, CalculationException {
 
 		System.out.println("Test of example rising terminals calibration:");
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.MonstlyCoTerminals,
+		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.Market23_10_2019);
 		
 		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2310;

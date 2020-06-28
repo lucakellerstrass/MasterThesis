@@ -153,6 +153,20 @@ public interface CalibrationMachineInterface {
 
 
 	/**
+	 * Get the Calibration table with a different input for the calibration Items.
+	 * For example if the model is calibrated on co-terminals you can use this to
+	 * observe how good the calibration works on the full surface.
+	 * 
+	 * @param forcedCalculation
+	 * @param calibrationItems
+	 * @param calibrationItemExpiries
+	 * @param calibrationItemTenors
+	 * @return
+	 */
+	public ArrayList<Map<String, Object>> getCalibrationTableForDifferntCalibrationInput(boolean forcedCalculation,
+			CalibrationProduct[] calibrationItems, String[] calibrationItemExpiries, String[] calibrationItemTenors);
+	
+	/**
 	 * Print Calibration Test using the possibility to add forced calculation.
 	 */
 	public void printCalibrationTest(boolean forcedCalculation);

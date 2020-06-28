@@ -50,15 +50,16 @@ public class CVAComparismUnderAllSwapsExperiment {
 		
 
 		// Set the Calibration basket
-		DataSource dataSource = DataSource.Market23_10_2019; // relevant for both models
+		DataSource dataSource = DataSource.Market24_10_2019; // relevant for both models
 
 		CalibrationInformation calibrationInformationHW = new CalibrationInformation(DataScope.FullSurface, dataSource);
+		CalibrationInformation calibrationInformationFullSurface = new CalibrationInformation(DataScope.FullSurface, dataSource);
 
 		CurveModelCalibrationMachine curveModelCalibrationMaschine = new CurveModelCalibrationMachine(
-				CurveModelDataType.OIS6M2310);
+				CurveModelDataType.OIS6M2410);
 
-		String referenceDate = "23.10.2019";
-		int numberOfPaths = 1000;
+		String referenceDate = "24.10.2019";
+		int numberOfPaths = 5000;
 		int numberOfFactorsM1 = 3; // For Libor Market Model
 		int numberOfFactorsM2 = 2; // For Hull white Model
 
@@ -80,6 +81,16 @@ public class CVAComparismUnderAllSwapsExperiment {
 
 		
 		
+		/*
+		 * Create an othe rreference HW Model with full vola surface, from where we get the calibrationinfromation of the full surface
+		 */	
+		EulerSchemeFromProcessModel processRef = new EulerSchemeFromProcessModel(brownianMotionHW,
+				EulerSchemeFromProcessModel.Scheme.EULER);
+		CalibrationMachineInterface RefCalibrationMaschine = new HWCalibrationMachine(numberOfPaths, numberOfFactorsM2,
+				calibrationInformationFullSurface, curveModelCalibrationMaschine);
+		
+		
+		
 		
 		// We want to use the Hull White Model calibrated swaption volatilities to
 				// calibrate the LIBOR Market Model
@@ -90,6 +101,7 @@ public class CVAComparismUnderAllSwapsExperiment {
 				DayCountConvention modelDC = calibrationInformationHW.getModelDC();
 				String DataName = calibrationInformationHW.getName() + " from HullWhite";
 
+				
 				ArrayList<Map<String, Object>> calibrationTable = HWCalibrationMaschine.getCalibrationTable(forcedCalculation);
 				String[] atmExpiries = new String[calibrationTable.size() - 1];
 				String[] atmTenors = new String[calibrationTable.size() - 1];

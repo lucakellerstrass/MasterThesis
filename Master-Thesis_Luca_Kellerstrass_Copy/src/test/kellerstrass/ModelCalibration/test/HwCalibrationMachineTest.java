@@ -28,7 +28,7 @@ public class HwCalibrationMachineTest {
 	private static DecimalFormat formatterDeviation = new DecimalFormat(" 0.00000E00;-0.00000E00",
 			new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private static boolean forcedCalculation = false;
+	private static boolean forcedCalculation = true;
 	private static int numberOfPaths = 5000;
 
 
@@ -39,9 +39,9 @@ public class HwCalibrationMachineTest {
 		
 		System.out.println("Test of example rising terminals calibration:");
 		CalibrationInformation calibrationInformation = new CalibrationInformation(DataScope.FullSurface,
-				DataSource.Market23_10_2019);
+				DataSource.Market24_10_2019);
 		
-		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2310;
+		CurveModelDataType curveModelDataType = CurveModelDataType.OIS6M2410;
 
 
 
