@@ -382,7 +382,7 @@ public class CVAandCalibrationTestForPython {
 				
 				int indexForOutTable = 0;
 				for (int i = 0; i < expiriesFromLMM.length; i++) {
-					
+					try {
 
 					// create the corresponding swaps
 					String swapStart = expiriesFromLMM[i];
@@ -418,6 +418,12 @@ public class CVAandCalibrationTestForPython {
 					OutTable.add(indexForOutTable, OutTableRow);
 					indexForOutTable += 1;
 					
+					 } catch (Exception e) {
+			                System.out.println(e);
+
+			 
+
+			            }
 					
 				}
 				
