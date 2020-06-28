@@ -401,6 +401,7 @@ public class CVAandCalibrationTestForPython {
 					OutTable.add(indexForOutTable, OutTableRow);
 					indexForOutTable += 1;
 
+					System.out.println(OutTableRow);
 				} catch (Exception e) {
 					// break;
 					System.out.println(e);
