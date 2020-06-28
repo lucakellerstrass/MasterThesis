@@ -412,19 +412,12 @@ public class CVAandCalibrationTestForPython {
 					OutTableRow.put("tenors", tenorsFromLMM[i]);
 					OutTableRow.put("cvaValueLMM", formatter2.format(cvaLMValue));
 					OutTableRow.put("cvaValueHW", formatter2.format(cvaHWValue));
+					CVADifferenceRelativeToLMM[i] = Math.abs((cvaLMValue - cvaHWValue)/cvaLMValue);
 					OutTableRow.put("CVADifferenceRelativeToLMM", formatter6.format(CVADifferenceRelativeToLMM[i]));
 					
 					
 					
 					
-//					System.out.print(experiesFromLMM[i] + "\t" + tenorsFromLMM[i] + "\t");
-//					System.out.print(cvaLMValue + "\t" + cvaHWValue + "\t");
-					
-					
-//					CVADifferenceRelativeToLMM[i] = (cvaLMValue - cvaHWValue)/cvaLMValue;
-//					CVADifferenceRelativeToNominal[i] = (cvaLMValue - cvaHWValue)/notional;
-//					
-//					System.out.println(CVADifferenceRelativeToLMM[i]);// + "\t" + CVADifferenceRelativeToNominal[i]);
 				}
 				
 				
