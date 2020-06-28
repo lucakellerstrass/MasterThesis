@@ -399,13 +399,14 @@ public class CVAandCalibrationTestForPython {
 					
 					CVA cvaLM = new CVA(LMsimulationModel, swap, recoveryRate, cdsSpreads, LMMCalibrationMaschine.getDiscountCurve());
 					CVA cvaHW = new CVA(HWsimulationModel, swap, recoveryRate, cdsSpreads, HWCalibrationMaschine.getDiscountCurve());
-					double cvaLMValue;
-					double cvaHWValue;
+					double cvaLMValue = 0;
+					double cvaHWValue = 0;
 					try {
 						cvaLMValue = cvaLM.getValue();
 						cvaHWValue = cvaHW.getValue();
 					} catch (Exception e) {
-						continue;
+						//break;
+						 System.out.println(e);
 					}			
 					Map<String, Object> OutTableRow = new HashMap<>();
 					OutTableRow.put("expiries", expiriesFromLMM[i]);
