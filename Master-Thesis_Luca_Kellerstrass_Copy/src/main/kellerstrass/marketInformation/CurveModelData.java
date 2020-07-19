@@ -51,17 +51,16 @@ public class CurveModelData {
 	 */
 	public CurveModelData(CurveModelDataType curveModelDataType) {
 		this.curveModelDataType = curveModelDataType;
-		if ((curveModelDataType == CurveModelDataType.OIS6M2410)
-				| (curveModelDataType == CurveModelDataType.OIS6M2310)
+		if ((curveModelDataType == CurveModelDataType.OIS6M2410) | (curveModelDataType == CurveModelDataType.OIS6M2310)
 				| (curveModelDataType == CurveModelDataType.Market)) {
-			
-		if 	(curveModelDataType == CurveModelDataType.Market) {
-			System.out.println("For the usage of Market data use the constructor disigned for this purpose.");
-		}
+
+			if (curveModelDataType == CurveModelDataType.Market) {
+				System.out.println("For the usage of Market data use the constructor disigned for this purpose.");
+			}
 			initiationOverExistingDiscountValues = true;
 		}
 	}
-	
+
 	/**
 	 * Initiate an instance of the calibration market information for the Curve
 	 * Model using then given day as String.
@@ -72,11 +71,10 @@ public class CurveModelData {
 	 */
 	public CurveModelData(String dataDay) {
 		this.curveModelDataType = CurveModelDataType.Market;
-			initiationOverExistingDiscountValues = true;
-			this.dataDay = dataDay;
-			
-		}
-	
+		initiationOverExistingDiscountValues = true;
+		this.dataDay = dataDay;
+
+	}
 
 	/**
 	 * Initiate an instance of the calibration (market) information to be filled by
@@ -466,75 +464,91 @@ public class CurveModelData {
 								InterpolationEntity.LOG_OF_VALUE);
 
 				return discountCurveInterpolation2310;
-				
-				
+
 			case Market:
 
 				DiscountCurveInterpolation discountCurveInterpolationMarekt = DiscountCurveInterpolation
 						.createDiscountCurveFromDiscountFactors("discountCurve-" + "EUR",
-								StringToUseful.referenceDateFromString(dataDay),
-								getTimesFromDataDate(dataDay), //times from dataDate
-								getDiscountValuesFromDataDate(dataDay), //discount values from dataDate
+								StringToUseful.referenceDateFromString(dataDay), getTimesFromDataDate(dataDay), // times
+																												// from
+																												// dataDate
+								getDiscountValuesFromDataDate(dataDay), // discount values from dataDate
 								null, InterpolationMethod.LINEAR, ExtrapolationMethod.CONSTANT,
 								InterpolationEntity.LOG_OF_VALUE);
 
 				return discountCurveInterpolationMarekt;
-				
-				
-				
-				
-				default:
-					System.out.println("The discount curve is not implemented. Look up in kellerstrass.marketInformation.CurveModelData");
-					return null;
-				
-				
-				
+
+			default:
+				System.out.println(
+						"The discount curve is not implemented. Look up in kellerstrass.marketInformation.CurveModelData");
+				return null;
 
 			}
 		}
 
 	}
-    /**
-     * Returns the OIS6M discount curve values for a given data Day provided as String.
-     * @param day
-     * @return
-     */
-	private double[] getDiscountValuesFromDataDate(String day) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/**
-	 * Returns the OIS6M discount curve dates for a given data Day provided as String.
+	 * Returns the OIS6M discount curve values for a given data Day provided as
+	 * String.
+	 * 
 	 * @param day
 	 * @return
 	 */
 	private double[] getTimesFromDataDate(String day) {
 		// TODO Auto-generated method stub
+
+		// generally looks like this:
+//		return new double[] { 0.00273972602739726, 0.501369863013699, 0.597260273972603, 0.671232876712329,
+//				0.753424657534247, 1.00547945205479, 1.25479452054795, 1.5041095890411, 1.75616438356164,
+//				2.01369863013699, 2.26301369863014, 2.50958904109589, 2.76164383561644, 3.01095890410959,
+//				3.26027397260274, 3.50684931506849, 3.75890410958904, 4.00821917808219, 4.25753424657534,
+//				4.5041095890411, 4.75616438356164, 5.00821917808219, 5.25753424657534, 5.50684931506849,
+//				5.75890410958904, 6.01095890410959, 6.26027397260274, 6.50684931506849, 6.75890410958904,
+//				7.01095890410959, 7.26027397260274, 7.50684931506849, 7.75890410958904, 8.01643835616438,
+//				8.26575342465753, 8.51232876712329, 8.76438356164384, 9.01369863013699, 9.26301369863014,
+//				9.51232876712329, 9.76438356164384, 10.013698630137, 10.2630136986301, 10.5095890410959,
+//				10.7616438356164, 11.013698630137, 11.2630136986301, 11.5095890410959, 11.7616438356164,
+//				12.013698630137, 12.2630136986301, 12.5095890410959, 12.7616438356164, 13.013698630137,
+//				13.2630136986301, 13.5123287671233, 13.7643835616438, 14.0164383561644, 14.2657534246575,
+//				14.5123287671233, 14.7643835616438, 15.0164383561644, 16.0164383561644, 17.0164383561644,
+//				18.0191780821918, 19.0191780821918, 20.0219178082192, 21.0219178082192, 22.0246575342466,
+//				23.0246575342466, 24.0246575342466, 25.027397260274, 26.0301369863014, 27.0301369863014,
+//				28.0301369863014, 29.0301369863014, 30.0328767123288, 31.0328767123288, 32.0328767123288,
+//				33.0328767123288, 34.0356164383562, 35.0356164383562, 36.0356164383562, 37.0356164383562,
+//				38.0383561643836, 39.0383561643836, 40.0328767123288, 41.0328767123288, 42.0356164383562,
+//				43.0356164383562, 44.0356164383562, 45.0356164383562, 46.0383561643836, 47.0383561643836,
+//				48.0383561643836, 49.0383561643836, 50.041095890411, 51.041095890411, 52.041095890411, 53.041095890411,
+//				54.0438356164384, 55.0438356164384, 56.0438356164384, 57.0438356164384, 58.0465753424658,
+//				59.0465753424658, 60.0465753424658 };
+		
 		return null;
 	}
 
+	/**
+	 * Returns the OIS6M discount curve dates for a given data Day provided as
+	 * String.
+	 * 
+	 * @param day
+	 * @return
+	 */
+	private double[] getDiscountValuesFromDataDate(String day) {
+		// TODO Auto-generated method stub
+
+		// Example
+		//return new double[] { 1.00001, 1.00137, 1.00161, 1.00177, 1.00196, 1.00256, 1.00294, 1.00317, 1.00318, 1.00291,
+		//		1.00243, 1.00174, 1.00082, 0.99969, 0.99835, 0.9968, 0.99503, 0.99308, 0.99096, 0.9887, 0.98623,
+//				0.98362, 0.9809, 0.97804, 0.97502, 0.97187, 0.96862, 0.96528, 0.96175, 0.95811, 0.95442, 0.95068,
+//				0.94676, 0.94265, 0.93859, 0.93449, 0.93022, 0.92595, 0.92162, 0.91726, 0.91281, 0.90838, 0.90391,
+//				0.89948, 0.89492, 0.89034, 0.88581, 0.88131, 0.87671, 0.87211, 0.86756, 0.86307, 0.85848, 0.85391,
+//				0.8494, 0.84491, 0.84039, 0.83588, 0.83145, 0.82709, 0.82266, 0.81826, 0.80112, 0.78454, 0.76855,
+//				0.75329, 0.73871, 0.72485, 0.71164, 0.69909, 0.68711, 0.67556, 0.66439, 0.6536, 0.64313, 0.63295,
+//				0.62301, 0.61332, 0.60385, 0.5946, 0.58555, 0.57673, 0.56813, 0.55974, 0.55153, 0.54356, 0.53583,
+//				0.52826, 0.52085, 0.51363, 0.50658, 0.49967, 0.49287, 0.4862, 0.47963, 0.47315, 0.46671, 0.46033,
+//				0.45401, 0.44775, 0.44152, 0.43538, 0.4293, 0.4233, 0.41736, 0.41152, 0.40576 };
+		
+		return null;
+				
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
