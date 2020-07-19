@@ -47,6 +47,7 @@ public class CalibrationInformation {
 
 	private DataScope dataScope; // Co-terminals, extended Co-terminals, full surface
 	private DataSource dataSource; // Example, true market Data, (Date)
+	private String dataDay; //If the dataSource is market data, then this is the referred day
 
 	private CurveModelCalibrationMachine curveModelCalibrationMaschine;
 
@@ -83,6 +84,39 @@ public class CalibrationInformation {
 		DataName = dataSource.toString() + dataScope.toString();
 
 	}
+	
+	
+	/**
+	 * Constructs an instance of calibration Information using the data scope and
+	 * day of the given market data <br>
+	 * 
+	 * @param dataScope  || Co-terminals, extended Co-terminals, full surface; if
+	 *                   null, Co-Terminals
+	 * @param dataSource || example data, true market Data; if null example data is
+	 *                   used
+	 * @throws SolverException
+	 */
+	public CalibrationInformation(DataScope dataScope, String dataDay) throws SolverException {
+
+		if (dataScope == null) {
+			this.dataScope = DataScope.CoTerminals;
+		} else {
+			this.dataScope = dataScope;
+		}
+
+			this.dataSource = DataSource.Market;
+			this.dataDay = dataDay;
+
+		fillDataSurfaces(dataSource);
+
+		changeForDataScope(dataScope);
+
+		DataName = dataSource.toString() + dataScope.toString() + dataDay;
+
+	}
+	
+	
+	
 	
 	
 	/**
@@ -441,6 +475,45 @@ public class CalibrationInformation {
 
 			break;
 
+	
+		case Market:
+
+			String[] atmExpiriesFullSurfaceStored = getAtmExpiriesFullSurfaceForDataDay(dataDay); //get atmExpiriesFullSurface for the dataDay
+
+			String[] atmTenorsFullSurfaceStored = atmTenorsFullSurfaceForDataDay(dataDay);  //get atmTenorsFullSurface for the dataDay
+			
+			double[] atmShiftedLogVolatilitiesFullSurfaceStored = atmShiftedLogVolatilitiesFullSurfaceForDataDay(dataDay); //get atmShiftedLogVolatilitiesFullSurface for the dataDay
+
+			double[] logVolShiftsFullSurfaceStored = logVolShiftsFullSurfaceForDataDay(dataDay); //get logVolShiftsFullSurface for the dataDay
+
+			// get The corresponding curve Model with discount curve and forward curve
+			CurveModelData curveModelData = new CurveModelData(dataDay);
+			CurveModelCalibrationMachine curveModelCalibrationMaschineStored = new CurveModelCalibrationMachine(curveModelData);
+
+			AnalyticModel curveModelStored = curveModelCalibrationMaschineStored.getCalibratedCurveModel();
+			ForwardCurve forwardCurveStored = curveModelStored
+					.getForwardCurve(curveModelCalibrationMaschineStored.getForwardCurvelName());
+
+			this.swapPeriodLength = 0.5;
+			this.referenceDate = StringToUseful.referenceDateFromString(dataDay);
+			this.cal = new BusinessdayCalendarExcludingTARGETHolidays();
+			this.modelDC = new DayCountConvention_ACT_365();
+
+			// transform shifted LogVol into LogVol
+			double[] atmNormalVolatilitiesFullSurfaceStored = volatilityConversionShiftedLognormalATMtoNormalATM(
+					atmExpiriesFullSurfaceStored, atmTenorsFullSurfaceStored,
+					atmShiftedLogVolatilitiesFullSurfaceStored, logVolShiftsFullSurfaceStored, curveModelStored,
+					forwardCurveStored, swapPeriodLength, referenceDate/* , cal, modelDC */);
+
+			this.atmExpiriesFullSurface = atmExpiriesFullSurfaceStored;
+			this.atmTenorsFullSurface = atmTenorsFullSurfaceStored;
+			this.atmVolatilitiesFullSurface = atmNormalVolatilitiesFullSurfaceStored;
+			this.targetVolatilityType = "VOLATILITYNORMAL";
+
+			break;		
+			
+			
+			
 			
 
 		default:
@@ -449,6 +522,9 @@ public class CalibrationInformation {
 		}
 
 	}
+
+
+
 
 	/**
 	 * Convert shifted log normal swaption volas into Normal volas.
@@ -621,5 +697,54 @@ public class CalibrationInformation {
 	public String getName() {
 		return DataName;
 	}
+	
+	
+	
+	
+	
+/**
+ * Returns the shifts corresponding to the log-normal volatilities for a given day.
+ * @param day
+ * @return
+ */
+	private double[] logVolShiftsFullSurfaceForDataDay(String day) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+/**Returns the shifted log-normal volatilities for a given day.
+ * 
+ * @param day
+ * @return
+ */
+	private double[] atmShiftedLogVolatilitiesFullSurfaceForDataDay(String day) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+/**
+ * Returns the Tenors corresponding to the log-normal volatilities for a given day.
+ * @param day
+ * @return
+ */
+	private String[] atmTenorsFullSurfaceForDataDay(String day) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+/**
+ * Returns the Expiries corresponding to the log-normal volatilities for a given day.
+ * @param day
+ * @return
+ */
+	private String[] getAtmExpiriesFullSurfaceForDataDay(String day) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+	
+	
 
 }

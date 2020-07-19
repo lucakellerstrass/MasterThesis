@@ -10,6 +10,6 @@ package kellerstrass.marketInformation;
  */
 public enum DataSource {
 
-	EXAMPLE, Market23_10_2019, Market24_10_2019
+	EXAMPLE, Market23_10_2019, Market24_10_2019, Market
 
 }

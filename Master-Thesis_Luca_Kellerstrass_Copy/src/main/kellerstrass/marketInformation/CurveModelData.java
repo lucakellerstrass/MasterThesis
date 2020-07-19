@@ -3,6 +3,7 @@ package kellerstrass.marketInformation;
 import java.time.LocalDate;
 import java.time.Month;
 
+import kellerstrass.useful.StringToUseful;
 import net.finmath.marketdata.model.curves.DiscountCurve;
 import net.finmath.marketdata.model.curves.DiscountCurveInterpolation;
 import net.finmath.marketdata.model.curves.ForwardCurveInterpolation;
@@ -34,6 +35,7 @@ public class CurveModelData {
 	private String forwardStartPeriodSet;
 
 	private boolean initiationOverExistingDiscountValues = false;
+	private String dataDay;
 
 	public boolean isInitiationOverExistingDiscountValues() {
 		return initiationOverExistingDiscountValues;
@@ -50,10 +52,31 @@ public class CurveModelData {
 	public CurveModelData(CurveModelDataType curveModelDataType) {
 		this.curveModelDataType = curveModelDataType;
 		if ((curveModelDataType == CurveModelDataType.OIS6M2410)
-				| (curveModelDataType == CurveModelDataType.OIS6M2310)) {
+				| (curveModelDataType == CurveModelDataType.OIS6M2310)
+				| (curveModelDataType == CurveModelDataType.Market)) {
+			
+		if 	(curveModelDataType == CurveModelDataType.Market) {
+			System.out.println("For the usage of Market data use the constructor disigned for this purpose.");
+		}
 			initiationOverExistingDiscountValues = true;
 		}
 	}
+	
+	/**
+	 * Initiate an instance of the calibration market information for the Curve
+	 * Model using then given day as String.
+	 * 
+	 * @param CurveModelDataType The data Type or source of the information
+	 * @return
+	 * @throws SolverException
+	 */
+	public CurveModelData(String dataDay) {
+		this.curveModelDataType = CurveModelDataType.Market;
+			initiationOverExistingDiscountValues = true;
+			this.dataDay = dataDay;
+			
+		}
+	
 
 	/**
 	 * Initiate an instance of the calibration (market) information to be filled by
@@ -444,6 +467,22 @@ public class CurveModelData {
 
 				return discountCurveInterpolation2310;
 				
+				
+			case Market:
+
+				DiscountCurveInterpolation discountCurveInterpolationMarekt = DiscountCurveInterpolation
+						.createDiscountCurveFromDiscountFactors("discountCurve-" + "EUR",
+								StringToUseful.referenceDateFromString(dataDay),
+								getTimesFromDataDate(dataDay), //times from dataDate
+								getDiscountValuesFromDataDate(dataDay), //discount values from dataDate
+								null, InterpolationMethod.LINEAR, ExtrapolationMethod.CONSTANT,
+								InterpolationEntity.LOG_OF_VALUE);
+
+				return discountCurveInterpolationMarekt;
+				
+				
+				
+				
 				default:
 					System.out.println("The discount curve is not implemented. Look up in kellerstrass.marketInformation.CurveModelData");
 					return null;
@@ -455,5 +494,47 @@ public class CurveModelData {
 		}
 
 	}
+    /**
+     * Returns the OIS6M discount curve values for a given data Day provided as String.
+     * @param day
+     * @return
+     */
+	private double[] getDiscountValuesFromDataDate(String day) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Returns the OIS6M discount curve dates for a given data Day provided as String.
+	 * @param day
+	 * @return
+	 */
+	private double[] getTimesFromDataDate(String day) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
