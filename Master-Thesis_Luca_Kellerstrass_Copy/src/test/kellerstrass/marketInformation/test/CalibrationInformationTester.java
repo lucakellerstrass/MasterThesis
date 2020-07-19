@@ -17,7 +17,7 @@ public class CalibrationInformationTester {
 
 	public static void main(String[] args) throws SolverException {
 
-		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.CoTerminals,
+		CalibrationInformation calibrationInformation1 = new CalibrationInformation(DataScope.FullSurface,
 				DataSource.Market24_10_2019);
 //		CalibrationInformation calibrationInformation2 = new CalibrationInformation(DataScope.ExtendedCoTermindals,
 //				DataSource.Market24_10_2019);
