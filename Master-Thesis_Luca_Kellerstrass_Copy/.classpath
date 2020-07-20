@@ -9,5 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/finmath lib"/>
+	<classpathentry kind="lib" path="C:/Users/lucak/git/MasterThesis/Master-Thesis_Luca_Kellerstrass_Copy/lib/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
